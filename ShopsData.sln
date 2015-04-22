@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCollectorCore", "DataCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCollectors", "DataCollectors\DataCollectors.csproj", "{AC631456-A8EC-4D21-AFD6-6140DC570395}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgreDAL", "PostgreDAL\PostgreDAL.csproj", "{349318E7-0A4C-4A25-AE36-284B4E799C64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{AC631456-A8EC-4D21-AFD6-6140DC570395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC631456-A8EC-4D21-AFD6-6140DC570395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC631456-A8EC-4D21-AFD6-6140DC570395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349318E7-0A4C-4A25-AE36-284B4E799C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349318E7-0A4C-4A25-AE36-284B4E799C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349318E7-0A4C-4A25-AE36-284B4E799C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349318E7-0A4C-4A25-AE36-284B4E799C64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
