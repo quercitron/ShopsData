@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using DataCollectorCore.DataObjects;
+
 namespace DataCollectorCore
 {
     public interface IShopDataCollector

@@ -1,4 +1,4 @@
-﻿namespace DataCollectorCore
+﻿namespace DataCollectorCore.DataObjects
 {
     public class Product
     {

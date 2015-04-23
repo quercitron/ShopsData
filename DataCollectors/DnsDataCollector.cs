@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 
 using DataCollectorCore;
+using DataCollectorCore.DataObjects;
 
 using HtmlAgilityPack;
 

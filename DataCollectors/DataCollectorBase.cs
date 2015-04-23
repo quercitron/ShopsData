@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using DataCollectorCore;
+using DataCollectorCore.DataObjects;
 
 namespace DataCollectors
 {
