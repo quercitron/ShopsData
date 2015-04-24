@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IShopDataCollector.cs" />
+    <Compile Include="DataObjects\DataSource.cs" />
     <Compile Include="DataObjects\Product.cs" />
+    <Compile Include="IShopDataCollector.cs" />
+    <Compile Include="DataObjects\ProductRecord.cs" />
     <Compile Include="DataObjects\ProductType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

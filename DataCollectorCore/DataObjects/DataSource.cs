@@ -1,8 +1,8 @@
 ﻿namespace DataCollectorCore.DataObjects
 {
-    public class ProductType
+    public class DataSource
     {
-        public int ProductTypeId { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
     }

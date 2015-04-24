@@ -6,7 +6,7 @@ using DataCollectorCore.DataObjects;
 
 namespace DataCollectors
 {
-    public abstract class DataCollectorBase
+    public abstract class DataCollectorBase : IShopDataCollector
     {
         public abstract string ShopName { get; }
 
@@ -48,7 +48,7 @@ namespace DataCollectors
             }
         }
 
-        protected abstract List<Product> GetProducts(string url);
+        protected abstract List<ProductRecord> GetProducts(string url);
 
         protected abstract string GetUrl(string productType);
     }

@@ -20,9 +20,9 @@ namespace DataCollectors
             get { return "Citilink"; }
         }
 
-        protected override List<Product> GetProducts(string url)
+        protected override List<ProductRecord> GetProducts(string url)
         {
-            var result = new List<Product>();
+            var result = new List<ProductRecord>();
             for (int pageNumber = 1; ; pageNumber++)
             {
                 var pageUrl = string.Format(url, pageNumber);
@@ -39,7 +39,7 @@ namespace DataCollectors
             return result;
         }
 
-        private List<Product> ProcessCitilinkPage(string url)
+        private List<ProductRecord> ProcessCitilinkPage(string url)
         {
             //var uriString = string.Format("http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}", pageNumber);
             Uri target = new Uri(url);
@@ -70,9 +70,9 @@ namespace DataCollectors
             return products;
         }
 
-        private Product GetCitilinkItem(HtmlNode node)
+        private ProductRecord GetCitilinkItem(HtmlNode node)
         {
-            var item = new Product();
+            var item = new ProductRecord();
 
             var infotd = node.Descendants("td").First(x => x.Class() == "l");
             item.Name = infotd.ChildNodes.First(x => x.Name == "a").InnerText;
@@ -82,7 +82,7 @@ namespace DataCollectors
             if (priceNode != null)
             {
                 var priceString = Regex.Replace(priceNode.InnerText, "[^0-9]", "");
-                item.Price = double.Parse(priceString);
+                item.Price = int.Parse(priceString);
             }
 
             return item;

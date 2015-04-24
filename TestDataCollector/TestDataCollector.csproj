@@ -61,6 +61,10 @@
       <Project>{AC631456-A8EC-4D21-AFD6-6140DC570395}</Project>
       <Name>DataCollectors</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PostgreDAL\PostgreDAL.csproj">
+      <Project>{349318e7-0a4c-4a25-ae36-284b4e799c64}</Project>
+      <Name>PostgreDAL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

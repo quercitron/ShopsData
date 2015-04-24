@@ -11,14 +11,14 @@ using HtmlAgilityPack;
 
 namespace DataCollectors
 {
-    public class DnsDataCollector : DataCollectorBase, IShopDataCollector
+    public class DnsDataCollector : DataCollectorBase
     {
         public override string ShopName
         {
             get { return "DNS"; }
         }
 
-        protected override List<Product> GetProducts(string url)
+        protected override List<ProductRecord> GetProducts(string url)
         {
             //Uri target = new Uri("http://www.dns-shop.ru/catalog/3633/monitory/?length_1=0");
             Uri target = new Uri(url);
@@ -51,12 +51,12 @@ namespace DataCollectors
             return products;
         }
 
-        private Product GetDnsItem(HtmlNode htmlNode)
+        private ProductRecord GetDnsItem(HtmlNode htmlNode)
         {
-            var item = new Product();
+            var item = new ProductRecord();
 
             var priceStr = htmlNode.Descendants().First(x => x.Class().Contains("price")).InnerText;
-            item.Price = double.Parse(priceStr);
+            item.Price = int.Parse(priceStr);
 
             var title = htmlNode.Descendants().First(x => x.Class() == "title");
             item.Name = title.Descendants().First(x => x.Name == "a" && x.Class() != "image").InnerText;

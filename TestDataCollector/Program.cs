@@ -1,12 +1,38 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+
+using DataCollectorCore;
 
 using DataCollectors;
+
+using PostgreDAL;
 
 namespace TestDataCollector
 {
     internal class Program
     {
         private static void Main(string[] args)
+        {
+            var dataStore = new ShopsDataStore("shops");
+
+            var dataSources = dataStore.GetDataSources();
+            var productTypes = dataStore.GetProductTypes();
+            var factory = new DataCollectorFactory();
+            foreach (var dataSource in dataSources)
+            {
+                var dataCollector = factory.Create(dataSource.Name);
+                foreach (var productType in productTypes)
+                {
+                    var shopData = dataCollector.GetShopData(productType.Name);
+                    if (shopData.Success)
+                    {
+                        //shopData.
+                    }
+                }
+            }
+        }
+
+        private static void GetData()
         {
             var dataCollector = new DnsDataCollector();
 
@@ -29,6 +55,32 @@ namespace TestDataCollector
                     writer.WriteLine(data.Message);
                 }
             }
+        }
+    }
+
+    public class DataCollectorFactory
+    {
+        public IShopDataCollector Create(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            IShopDataCollector result;
+            switch (name.ToLower())
+            {
+                case "dns":
+                    result = new DnsDataCollector();
+                    break;
+                case "citilink":
+                    result = new CitilinkDataCollector();
+                    break;
+                default:
+                    var message = string.Format("Data source '{0}' is not supported", name);
+                    throw new NotSupportedException(message);
+            }
+            return result;
         }
     }
 }

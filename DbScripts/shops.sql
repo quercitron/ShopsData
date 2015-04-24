@@ -38,23 +38,23 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 175 (class 1259 OID 16408)
--- Name: DataSource; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: datasource; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE "DataSource" (
-    "DataSourceId" integer NOT NULL,
-    "Name" text NOT NULL
+CREATE TABLE datasource (
+    datasourceid integer NOT NULL,
+    name text NOT NULL
 );
 
 
-ALTER TABLE "DataSource" OWNER TO postgres;
+ALTER TABLE datasource OWNER TO postgres;
 
 --
 -- TOC entry 174 (class 1259 OID 16406)
--- Name: DataSource_DataSourceId_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: datasource_datasourceId_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE "DataSource_DataSourceId_seq"
+CREATE SEQUENCE "datasource_datasourceId_seq"
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -62,15 +62,15 @@ CREATE SEQUENCE "DataSource_DataSourceId_seq"
     CACHE 1;
 
 
-ALTER TABLE "DataSource_DataSourceId_seq" OWNER TO postgres;
+ALTER TABLE "datasource_datasourceId_seq" OWNER TO postgres;
 
 --
 -- TOC entry 2042 (class 0 OID 0)
 -- Dependencies: 174
--- Name: DataSource_DataSourceId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: datasource_datasourceId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE "DataSource_DataSourceId_seq" OWNED BY "DataSource"."DataSourceId";
+ALTER SEQUENCE "datasource_datasourceId_seq" OWNED BY datasource.datasourceid;
 
 
 --
@@ -78,32 +78,32 @@ ALTER SEQUENCE "DataSource_DataSourceId_seq" OWNED BY "DataSource"."DataSourceId
 -- Name: Product; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE "Product" (
-    "ProductId" integer NOT NULL,
-    "Name" text NOT NULL,
-    "ProductTypeId" integer NOT NULL
+CREATE TABLE product (
+    productpd integer NOT NULL,
+    name text NOT NULL,
+    producttypeid integer NOT NULL
 );
 
 
-ALTER TABLE "Product" OWNER TO postgres;
+ALTER TABLE product OWNER TO postgres;
 
 --
 -- TOC entry 179 (class 1259 OID 16435)
 -- Name: ProductRecord; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE "ProductRecord" (
-    "ProductRecordId" integer NOT NULL,
-    "ProductId" integer NOT NULL,
-    "Price" integer NOT NULL,
-    "Rating" real,
-    "Timestamp" timestamp without time zone NOT NULL,
-    "AmountAvailable" integer,
-    "Description" text
+CREATE TABLE productrecord (
+    productrecordid integer NOT NULL,
+    productpd integer NOT NULL,
+    price integer NOT NULL,
+    rating real,
+    timestamp timestamp without time zone NOT NULL,
+    amountavailable integer,
+    description text
 );
 
 
-ALTER TABLE "ProductRecord" OWNER TO postgres;
+ALTER TABLE productrecord OWNER TO postgres;
 
 --
 -- TOC entry 178 (class 1259 OID 16433)
@@ -126,7 +126,7 @@ ALTER TABLE "ProductRecord_ProductRecordId_seq" OWNER TO postgres;
 -- Name: ProductRecord_ProductRecordId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE "ProductRecord_ProductRecordId_seq" OWNED BY "ProductRecord"."ProductRecordId";
+ALTER SEQUENCE "ProductRecord_ProductRecordId_seq" OWNED BY productrecord.productrecordid;
 
 
 --
@@ -134,13 +134,13 @@ ALTER SEQUENCE "ProductRecord_ProductRecordId_seq" OWNED BY "ProductRecord"."Pro
 -- Name: ProductType; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
-CREATE TABLE "ProductType" (
-    "ProductTypeId" integer NOT NULL,
-    "Name" text NOT NULL
+CREATE TABLE producttype (
+    producttypeid integer NOT NULL,
+    name text NOT NULL
 );
 
 
-ALTER TABLE "ProductType" OWNER TO postgres;
+ALTER TABLE producttype OWNER TO postgres;
 
 --
 -- TOC entry 172 (class 1259 OID 16395)
@@ -163,7 +163,7 @@ ALTER TABLE "ProductType_TypeId_seq" OWNER TO postgres;
 -- Name: ProductType_TypeId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE "ProductType_TypeId_seq" OWNED BY "ProductType"."ProductTypeId";
+ALTER SEQUENCE "ProductType_TypeId_seq" OWNED BY producttype.producttypeid;
 
 
 --
@@ -187,15 +187,15 @@ ALTER TABLE "Product_ProductId_seq" OWNER TO postgres;
 -- Name: Product_ProductId_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE "Product_ProductId_seq" OWNED BY "Product"."ProductId";
+ALTER SEQUENCE "Product_ProductId_seq" OWNED BY product.productpd;
 
 
 --
 -- TOC entry 1904 (class 2604 OID 16411)
--- Name: DataSourceId; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: datasourceId; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "DataSource" ALTER COLUMN "DataSourceId" SET DEFAULT nextval('"DataSource_DataSourceId_seq"'::regclass);
+ALTER TABLE ONLY datasource ALTER COLUMN datasourceid SET DEFAULT nextval('"datasource_datasourceId_seq"'::regclass);
 
 
 --
@@ -203,7 +203,7 @@ ALTER TABLE ONLY "DataSource" ALTER COLUMN "DataSourceId" SET DEFAULT nextval('"
 -- Name: ProductId; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "Product" ALTER COLUMN "ProductId" SET DEFAULT nextval('"Product_ProductId_seq"'::regclass);
+ALTER TABLE ONLY product ALTER COLUMN productpd SET DEFAULT nextval('"Product_ProductId_seq"'::regclass);
 
 
 --
@@ -211,7 +211,7 @@ ALTER TABLE ONLY "Product" ALTER COLUMN "ProductId" SET DEFAULT nextval('"Produc
 -- Name: ProductRecordId; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "ProductRecord" ALTER COLUMN "ProductRecordId" SET DEFAULT nextval('"ProductRecord_ProductRecordId_seq"'::regclass);
+ALTER TABLE ONLY productrecord ALTER COLUMN productrecordid SET DEFAULT nextval('"ProductRecord_ProductRecordId_seq"'::regclass);
 
 
 --
@@ -219,26 +219,25 @@ ALTER TABLE ONLY "ProductRecord" ALTER COLUMN "ProductRecordId" SET DEFAULT next
 -- Name: ProductTypeId; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "ProductType" ALTER COLUMN "ProductTypeId" SET DEFAULT nextval('"ProductType_TypeId_seq"'::regclass);
+ALTER TABLE ONLY producttype ALTER COLUMN producttypeid SET DEFAULT nextval('"ProductType_TypeId_seq"'::regclass);
 
 
 --
 -- TOC entry 2029 (class 0 OID 16408)
 -- Dependencies: 175
--- Data for Name: DataSource; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: datasource; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "DataSource" ("DataSourceId", "Name") FROM stdin;
-\.
+
 
 
 --
 -- TOC entry 2046 (class 0 OID 0)
 -- Dependencies: 174
--- Name: DataSource_DataSourceId_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: datasource_datasourceId_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"DataSource_DataSourceId_seq"', 1, false);
+SELECT pg_catalog.setval('"datasource_datasourceId_seq"', 1, false);
 
 
 --
@@ -247,8 +246,7 @@ SELECT pg_catalog.setval('"DataSource_DataSourceId_seq"', 1, false);
 -- Data for Name: Product; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "Product" ("ProductId", "Name", "ProductTypeId") FROM stdin;
-\.
+
 
 
 --
@@ -257,8 +255,7 @@ COPY "Product" ("ProductId", "Name", "ProductTypeId") FROM stdin;
 -- Data for Name: ProductRecord; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "ProductRecord" ("ProductRecordId", "ProductId", "Price", "Rating", "Timestamp", "AmountAvailable", "Description") FROM stdin;
-\.
+
 
 
 --
@@ -276,8 +273,7 @@ SELECT pg_catalog.setval('"ProductRecord_ProductRecordId_seq"', 1, false);
 -- Data for Name: ProductType; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY "ProductType" ("ProductTypeId", "Name") FROM stdin;
-\.
+
 
 
 --
@@ -300,11 +296,11 @@ SELECT pg_catalog.setval('"Product_ProductId_seq"', 1, false);
 
 --
 -- TOC entry 1910 (class 2606 OID 16416)
--- Name: DataSource_PK_DataSourceId; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: datasource_PK_datasourceId; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY "DataSource"
-    ADD CONSTRAINT "DataSource_PK_DataSourceId" PRIMARY KEY ("DataSourceId");
+ALTER TABLE ONLY datasource
+    ADD CONSTRAINT "datasource_PK_datasourceId" PRIMARY KEY (datasourceid);
 
 
 --
@@ -312,8 +308,8 @@ ALTER TABLE ONLY "DataSource"
 -- Name: ProductRecord_PK_ProductRecordId; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY "ProductRecord"
-    ADD CONSTRAINT "ProductRecord_PK_ProductRecordId" PRIMARY KEY ("ProductRecordId");
+ALTER TABLE ONLY productrecord
+    ADD CONSTRAINT "ProductRecord_PK_ProductRecordId" PRIMARY KEY (productrecordid);
 
 
 --
@@ -321,8 +317,8 @@ ALTER TABLE ONLY "ProductRecord"
 -- Name: ProductType_PK_ProductTypeId; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY "ProductType"
-    ADD CONSTRAINT "ProductType_PK_ProductTypeId" PRIMARY KEY ("ProductTypeId");
+ALTER TABLE ONLY producttype
+    ADD CONSTRAINT "ProductType_PK_ProductTypeId" PRIMARY KEY (producttypeid);
 
 
 --
@@ -330,8 +326,8 @@ ALTER TABLE ONLY "ProductType"
 -- Name: Product_PK_ProductId; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
-ALTER TABLE ONLY "Product"
-    ADD CONSTRAINT "Product_PK_ProductId" PRIMARY KEY ("ProductId");
+ALTER TABLE ONLY product
+    ADD CONSTRAINT "Product_PK_ProductId" PRIMARY KEY (productpd);
 
 
 --
@@ -339,8 +335,8 @@ ALTER TABLE ONLY "Product"
 -- Name: ProductRecord_FK_ProductId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "ProductRecord"
-    ADD CONSTRAINT "ProductRecord_FK_ProductId" FOREIGN KEY ("ProductId") REFERENCES "Product"("ProductId");
+ALTER TABLE ONLY productrecord
+    ADD CONSTRAINT "ProductRecord_FK_ProductId" FOREIGN KEY (productpd) REFERENCES product(productpd);
 
 
 --
@@ -348,8 +344,8 @@ ALTER TABLE ONLY "ProductRecord"
 -- Name: Product_FK_ProductTypeId; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY "Product"
-    ADD CONSTRAINT "Product_FK_ProductTypeId" FOREIGN KEY ("ProductTypeId") REFERENCES "ProductType"("ProductTypeId");
+ALTER TABLE ONLY product
+    ADD CONSTRAINT "Product_FK_ProductTypeId" FOREIGN KEY (producttypeid) REFERENCES producttype(producttypeid);
 
 
 --

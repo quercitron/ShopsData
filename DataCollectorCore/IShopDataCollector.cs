@@ -15,6 +15,6 @@ namespace DataCollectorCore
 
         public string Message { get; set; }
 
-        public IList<Product> Products { get; set; }
+        public IList<ProductRecord> Products { get; set; }
     }
 }
