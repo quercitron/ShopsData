@@ -50,6 +50,7 @@
     <Compile Include="DnsDataCollector.cs" />
     <Compile Include="HtmlExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopDataCollectorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataCollectorCore\DataCollectorCore.csproj">
