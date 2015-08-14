@@ -230,8 +230,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( productid,  name,  description,  price,  rating,  amountavailable,  timestamp) " +
-                              "values                    (:productid, :name, :description, :price, :rating, :amountavailable, :timestamp)";
+            var commandText = "insert into productrecord ( productid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid) " +
+                              "values                    (:productid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid)";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productRecord.ProductId);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, productRecord.Name);
@@ -240,6 +240,28 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("rating", NpgsqlDbType.Real, productRecord.Rating);
             command.Parameters.AddWithValue("amountavailable", NpgsqlDbType.Integer, productRecord.AmountAvailable);
             command.Parameters.AddWithValue("timestamp", NpgsqlDbType.Timestamp, productRecord.Timestamp);
+            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, productRecord.LocationId);
+
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void AddLocation(Location location)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "insert into location ( locationid,  name) " +
+                              "values               (:locationid, :name)";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, location.LocationId);
+            command.Parameters.AddWithValue("name", NpgsqlDbType.Text, location.Name);
 
             try
             {

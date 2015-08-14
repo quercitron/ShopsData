@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataObjects\DataSource.cs" />
+    <Compile Include="DataObjects\Location.cs" />
     <Compile Include="DataObjects\Product.cs" />
     <Compile Include="IShopDataCollector.cs" />
     <Compile Include="DataObjects\ProductRecord.cs" />

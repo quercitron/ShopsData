@@ -19,5 +19,7 @@ namespace DataCollectorCore.DataObjects
         public int AmountAvailable { get; set; }
 
         public DateTime Timestamp { get; set; }
+
+        public int LocationId { get; set; }
     }
 }

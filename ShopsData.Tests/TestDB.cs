@@ -14,7 +14,7 @@ namespace ShopsData.Tests
     [TestFixture]
     public class TestDB
     {
-        public const string TestDbName = "shops";
+        public const string TestDbName = "shopsuser_test";
 
         #region ProductType
 
@@ -193,6 +193,22 @@ namespace ShopsData.Tests
 
         #endregion
 
+        #region locations
+
+        [Test]
+        [Ignore]
+        public void LocationAddTest()
+        {
+            var location = new Location();
+            location.LocationId = 1;
+            location.Name = "City";
+
+            var dataStore = new ShopsDataStore(TestDbName);
+            dataStore.AddLocation(location);
+        }
+
+        #endregion
+
         #region Product Records
 
         [Test]
@@ -210,6 +226,7 @@ namespace ShopsData.Tests
             productRecord.Rating = (float)(new Random().NextDouble() * 5);
             productRecord.AmountAvailable = new Random().Next(10);
             productRecord.Timestamp = DateTime.UtcNow;
+            productRecord.LocationId = 1;
 
             dataStore.AddProductRecord(productRecord);
         }

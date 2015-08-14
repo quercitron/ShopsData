@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using DataCollectorCore;
 using DataCollectorCore.DataObjects;
 
 namespace PostgreDAL
@@ -27,5 +26,8 @@ namespace PostgreDAL
 
 
         void AddProductRecord(ProductRecord productRecord);
+
+
+        void AddLocation(Location location);
     }
 }
