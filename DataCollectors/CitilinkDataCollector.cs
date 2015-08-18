@@ -20,7 +20,7 @@ namespace DataCollectors
             get { return "Citilink"; }
         }
 
-        protected override List<ProductRecord> GetProducts(string url)
+        protected override List<ProductRecord> GetProducts(string locationName, string url)
         {
             var result = new List<ProductRecord>();
             for (int pageNumber = 1; ; pageNumber++)

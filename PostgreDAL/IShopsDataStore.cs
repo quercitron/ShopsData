@@ -4,6 +4,7 @@ using DataCollectorCore.DataObjects;
 
 namespace PostgreDAL
 {
+    // todo: replace all List with Enamerable?
     public interface IShopsDataStore
     {
         List<ProductType> GetProductTypes();
@@ -29,5 +30,7 @@ namespace PostgreDAL
 
 
         void AddLocation(Location location);
+
+        List<Location> GetLocations();
     }
 }

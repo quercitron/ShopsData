@@ -273,6 +273,36 @@ namespace PostgreDAL
             }
         }
 
+        public List<Location> GetLocations()
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            NpgsqlCommand command = new NpgsqlCommand("select locationid, name from location", conn);
+
+            var products = new List<Location>();
+            try
+            {
+                NpgsqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var location = new Location();
+
+                    location.LocationId = dr.GetInt32(0);
+                    location.Name = dr.GetString(1);
+
+                    products.Add(location);
+                }
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return products;
+        }
+
         private void ExecuteNonQueryCommand(string commandText)
         {
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
