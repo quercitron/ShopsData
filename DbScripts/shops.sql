@@ -194,7 +194,8 @@ CREATE TABLE sourceproduct (
     sourceproductid integer NOT NULL,
     datasourceid integer NOT NULL,
     key text NOT NULL,
-    name text NOT NULL
+    name text NOT NULL,
+    originalname text NOT NULL
 );
 
 

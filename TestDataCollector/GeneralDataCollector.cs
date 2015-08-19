@@ -14,24 +14,18 @@ namespace TestDataCollector
 
         private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata");
 
-        public IEnumerable<ProductRecord> GetData()
+        public void ProcessData()
         {
-            var records = new List<ProductRecord>();
-
             var sources = _dataStore.GetDataSources();
 
             foreach (var dataSource in sources)
             {
-                records.AddRange(GetDataFromSource(dataSource));
+                ProcessDataSource(dataSource);
             }
-
-            return records;
         }
 
-        private List<ProductRecord> GetDataFromSource(DataSource dataSource)
+        private void ProcessDataSource(DataSource dataSource)
         {
-            var records = new List<ProductRecord>();
-
             var dataCollector = _shopDataCollectorFactory.Create(dataSource.Name);
 
             var productTypes = _dataStore.GetProductTypes();
@@ -47,19 +41,31 @@ namespace TestDataCollector
                         {
                             product.LocationId = location.LocationId;
                         }
-                        records.AddRange(shopDataResult.Products);
+                        var context = new ProductsContext
+                        {
+                            DataSource = dataSource,
+                            Location = location,
+                            ProductType = productType,
+                        };
+                        AddToDb(context, shopDataResult.Products);
                     }
                     // todo: log message
                 }
             }
-
-            foreach (var productRecord in records)
-            {
-                // todo: add source id
-                //productRecord.
-            }
-
-            return records;
         }
+
+        private void AddToDb(ProductsContext context, IList<ProductRecord> productRecords)
+        {
+            
+        }
+    }
+
+    public class ProductsContext
+    {
+        public DataSource DataSource { get; set; }
+
+        public Location Location { get; set; }
+
+        public ProductType ProductType { get; set; }
     }
 }
