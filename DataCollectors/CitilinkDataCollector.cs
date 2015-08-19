@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
 using DataCollectorCore;
 using DataCollectorCore.DataObjects;
 
@@ -44,20 +45,24 @@ namespace DataCollectors
             //var uriString = string.Format("http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}", pageNumber);
             Uri target = new Uri(url);
 
-            var request = WebRequest.CreateHttp(target);
+            HttpResponseMessage response;
+            using (var client = new HttpClient())
+            {
+                response = client.PostAsync(target, null).Result;
+            }
+
+            /*var request = WebRequest.CreateHttp(target);
 
             string source;
-            var response = request.GetResponse();
+            var response = request.GetResponse();*/
 
-            if (response.ResponseUri.Equals("http://www.citilink.ru/catalog/"))
+
+            /*if (response.ResponseUri.Equals("http://www.citilink.ru/catalog/"))
             {
                 return null;
-            }
+            }*/
 
-            using (var streamReader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(1251)))
-            {
-                source = streamReader.ReadToEnd();
-            }
+            var source = response.Content.ReadAsStringAsync().Result;
 
             source = WebUtility.HtmlDecode(source);
             HtmlDocument document = new HtmlDocument();
@@ -94,7 +99,8 @@ namespace DataCollectors
             switch (productType.ToLower())
             {
                 case "motherboard":
-                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}";
+                    //url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}";
+                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?available=1&status=0&p={0}";
                     break;
                 case "powersupply":
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?p={0}";

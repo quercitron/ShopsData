@@ -6,7 +6,7 @@ namespace DataCollectorCore.DataObjects
     {
         public int ProductRecordId { get; set; }
 
-        public int ProductId { get; set; }
+        public int SourceProductId { get; set; }
 
         public string Name { get; set; }
 

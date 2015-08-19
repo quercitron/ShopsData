@@ -14,7 +14,7 @@ namespace ShopsData.Tests
     [TestFixture]
     public class TestDB
     {
-        public const string TestDbName = "shopsuser_test";
+        public const string TestDbName = "shopsdata_test";
 
         #region ProductType
 
@@ -219,7 +219,7 @@ namespace ShopsData.Tests
             var productId = dataStore.GetProducts().First().ProductId;
 
             var productRecord = new ProductRecord();
-            productRecord.ProductId = productId;
+            productRecord.SourceProductId = productId;
             productRecord.Name = "New Record " + Guid.NewGuid();
             productRecord.Description = "New Description " + Guid.NewGuid();
             productRecord.Price = new Random().Next(100) + 1;

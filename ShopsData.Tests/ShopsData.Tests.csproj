@@ -54,16 +54,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CitilinkDataCollectorTests.cs" />
+    <Compile Include="DataCollectorTestsBase.cs" />
+    <Compile Include="DnsDataCollectorTests.cs" />
     <Compile Include="TestDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataCollectorCore\DataCollectorCore.csproj">
       <Project>{d4dbdf90-dad5-4b35-92e9-2e59ec522b27}</Project>
       <Name>DataCollectorCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataCollectors\DataCollectors.csproj">
+      <Project>{AC631456-A8EC-4D21-AFD6-6140DC570395}</Project>
+      <Name>DataCollectors</Name>
     </ProjectReference>
     <ProjectReference Include="..\PostgreDAL\PostgreDAL.csproj">
       <Project>{349318E7-0A4C-4A25-AE36-284B4E799C64}</Project>

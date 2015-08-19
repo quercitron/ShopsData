@@ -27,7 +27,7 @@ namespace PostgreDAL
             _dbName = dbName;
 
             _connectionString = string.Format(
-                "Server=127.0.0.1;Port=5432;User Id={0};Password={1};Database={2};",
+                "Server=127.0.0.1;Port=5433;User Id={0};Password={1};Database={2};",
                 _user,
                 _password,
                 _dbName);
@@ -230,10 +230,10 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( productid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid) " +
-                              "values                    (:productid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid)";
+            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid) " +
+                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid)";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
-            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productRecord.ProductId);
+            command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, productRecord.Name);
             command.Parameters.AddWithValue("description", NpgsqlDbType.Text, productRecord.Description);
             command.Parameters.AddWithValue("price", NpgsqlDbType.Integer, productRecord.Price);
