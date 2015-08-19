@@ -35,14 +35,22 @@ namespace TestDataCollector
             var dataCollector = _shopDataCollectorFactory.Create(dataSource.Name);
 
             var productTypes = _dataStore.GetProductTypes();
-            foreach (var productType in productTypes)
+            var locations = _dataStore.GetLocations();
+            foreach (var location in locations)
             {
-                var shopDataResult = dataCollector.GetShopData(productType.Name);
-                if (shopDataResult.Success)
+                foreach (var productType in productTypes)
                 {
-                    records.AddRange(shopDataResult.Products);
+                    var shopDataResult = dataCollector.GetShopData(location.Name, productType.Name);
+                    if (shopDataResult.Success)
+                    {
+                        foreach (var product in shopDataResult.Products)
+                        {
+                            product.LocationId = location.LocationId;
+                        }
+                        records.AddRange(shopDataResult.Products);
+                    }
+                    // todo: log message
                 }
-                // todo: log message
             }
 
             foreach (var productRecord in records)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using DataCollectorCore.DataObjects;
 
@@ -6,7 +7,7 @@ namespace DataCollectorCore
 {
     public interface IShopDataCollector
     {
-        ShopDataResult GetShopData(string productType);
+        ShopDataResult GetShopData(string locationName, string productType);
     }
 
     public class ShopDataResult
@@ -14,6 +15,8 @@ namespace DataCollectorCore
         public bool Success { get; set; }
 
         public string Message { get; set; }
+
+        public Exception Exception { get; set; }
 
         public IList<ProductRecord> Products { get; set; }
     }

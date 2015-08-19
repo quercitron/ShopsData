@@ -10,7 +10,7 @@ namespace DataCollectors
     {
         public abstract string ShopName { get; }
 
-        public ShopDataResult GetShopData(string productType)
+        public ShopDataResult GetShopData(string locationName, string productType)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace DataCollectors
                            };
                 }
 
-                var products = GetProducts(url);
+                var products = GetProducts(locationName, url);
                 return new ShopDataResult
                        {
                            Success = true,
@@ -40,15 +40,16 @@ namespace DataCollectors
                        {
                            Success = false,
                            Message = string.Format(
-                               "Failed to process type {0} for {1} shop. {2}",
+                               "Failed to process type {0} for shop {1} in location {2}. {3}",
                                productType,
                                ShopName,
+                               locationName,
                                exception),
                        };
             }
         }
 
-        protected abstract List<ProductRecord> GetProducts(string url);
+        protected abstract List<ProductRecord> GetProducts(string locationName, string url);
 
         protected abstract string GetUrl(string productType);
     }

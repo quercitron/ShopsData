@@ -18,7 +18,7 @@ namespace DataCollectors
             get { return "DNS"; }
         }
 
-        protected override List<ProductRecord> GetProducts(string url)
+        protected override List<ProductRecord> GetProducts(string locationName, string url)
         {
             //Uri target = new Uri("http://www.dns-shop.ru/catalog/3633/monitory/?length_1=0");
             Uri target = new Uri(url);

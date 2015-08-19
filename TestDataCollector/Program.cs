@@ -23,7 +23,7 @@ namespace TestDataCollector
                 var dataCollector = factory.Create(dataSource.Name);
                 foreach (var productType in productTypes)
                 {
-                    var shopData = dataCollector.GetShopData(productType.Name);
+                    var shopData = dataCollector.GetShopData("location", productType.Name);
                     if (shopData.Success)
                     {
                         //shopData.
@@ -36,7 +36,7 @@ namespace TestDataCollector
         {
             var dataCollector = new DnsDataCollector();
 
-            var data = dataCollector.GetShopData("motherboard");
+            var data = dataCollector.GetShopData("location", "motherboard");
 
             using (var writer = File.CreateText("output.txt"))
             {
