@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using DataCollectorCore.DataObjects;
-
-using DataCollectors;
 
 using PostgreDAL;
 
@@ -10,7 +10,7 @@ namespace TestDataCollector
 {
     public class GeneralDataCollector
     {
-        private readonly ShopDataCollectorFactory _shopDataCollectorFactory = new ShopDataCollectorFactory();
+        private readonly SourceManagerFactory _sourceManagerFactory = new SourceManagerFactory();
 
         private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata");
 
@@ -26,7 +26,9 @@ namespace TestDataCollector
 
         private void ProcessDataSource(DataSource dataSource)
         {
-            var dataCollector = _shopDataCollectorFactory.Create(dataSource.Name);
+            var sourceManager = _sourceManagerFactory.GetManager(dataSource.Name);
+
+            var dataCollector = sourceManager.GetDataCollector();
 
             var productTypes = _dataStore.GetProductTypes();
             var locations = _dataStore.GetLocations();
@@ -56,7 +58,44 @@ namespace TestDataCollector
 
         private void AddToDb(ProductsContext context, IList<ProductRecord> productRecords)
         {
-            
+            var sourceManager = _sourceManagerFactory.GetManager(context.DataSource.Name);
+
+            var productRecordHelper = sourceManager.GetProductRecordHelper(context.ProductType);
+            var productHelper = sourceManager.GetProductHelper(context.ProductType);
+
+            var sourceProducts = _dataStore.GetSourceProducts(context.DataSource.DataSourceId, context.ProductType.ProductTypeId);
+            var products = _dataStore.GetProducts(context.ProductType.ProductTypeId);
+
+            var newProducts = new List<Product>();
+            var newSourceProducts = new List<SourceProduct>();
+
+            foreach (var productRecord in productRecords)
+            {
+                var key = productRecordHelper.GetKey(productRecord);
+
+                // todo: add to db unique constraint for key
+                var sourceProduct = sourceProducts.FirstOrDefault(sp => sp.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
+                if (sourceProduct == null)
+                {
+                    sourceProduct = productRecordHelper.GenerateSourceProduct(productRecord);
+
+                    var matchResult = productHelper.FindMatch(sourceProduct, products);
+
+                    Product product;
+                    if (matchResult.Success)
+                    {
+                        product = matchResult.Product;
+                    }
+                    else
+                    {
+                        product = productHelper.GenerateProduct(sourceProduct);
+                        newProducts.Add(product);
+                    }
+
+                    // todo: add ProductId column to db
+                    sourceProduct.ProductId = product.ProductId;
+                }
+            }
         }
     }
 

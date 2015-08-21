@@ -47,6 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeneralDataCollector.cs" />
+    <Compile Include="IProductHelper.cs" />
+    <Compile Include="IProductRecordHelper.cs" />
+    <Compile Include="ISourceManager.cs" />
+    <Compile Include="ISourceManagerFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

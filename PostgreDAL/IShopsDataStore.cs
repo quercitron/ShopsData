@@ -32,5 +32,8 @@ namespace PostgreDAL
         void AddLocation(Location location);
 
         List<Location> GetLocations();
+
+
+        List<SourceProduct> GetSourceProducts(int dataSourceId, int productTypeId);
     }
 }

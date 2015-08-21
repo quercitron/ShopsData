@@ -2,7 +2,7 @@
 {
     public class DataSource
     {
-        public int Id { get; set; }
+        public int DataSourceId { get; set; }
 
         public string Name { get; set; }
     }

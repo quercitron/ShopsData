@@ -10,7 +10,7 @@ namespace ShopsData.Tests
         public void GetDataTest()
         {
             var collector = GetDataCollector();
-            var data = collector.GetShopData("motherboard");
+            var data = collector.GetShopData("location", "motherboard");
             Assert.That(data, Is.Not.Null);
             Assert.That(data.Success, Is.True);
         }
