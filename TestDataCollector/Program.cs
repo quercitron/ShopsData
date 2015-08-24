@@ -2,8 +2,11 @@
 using System.IO;
 
 using DataCollectorCore;
+using DataCollectorCore.DataObjects;
 
 using DataCollectors;
+
+using Newtonsoft.Json;
 
 using PostgreDAL;
 
@@ -12,6 +15,24 @@ namespace TestDataCollector
     internal class Program
     {
         private static void Main(string[] args)
+        {
+            GetData();
+        }
+
+        private static void TestGeneralDataCollector()
+        {
+            try
+            {
+                var dataCollector = new GeneralDataCollector();
+                dataCollector.ProcessData();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+        }
+
+        private static void GetDataFromDataCollector()
         {
             var dataStore = new ShopsDataStore("shops");
 
@@ -45,25 +66,21 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new DnsDataCollector();
+            var dataCollector = new CitilinkDataCollector();
 
-            var data = dataCollector.GetShopData("location", "motherboard");
+            var data = dataCollector.GetShopData("location", ProductTypeName.Monitor);
+            //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();
 
             using (var writer = File.CreateText("output.txt"))
             {
                 if (data.Success)
                 {
-                    foreach (var item in data.Products)
-                    {
-                        writer.WriteLine(item.Name);
-                        writer.WriteLine(item.Price);
-                        writer.WriteLine(item.Description);
-                        writer.WriteLine();
-                    }
+                    writer.Write(JsonConvert.SerializeObject(data.Products, Formatting.Indented));
                 }
                 else
                 {
                     writer.WriteLine(data.Message);
+                    writer.WriteLine(data.Exception);
                 }
             }
         }

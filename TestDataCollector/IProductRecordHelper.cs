@@ -9,7 +9,7 @@ namespace TestDataCollector
         SourceProduct GenerateSourceProduct(DataSource dataSource, ProductRecord productRecord);
     }
 
-    class GeneralMotherboardProductRecordHelper : IProductRecordHelper
+    public class GeneralProductRecordHelper : IProductRecordHelper
     {
         public string GetKey(ProductRecord productRecord)
         {
@@ -22,9 +22,22 @@ namespace TestDataCollector
             {
                 DataSourceId = dataSource.DataSourceId,
                 Key = GetKey(productRecord),
-                Name = productRecord.Name.Replace("Материнская плата", "").Trim(),
+                Name = ProcessName(productRecord),
                 OriginalName = productRecord.Name,
             };
+        }
+
+        protected virtual string ProcessName(ProductRecord productRecord)
+        {
+            return productRecord.Name;
+        }
+    }
+
+    class GeneralMotherboardProductRecordHelper : GeneralProductRecordHelper
+    {
+        protected override string ProcessName(ProductRecord productRecord)
+        {
+            return productRecord.Name.Replace("Материнская плата", "").Trim();
         }
     }
 }

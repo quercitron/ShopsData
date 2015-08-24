@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 using DataCollectorCore;
 using DataCollectorCore.DataObjects;
@@ -54,6 +55,9 @@ namespace TestDataCollector
                 case ProductTypeName.Motherboard:
                     productRecordHelper = new GeneralMotherboardProductRecordHelper();
                     break;
+                case ProductTypeName.Monitor:
+                    productRecordHelper = new CitilinkMonitorHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -64,8 +68,12 @@ namespace TestDataCollector
 
         public IProductHelper GetProductHelper(ProductType productType)
         {
-            throw new NotImplementedException();
+            return new GeneralProductHelper();
         }
+    }
+
+    public class CitilinkMonitorHelper : GeneralProductRecordHelper
+    {
     }
 
     public class DnsSourceManager : ISourceManager
@@ -84,6 +92,12 @@ namespace TestDataCollector
                 case ProductTypeName.Motherboard:
                     productRecordHelper = new GeneralMotherboardProductRecordHelper();
                     break;
+                case ProductTypeName.PowerSupply:
+                    productRecordHelper = new DnsPowerSupplyHelper();
+                    break;
+                case ProductTypeName.Monitor:
+                    productRecordHelper = new DnsMonitorHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -94,7 +108,34 @@ namespace TestDataCollector
 
         public IProductHelper GetProductHelper(ProductType productType)
         {
-            throw new NotImplementedException();
+            return new GeneralProductHelper();
+        }
+    }
+
+    public class DnsMonitorHelper : GeneralProductRecordHelper
+    {
+    }
+
+    public class DnsPowerSupplyHelper : GeneralProductRecordHelper
+    {
+        protected override string ProcessName(ProductRecord productRecord)
+        {
+            string name;
+            var match = Regex.Match(productRecord.Name, @"\[(.*)\]");
+            if (match.Success)
+            {
+                name = string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
+                var index = name.IndexOf("/");
+                if (index >= 0)
+                {
+                    name = name.Substring(0, index);
+                }
+            }
+            else
+            {
+                name = productRecord.Name.Replace("Блок питания ", "");
+            }
+            return name;
         }
     }
 }

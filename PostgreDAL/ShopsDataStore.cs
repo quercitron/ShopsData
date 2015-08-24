@@ -307,8 +307,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname" +
-                              "from sourceproduct sp join product p on sp.productid = p.productid" +
+            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname " +
+                              "from sourceproduct sp join product p on sp.productid = p.productid " +
                               "where sp.datasourceid = :datasourceid and p.producttypeid = :producttypeid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, dataSourceId);

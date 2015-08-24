@@ -12,7 +12,7 @@ namespace TestDataCollector
     {
         private readonly SourceManagerFactory _sourceManagerFactory = new SourceManagerFactory();
 
-        private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata");
+        private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata_test");
 
         public void ProcessData()
         {

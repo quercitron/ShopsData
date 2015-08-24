@@ -112,11 +112,14 @@ namespace DataCollectors
             string url = null;
             switch (productType.ToLower())
             {
-                case "monitor":
-                    url = "http://www.dns-shop.ru/catalog/3633/monitory/?length_1=0";
+                case ProductTypeName.Monitor:
+                    url = "http://www.dns-shop.ru/catalog/3633/monitory/ajax/?p={0}&offset={1}";
                     break;
                 case "motherboard":
                     url = "http://www.dns-shop.ru/catalog/3660/materinskie-platy/ajax/?p={0}&offset={1}";
+                    break;
+                case ProductTypeName.PowerSupply:
+                    url = "http://www.dns-shop.ru/catalog/3670/bloki-pitaniya/ajax/?p={0}&offset={1}";
                     break;
             }
             return url;

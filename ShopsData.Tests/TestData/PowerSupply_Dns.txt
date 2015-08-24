@@ -1,0 +1,168 @@
+﻿Блок питания DNS FinePower DNP-400 350W
+Блок питания DNS FinePower DNP-500 450W
+Блок питания DNS FinePower DNP-550 500W
+Блок питания DNS DNP-650 600W
+Блок питания DNS FinePower DNP-650EPS 600W
+Блок питания DNS FinePower DNP-750EPS 700W
+Блок питания DNS FinePower DNP-850EPS 800W
+Блок питания DNS FinePower DNP-950EPS 900W
+Блок питания DNS FinePower DNP-1050EPS 1000W
+Блок питания DEXP DTS-300
+Блок питания DEXP DTS-350
+Блок питания DEXP DTS-400
+Блок питания DEXP DTS-400
+Блок питания DEXP DTS-450
+Блок питания DEXP DTS-500
+Блок питания DEXP DTS-500
+Блок питания DEXP DTS-550
+Блок питания DEXP DTS-550
+Блок питания DEXP DTS-600
+Блок питания DEXP DTS-600EPS
+Блок питания DEXP DTS-600
+Блок питания DEXP DTS-650EPS
+Блок питания DEXP DTS-700EPS
+Блок питания DEXP DTS-750EPS
+Блок питания AeroCool Vx-350
+Блок питания AeroCool Vx-450
+Блок питания AeroCool Vx-400
+Блок питания AeroCool VX-550
+Блок питания AeroCool VX-500
+Блок питания Aerocool VP-450
+Блок питания Aerocool KCAS 500W
+Блок питания AeroCool VX-600
+Блок питания Aerocool VP-550
+Блок питания Aerocool Strike-X 500
+Блок питания Aerocool Templarius 650W
+Блок питания Aerocool VP-750
+Блок питания Aerocool Templarius 750W
+Блок питания Aerocool Templarius 850W
+Блок питания Aerocool KCAS-850M
+Блок питания Aerocool VP-1000
+Блок питания Aerocool Imperator 1150W
+Блок питания Be Quiet SFX POWER 2 300W [BN226]
+Блок питания Be Quiet PURE POWER L8 730W [BN183]
+Блок питания Chieftec iARENA Series 450W [GPA-450S]
+Блок питания Chieftec SMART Series 250W [GPF-250P]
+Блок питания Chieftec A-135 Series 500W [APS-500SB]
+Блок питания Chieftec A-135 Series 550W [APS-550SB]
+Блок питания Chieftec A-135 Series 550W [APS-550CB]
+Блок питания Chieftec A-80 Series 550W [CTG-550C]
+Блок питания Chieftec A-80 Series 650W [CTG-650C/C2]
+Блок питания Chieftec A-135 Series 650W [APS-650SB]
+Блок питания Chieftec A-80 Series 750W [CTG-750C]
+Блок питания Chieftec A-135 Series 650W [APS-650CB]
+Блок питания Chieftec NITRO 85+ Series 650W [BPS-650C/C2]
+Блок питания Chieftec NITRO 85+ Series 750W [BPS-750C/C2]
+Блок питания Chieftec A-135 Series 750W [APS-750CB]
+Блок питания Chieftec NITRO 85+ Series 850W [BPS-850C/C2]
+Блок питания Chieftec A-135 Series 850W [APS-850CB]
+Блок питания Chieftec A-135 Series 1000W [APS-1000CB]
+Блок питания Cooler Master G500 500W [RS-500-ACAAB1]
+Блок питания Cooler Master G600 600W [RS-600-ACAAB1]
+Блок питания Cooler Master G700 700W [RS-700-ACAAB1]
+Блок питания Corsair VS 450W [CP-9020049-NA]
+Блок питания Corsair VS 550W [CP-9020050-EU/CP-9020097-EU]
+Блок питания Corsair CX 500W [CP-9020047-EU]
+Блок питания Corsair VS 650W [CP-9020051-EU]
+Блок питания Corsair CX 600W [CP-9020048-EU]
+Блок питания Corsair CXM 500W [CP-9020059-EU]
+Блок питания Corsair CXM 600W [CP-9020060-EU]
+Блок питания Corsair CX 750W  [CP-9020015-EU]
+Блок питания Corsair CX 750M [CP-9020061-EU]
+Блок питания Corsair CS 650W [CP-9020077-EU]
+Блок питания Corsair CS 750W [CP-9020078-EU]
+Блок питания Corsair CXM 850W
+Блок питания Corsair CS 850W [CP-9020086-EU]
+Блок питания Corsair HXi 850W [CP-9020073-EU]
+Блок питания Corsair RM 1000W [CP-9020062-EU]
+Блок питания Corsair RMi 1000W [CP-9020084-EU]
+Блок питания Corsair AX 860W [CP-9020037-EU]
+Блок питания Corsair AXi 1200W [CP-9020008-EU]
+Блок питания Deepcool DE 380W
+Блок питания Deepcool DE 430W
+Блок питания Deepcool DE 480W
+Блок питания Deepcool DE 530W
+Блок питания Deepcool DN 500W
+Блок питания Deepcool DE 580W
+Блок питания Deepcool DA 500W
+Блок питания Deepcool DA 550W
+Блок питания Deepcool DA 600W
+Блок питания Deepcool DA 650W
+Блок питания Deepcool 700W [DA700R]
+Блок питания Deepcool DA 700W
+Блок питания Deepcool DQ650 EVO
+Блок питания Deepcool DQ 750W EVO
+Блок питания Deepcool DQ 850W
+Блок питания Deepcool DQ 850W QUANTA
+Блок питания Fractal Design Integra M 750W [FD-PSU-IN3B-750W-EU]
+Блок питания FSP PNR 350W [ATX-350PNR/350N]
+Блок питания FSP 250W [FSP250-60SNT]
+Блок питания FSP Group FSP250-60GHT
+Блок питания FSP 300W [FSP300-60SNT]
+Блок питания FSP PNR 400W [ATX-400PNR]
+Блок питания FSP PNR 450W [ATX-450PNR]
+Блок питания FSP PNR 500W [ATX-500PNR]
+Блок питания FSP PNR 550W [ATX550-PNR]
+Блок питания FSP PNR 600W [ATX-600-PNR]
+Блок питания GIGABYTE 450W [GZ-EBS45N-C3]
+Блок питания GIGABYTE 500W [GZ-EBS50N-C3]
+Блок питания GIGABYTE 600W [GZ-EBS60N-C3]
+Блок питания GIGABYTE 650W [GZ-EBS65N-C4]
+Блок питания GIGABYTE ARES 600W [GZ-EJS60A-C3]
+Блок питания HIPER M 550W [M550n]
+Блок питания HIPER M 600W [M600n]
+Блок питания HIPER M 700W [M700n]
+Блок питания HIPER V 600W [V600]
+Блок питания HIPER V 700W [V700c]
+Блок питания HIPER K 1000W [K1000g]
+Блок питания Hipro 350W [HPE-350W]
+Блок питания Hipro 400W [HPE-400W]
+Блок питания Hipro 450W [HPE-450W]
+Блок питания Powerman 300W [IP-S300FF7-0]
+Блок питания InWin 300W [IP-S300BN1-0]
+БП FinePower R-Senda DNP-650EPS 600W (ATX 2.3, EPS2.92V, APFC, 135mm fan, 24+4+4, 6xSATA, 2xPCI-Ex16)
+БП FinePower R-Senda DNP-850EPS 800W (ATX 2.2, EPS2.92V, APFC, 135mm fan, 24+4+4, 6xSATA, 3xPCI-Ex16)
+Блок питания Seasonic S12G [S12G-750]
+Блок питания STM 400W [STM-40SH]
+Блок питания STM 450W [STM-45SHB]
+Блок питания Thermaltake Litepower 450W [LT-450P]
+Блок питания Thermaltake Litepower 500W [LT-500]
+Блок питания Thermaltake TR2 550W [TR-550P]
+Блок питания Thermaltake Litepower 500W [LT-500P]
+Блок питания Thermaltake Litepower 600W [LT-600P]
+Блок питания Thermaltake TR2 650W [TR-650P]
+Блок питания Thermaltake SPS 630W [SPS-630M]
+Блок питания Thermaltake Litepower 700W [LT-700P]
+Блок питания Thermaltake TR2 RX 650W [TRX-650M]
+Блок питания Thermaltake SPS 730W [SPS-730M]
+Блок питания Thermaltake Litepower 750W [LT-750P]
+Блок питания Thermaltake TR2 RX 750W [TRX-750M]
+Блок питания Thermaltake TR2 700W [TR-700P]
+Блок питания Thermaltake TR2 750W [TR-750P]
+Блок питания Thermaltake TR2 800W [TR-800P]
+Блок питания Thermaltake Toughpower Grand 750W [TPG-750M]
+Блок питания Thermaltake МОСКВА 850W [W0428RE]
+Блок питания Thermaltake Toughpower DPS G 850W [PS-TPG-0850DPCG]
+Блок питания Thermaltake ВОЛГА 1000W [W0429RE]
+Блок питания Thermaltake Toughpower Grand 1050W [TPG-1050M]
+Блок питания Thermaltake АМУР 1200W [W0430RE]
+Блок питания Thermaltake Toughpower Grand 1200W [TPG-1200M]
+Блок питания Thermaltake Toughpower XT 1475W [TPX-1475MPCGEU]
+Блок питания Thermaltake ToughPower XT 1275W [TPX-1275MPCGEU]
+Блок питания Thermaltake Toughpower XT 1375W [TPX-1375MPCGEU]
+Блок питания Velton 400W [ATX-400-120mm]
+Блок питания Velton 450W [ATX-450-120mm]
+Блок питания Zalman 400W [ZM400-LE]
+Блок питания Zalman GS 450W [ZM450-GS]
+Блок питания Zalman LX 500W [ZM500-LX]
+Блок питания Zalman GS2 500W [ZM-500GS2]
+Блок питания Zalman LX 600W [ZM600-LX]
+Блок питания Zalman GS2 600W [ZM-600GS2]
+Блок питания Zalman GLX 500W [ZM500-GLX]
+Блок питания Zalman LX 700W  [ZM700-LX]
+Блок питания Zalman GLX 600W [ZM600-GLX]
+Блок питания Zalman GLX 700W [ZM700-GLX]
+Блок питания Zalman GVM 850W [ZM850-GVM]
+Блок питания Zalman XG 650W
+Блок питания Zalman XG 750W [ZM750-XG]
+Блок питания Zalman GVM 1000W [ZM1000-GVM]

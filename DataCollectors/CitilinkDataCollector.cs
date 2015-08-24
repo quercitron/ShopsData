@@ -84,7 +84,7 @@ namespace DataCollectors
                    document.DocumentNode.Descendants("div").First(x => x.Class() == "product_category_list")
                        .Descendants("tbody").First()
                        .Descendants("tr")
-                       .Where(x => x.Class() != "banner_tr")
+                       .Where(x => x.Class() == "")
                        .ToArray();
 
             for (int i = 0; i < productRows.Length; i++)
@@ -159,7 +159,11 @@ namespace DataCollectors
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?available=1&status=0&p={0}";
                     break;
                 case ProductTypeName.PowerSupply:
-                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?p={0}";
+                    //url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?p={0}";
+                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?available=1&status=0&p={0}";
+                    break;
+                case ProductTypeName.Monitor:
+                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/monitors/?available=1&status=0&p={0}";
                     break;
             }
             return url;
