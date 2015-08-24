@@ -24,9 +24,20 @@ namespace TestDataCollector
                 foreach (var productType in productTypes)
                 {
                     var shopData = dataCollector.GetShopData("location", productType.Name);
-                    if (shopData.Success)
+                    using (var writer = File.CreateText("output.txt"))
                     {
-                        //shopData.
+                        if (shopData.Success)
+                        {
+                            foreach (var productRecord in shopData.Products)
+                            {
+                                writer.WriteLine(productRecord);
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine(shopData.Message);
+                            writer.WriteLine(shopData.Exception);
+                        }
                     }
                 }
             }

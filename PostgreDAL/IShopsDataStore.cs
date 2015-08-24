@@ -35,5 +35,7 @@ namespace PostgreDAL
 
 
         List<SourceProduct> GetSourceProducts(int dataSourceId, int productTypeId);
+
+        void AddSourceProduct(SourceProduct sourceProduct);
     }
 }

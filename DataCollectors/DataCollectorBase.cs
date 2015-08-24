@@ -40,11 +40,11 @@ namespace DataCollectors
                        {
                            Success = false,
                            Message = string.Format(
-                               "Failed to process type {0} for shop {1} in location {2}. {3}",
+                               "Failed to process type {0} for shop {1} in location {2}.",
                                productType,
                                ShopName,
-                               locationName,
-                               exception),
+                               locationName),
+                               Exception = exception,
                        };
             }
         }

@@ -47,7 +47,19 @@ namespace TestDataCollector
 
         public IProductRecordHelper GetProductRecordHelper(ProductType productType)
         {
-            throw new NotImplementedException();
+            IProductRecordHelper productRecordHelper;
+
+            switch (productType.Name)
+            {
+                case ProductTypeName.Motherboard:
+                    productRecordHelper = new GeneralMotherboardProductRecordHelper();
+                    break;
+                default:
+                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
+                    throw new NotSupportedException(message);
+            }
+
+            return productRecordHelper;
         }
 
         public IProductHelper GetProductHelper(ProductType productType)
@@ -65,7 +77,19 @@ namespace TestDataCollector
 
         public IProductRecordHelper GetProductRecordHelper(ProductType productType)
         {
-            throw new NotImplementedException();
+            IProductRecordHelper productRecordHelper;
+
+            switch (productType.Name)
+            {
+                case ProductTypeName.Motherboard:
+                    productRecordHelper = new GeneralMotherboardProductRecordHelper();
+                    break;
+                default:
+                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
+                    throw new NotSupportedException(message);
+            }
+
+            return productRecordHelper;
         }
 
         public IProductHelper GetProductHelper(ProductType productType)

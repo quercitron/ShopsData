@@ -77,7 +77,7 @@ namespace TestDataCollector
                 var sourceProduct = sourceProducts.FirstOrDefault(sp => sp.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase));
                 if (sourceProduct == null)
                 {
-                    sourceProduct = productRecordHelper.GenerateSourceProduct(productRecord);
+                    sourceProduct = productRecordHelper.GenerateSourceProduct(context.DataSource, productRecord);
 
                     var matchResult = productHelper.FindMatch(sourceProduct, products);
 
@@ -88,13 +88,31 @@ namespace TestDataCollector
                     }
                     else
                     {
-                        product = productHelper.GenerateProduct(sourceProduct);
+                        product = productHelper.GenerateProduct(context, sourceProduct);
+                        products.Add(product);
                         newProducts.Add(product);
                     }
 
-                    // todo: add ProductId column to db
                     sourceProduct.ProductId = product.ProductId;
+
+                    sourceProducts.Add(sourceProduct);
+                    newSourceProducts.Add(sourceProduct);
                 }
+
+                productRecord.SourceProductId = sourceProduct.SourceProductId;
+            }
+
+            foreach (var product in newProducts)
+            {
+                _dataStore.AddProduct(product);
+            }
+            foreach (var sourceProduct in newSourceProducts)
+            {
+                _dataStore.AddSourceProduct(sourceProduct);
+            }
+            foreach (var productRecord in productRecords)
+            {
+                _dataStore.AddProductRecord(productRecord);
             }
         }
     }

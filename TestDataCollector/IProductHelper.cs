@@ -8,7 +8,24 @@ namespace TestDataCollector
     {
         MatchResult FindMatch(SourceProduct sourceProduct, IEnumerable<Product> products);
 
-        Product GenerateProduct(SourceProduct sourceProduct);
+        Product GenerateProduct(ProductsContext context, SourceProduct sourceProduct);
+    }
+
+    public class GeneralProductHelper : IProductHelper
+    {
+        public MatchResult FindMatch(SourceProduct sourceProduct, IEnumerable<Product> products)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Product GenerateProduct(ProductsContext context, SourceProduct sourceProduct)
+        {
+            return new Product
+            {
+                ProductTypeId = context.ProductType.ProductTypeId,
+                Name = sourceProduct.Name,
+            };
+        }
     }
 
     public class MatchResult

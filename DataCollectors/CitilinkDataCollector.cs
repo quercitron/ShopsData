@@ -28,7 +28,7 @@ namespace DataCollectors
             {
                 var pageUrl = string.Format(url, pageNumber);
                 var products = ProcessCitilinkPage(pageUrl);
-                if (products != null)
+                if (products != null && products.Count != 0)
                 {
                     result.AddRange(products);
                 }
@@ -61,18 +61,74 @@ namespace DataCollectors
             {
                 return null;
             }*/
-
-            var source = response.Content.ReadAsStringAsync().Result;
+            var responseStream = response.Content.ReadAsStreamAsync().Result;
+            string source;
+            using (var streamReader = new StreamReader(responseStream, Encoding.UTF8))
+            {
+                source = streamReader.ReadToEnd();
+            }
+            //var source = Encoding.GetEncoding(1251).GetString(responseBytes, 0, responseBytes.Length - 1); ;
 
             source = WebUtility.HtmlDecode(source);
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(source);
 
-            var products =
-                document.DocumentNode.Descendants("table").Where(x => x.Class() == "item")
-                    .Select(GetCitilinkItem).ToList();
+            return GetItems(document);
+        }
 
-            return products;
+        private List<ProductRecord> GetItems(HtmlDocument document)
+        {
+            var items = new List<ProductRecord>();
+
+            var productRows =
+                   document.DocumentNode.Descendants("div").First(x => x.Class() == "product_category_list")
+                       .Descendants("tbody").First()
+                       .Descendants("tr")
+                       .Where(x => x.Class() != "banner_tr")
+                       .ToArray();
+
+            for (int i = 0; i < productRows.Length; i++)
+            {
+                var item = new ProductRecord();
+
+                var row = productRows[i];
+
+                var productNameTd = row.Child("td", "product_name");
+
+                var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "product_link__js");
+                item.Name = titleNode.Attributes["title"].Value;
+
+                var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
+                item.Description = descriptionNode.InnerText;
+
+                i++;
+                row = productRows[i];
+
+                var priceNode = row.Descendants("span").FirstOrDefault(x => x.Class() == "special");
+                if (priceNode == null)
+                {
+                    priceNode = row.Descendants("span").FirstOrDefault(x => x.Class() == "standart");
+                    if (priceNode == null)
+                    {
+                        break;
+                    }
+                }
+
+                var priceNumNode = priceNode.Descendants("ins").First(x => x.Class() == "num");
+
+                var priceStr = priceNumNode.InnerText.Replace(" ", "");
+                if (!Regex.IsMatch(priceStr, @"^\d+$"))
+                {
+                    var d = 1;
+                }
+
+                var price = int.Parse(priceStr);
+                item.Price = price;
+
+                items.Add(item);
+            }
+
+            return items;
         }
 
         private ProductRecord GetCitilinkItem(HtmlNode node)
@@ -98,11 +154,11 @@ namespace DataCollectors
             string url = null;
             switch (productType.ToLower())
             {
-                case "motherboard":
+                case ProductTypeName.Motherboard:
                     //url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}";
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?available=1&status=0&p={0}";
                     break;
-                case "powersupply":
+                case ProductTypeName.PowerSupply:
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?p={0}";
                     break;
             }

@@ -257,10 +257,9 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into location ( locationid,  name) " +
-                              "values               (:locationid, :name)";
+            var commandText = "insert into location ( name) " +
+                              "values               (:name)";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
-            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, location.LocationId);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, location.Name);
 
             try
@@ -301,6 +300,70 @@ namespace PostgreDAL
             }
 
             return products;
+        }
+
+        public List<SourceProduct> GetSourceProducts(int dataSourceId, int productTypeId)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname" +
+                              "from sourceproduct sp join product p on sp.productid = p.productid" +
+                              "where sp.datasourceid = :datasourceid and p.producttypeid = :producttypeid";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, dataSourceId);
+            command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productTypeId);
+
+            var sourceProducts = new List<SourceProduct>();
+            try
+            {
+                NpgsqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var sourceProduct = new SourceProduct();
+
+                    sourceProduct.SourceProductId = dr.GetInt32(0);
+                    sourceProduct.DataSourceId = dr.GetInt32(1);
+                    sourceProduct.ProductId = dr.GetInt32(2);
+                    sourceProduct.Key = dr.GetString(3);
+                    sourceProduct.Name = dr.GetString(4);
+                    sourceProduct.OriginalName = dr.GetString(5);
+
+                    sourceProducts.Add(sourceProduct);
+                }
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return sourceProducts;
+            
+        }
+
+        public void AddSourceProduct(SourceProduct sourceProduct)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  originalname) " +
+                              "values                    (:datasourceid, :productid, :key, :name, :originalname)";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, sourceProduct.DataSourceId);
+            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, sourceProduct.ProductId);
+            command.Parameters.AddWithValue("key", NpgsqlDbType.Text, sourceProduct.Key);
+            command.Parameters.AddWithValue("name", NpgsqlDbType.Text, sourceProduct.Name);
+            command.Parameters.AddWithValue("originalname", NpgsqlDbType.Text, sourceProduct.OriginalName);
+
+            try
+            {
+                command.ExecuteNonQuery();
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
         private void ExecuteNonQueryCommand(string commandText)
