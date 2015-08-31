@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using DataCollectorCore;
+using DataCollectorFramework;
+using NUnit.Framework;
 
 using TestDataCollector;
 

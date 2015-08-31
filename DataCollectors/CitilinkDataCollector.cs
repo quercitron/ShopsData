@@ -6,11 +6,11 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using DataCollectorCore;
 using DataCollectorCore.DataObjects;
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 
 namespace DataCollectors
 {
@@ -101,6 +101,30 @@ namespace DataCollectors
                 var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
                 item.Description = descriptionNode.InnerText;
 
+                var ratingDiv = row.DescendantFirstOrDefault("div", "ratings");
+                if (ratingDiv != null)
+                {
+                    var spans = ratingDiv.Descendants("span").ToArray();
+                    if (spans.Length >= 5)
+                    {
+                        float rating = 0;
+                        for (int j = 0; j < 4; j++)
+                        {
+                            var span = spans[j];
+                            if (span.Class().Contains("half"))
+                            {
+                                rating = 4.5f - j;
+                                break;
+                            }
+                            if (span.Class().Contains("selected"))
+                            {
+                                rating = 5 - j;
+                            }
+                        }
+                        item.Rating = rating;
+                    }
+                }
+
                 i++;
                 row = productRows[i];
 
@@ -116,14 +140,15 @@ namespace DataCollectors
 
                 var priceNumNode = priceNode.Descendants("ins").First(x => x.Class() == "num");
 
-                var priceStr = priceNumNode.InnerText.Replace(" ", "");
-                if (!Regex.IsMatch(priceStr, @"^\d+$"))
-                {
-                    var d = 1;
-                }
-
+                var priceStr = Regex.Replace(priceNumNode.InnerText, "[^0-9]", "");
                 var price = int.Parse(priceStr);
                 item.Price = price;
+
+                var dataParamsTd = row.DescendantFirstOrDefault("td", "actions product_data__js");
+                var dataParamsStr = dataParamsTd.Attributes["data-params"].Value;
+                var dataParams = JsonConvert.DeserializeObject<DataParams>(dataParamsStr);
+                item.ExternalId = dataParams.Id;
+                item.Brand = dataParams.BrandName;
 
                 items.Add(item);
             }
@@ -131,22 +156,25 @@ namespace DataCollectors
             return items;
         }
 
-        private ProductRecord GetCitilinkItem(HtmlNode node)
+        private class DataParams
         {
-            var item = new ProductRecord();
+            [JsonProperty("id")]
+            public string Id { get; set; }
 
-            var infotd = node.Descendants("td").First(x => x.Class() == "l");
-            item.Name = infotd.ChildNodes.First(x => x.Name == "a").InnerText;
-            item.Description = infotd.ChildNodes.First(x => x.Class() == "descr").InnerText;
+            [JsonProperty("shortName")]
+            public string ShortName { get; set; }
 
-            var priceNode = node.Descendants("div").FirstOrDefault(x => x.Class().Contains("club_price"));
-            if (priceNode != null)
-            {
-                var priceString = Regex.Replace(priceNode.InnerText, "[^0-9]", "");
-                item.Price = int.Parse(priceString);
-            }
+            [JsonProperty("brandName")]
+            public string BrandName { get; set; }
 
-            return item;
+            [JsonProperty("price")]
+            public string Price { get; set; }
+
+            [JsonProperty("categoryId")]
+            public string CategoryId { get; set; }
+
+            [JsonProperty("categoryName")]
+            public string CategoryName { get; set; }
         }
 
         protected override string GetUrl(string productType)
@@ -155,11 +183,9 @@ namespace DataCollectors
             switch (productType.ToLower())
             {
                 case ProductTypeName.Motherboard:
-                    //url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}";
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?available=1&status=0&p={0}";
                     break;
                 case ProductTypeName.PowerSupply:
-                    //url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?p={0}";
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/powersupply/?available=1&status=0&p={0}";
                     break;
                 case ProductTypeName.Monitor:

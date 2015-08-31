@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using DataCollectorCore;
 using DataCollectorCore.DataObjects;
-
+using DataCollectorFramework;
 using Newtonsoft.Json;
 
 using NUnit.Framework;

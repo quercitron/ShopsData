@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-
 using DataCollectorCore;
 using DataCollectorCore.DataObjects;
-
 using DataCollectors;
 
-namespace TestDataCollector
+namespace DataCollectorFramework
 {
     public interface ISourceManagerFactory
     {
@@ -56,10 +54,13 @@ namespace TestDataCollector
                     productRecordHelper = new GeneralMotherboardProductRecordHelper();
                     break;
                 case ProductTypeName.Monitor:
-                    productRecordHelper = new CitilinkMonitorHelper();
+                    productRecordHelper = new GeneralMonitorProductRecordHelper();
+                    break;
+                case ProductTypeName.PowerSupply:
+                    productRecordHelper = new CitilinkPowerSupplyHelper();
                     break;
                 default:
-                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
+                    var message = string.Format((string) "No ProductRecordHelper for product type {0}.", (object) productType.Name);
                     throw new NotSupportedException(message);
             }
 
@@ -69,6 +70,14 @@ namespace TestDataCollector
         public IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
+        }
+    }
+
+    public class CitilinkPowerSupplyHelper : GeneralProductRecordHelper
+    {
+        protected override string ProcessName(ProductRecord productRecord)
+        {
+            return productRecord.Name.Replace("Блок питания ", "");
         }
     }
 
@@ -96,7 +105,7 @@ namespace TestDataCollector
                     productRecordHelper = new DnsPowerSupplyHelper();
                     break;
                 case ProductTypeName.Monitor:
-                    productRecordHelper = new DnsMonitorHelper();
+                    productRecordHelper = new GeneralMonitorProductRecordHelper();
                     break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);

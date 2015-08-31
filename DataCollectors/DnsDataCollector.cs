@@ -88,21 +88,21 @@ namespace DataCollectors
             var priceStr = Regex.Replace(priceNode.InnerText, @"[^\d]", "");
             item.Price = int.Parse(priceStr);
 
+            var ratingNode = htmlNode.DescendantFirstOrDefault("div", "product-item-rating rating");
+            if (ratingNode != null)
+            {
+                var ratingAttr = ratingNode.Attributes["data-rating"];
+                if (ratingAttr != null)
+                {
+                    float rating;
+                    if (float.TryParse(ratingAttr.Value, out rating))
+                    {
+                        item.Rating = rating;
+                    }
+                }
+            }
+
             // todo: add rating
-
-            return item;
-        }
-
-        private ProductRecord GetDnsItem(HtmlNode htmlNode)
-        {
-            var item = new ProductRecord();
-
-            var priceStr = htmlNode.Descendants().First(x => x.Class().Contains("price")).InnerText;
-            item.Price = int.Parse(priceStr);
-
-            var title = htmlNode.Descendants().First(x => x.Class() == "title");
-            item.Name = title.Descendants().First(x => x.Name == "a" && x.Class() != "image").InnerText;
-            item.Description = title.Descendants().First(x => x.Name == "p").InnerText;
 
             return item;
         }
@@ -115,7 +115,7 @@ namespace DataCollectors
                 case ProductTypeName.Monitor:
                     url = "http://www.dns-shop.ru/catalog/3633/monitory/ajax/?p={0}&offset={1}";
                     break;
-                case "motherboard":
+                case ProductTypeName.Motherboard:
                     url = "http://www.dns-shop.ru/catalog/3660/materinskie-platy/ajax/?p={0}&offset={1}";
                     break;
                 case ProductTypeName.PowerSupply:

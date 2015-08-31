@@ -223,6 +223,13 @@ ALTER TABLE ONLY datasource ALTER COLUMN datasourceid SET DEFAULT nextval('"data
 
 
 --
+-- Name: locationid; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY location ALTER COLUMN locationid SET DEFAULT nextval('location_locationid_seq'::regclass);
+
+
+--
 -- Name: productid; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -241,6 +248,13 @@ ALTER TABLE ONLY productrecord ALTER COLUMN productrecordid SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY producttype ALTER COLUMN producttypeid SET DEFAULT nextval('"ProductType_TypeId_seq"'::regclass);
+
+
+--
+-- Name: sourceproductid; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sourceproduct ALTER COLUMN sourceproductid SET DEFAULT nextval('sourceproduct_sourceproductid_seq'::regclass);
 
 
 --

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using DataCollectorCore.DataObjects;
-
+using DataCollectorFramework.Logger;
 using PostgreDAL;
 
-namespace TestDataCollector
+namespace DataCollectorFramework
 {
     public class GeneralDataCollector
     {
+        private readonly ILogger _logger = new Logger.Logger(typeof(GeneralDataCollector));
+
         private readonly SourceManagerFactory _sourceManagerFactory = new SourceManagerFactory();
 
         private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata_test");
@@ -26,34 +27,56 @@ namespace TestDataCollector
 
         private void ProcessDataSource(DataSource dataSource)
         {
-            var sourceManager = _sourceManagerFactory.GetManager(dataSource.Name);
+            _logger.InfoFormat("Start processing data source '{0}'.", dataSource.Name);
 
-            var dataCollector = sourceManager.GetDataCollector();
-
-            var productTypes = _dataStore.GetProductTypes();
-            var locations = _dataStore.GetLocations();
-            foreach (var location in locations)
+            try
             {
-                foreach (var productType in productTypes)
+                var sourceManager = _sourceManagerFactory.GetManager(dataSource.Name);
+
+                var dataCollector = sourceManager.GetDataCollector();
+
+                var productTypes = _dataStore.GetProductTypes();
+                var locations = _dataStore.GetLocations();
+                foreach (var location in locations)
                 {
-                    var shopDataResult = dataCollector.GetShopData(location.Name, productType.Name);
-                    if (shopDataResult.Success)
+                    _logger.InfoFormat("Start processing location '{0}'.", location.Name);
+                    foreach (var productType in productTypes)
                     {
-                        foreach (var product in shopDataResult.Products)
+                        _logger.InfoFormat("Start processing product type '{0}'.", productType.Name);
+                        var shopDataResult = dataCollector.GetShopData(location.Name, productType.Name);
+                        if (shopDataResult.Success)
                         {
-                            product.LocationId = location.LocationId;
+                            var date = DateTime.UtcNow;
+                            foreach (var product in shopDataResult.Products)
+                            {
+                                product.LocationId = location.LocationId;
+                                product.Timestamp = date;
+                            }
+                            var context = new ProductsContext
+                            {
+                                DataSource = dataSource,
+                                Location = location,
+                                ProductType = productType,
+                            };
+                            AddToDb(context, shopDataResult.Products);
                         }
-                        var context = new ProductsContext
+                        else
                         {
-                            DataSource = dataSource,
-                            Location = location,
-                            ProductType = productType,
-                        };
-                        AddToDb(context, shopDataResult.Products);
+                            var message = string.Format("Failed to collect data: {0}.", shopDataResult.Message);
+                            _logger.WarnFormat(message, shopDataResult.Exception);
+                        }
+                        _logger.InfoFormat("Complete processing product type '{0}'.", productType.Name);
                     }
-                    // todo: log message
+                    _logger.InfoFormat("Complete processing location '{0}'.", location.Name);
                 }
             }
+            catch (Exception exception)
+            {
+                var message = string.Format("Failed to process datasource '{0}'.", dataSource.Name);
+                _logger.Error(message, exception);
+            }
+
+            _logger.InfoFormat("Complete processing data source '{0}'.", dataSource.Name);
         }
 
         private void AddToDb(ProductsContext context, IList<ProductRecord> productRecords)
@@ -65,9 +88,6 @@ namespace TestDataCollector
 
             var sourceProducts = _dataStore.GetSourceProducts(context.DataSource.DataSourceId, context.ProductType.ProductTypeId);
             var products = _dataStore.GetProducts(context.ProductType.ProductTypeId);
-
-            var newProducts = new List<Product>();
-            var newSourceProducts = new List<SourceProduct>();
 
             foreach (var productRecord in productRecords)
             {
@@ -89,27 +109,19 @@ namespace TestDataCollector
                     else
                     {
                         product = productHelper.GenerateProduct(context, sourceProduct);
+                        _dataStore.AddProduct(product);
                         products.Add(product);
-                        newProducts.Add(product);
                     }
 
                     sourceProduct.ProductId = product.ProductId;
 
+                    _dataStore.AddSourceProduct(sourceProduct);
                     sourceProducts.Add(sourceProduct);
-                    newSourceProducts.Add(sourceProduct);
                 }
 
                 productRecord.SourceProductId = sourceProduct.SourceProductId;
             }
 
-            foreach (var product in newProducts)
-            {
-                _dataStore.AddProduct(product);
-            }
-            foreach (var sourceProduct in newSourceProducts)
-            {
-                _dataStore.AddSourceProduct(sourceProduct);
-            }
             foreach (var productRecord in productRecords)
             {
                 _dataStore.AddProductRecord(productRecord);

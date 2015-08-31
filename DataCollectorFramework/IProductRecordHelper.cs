@@ -1,6 +1,6 @@
 ﻿using DataCollectorCore.DataObjects;
 
-namespace TestDataCollector
+namespace DataCollectorFramework
 {
     public interface IProductRecordHelper
     {
@@ -38,6 +38,22 @@ namespace TestDataCollector
         protected override string ProcessName(ProductRecord productRecord)
         {
             return productRecord.Name.Replace("Материнская плата", "").Trim();
+        }
+    }
+
+    class GeneralPowerSupplyProductRecordHelper : GeneralProductRecordHelper
+    {
+        protected override string ProcessName(ProductRecord productRecord)
+        {
+            return productRecord.Name.Replace("Блок питания ", "").Trim();
+        }
+    }
+
+    class GeneralMonitorProductRecordHelper : GeneralProductRecordHelper
+    {
+        protected override string ProcessName(ProductRecord productRecord)
+        {
+            return productRecord.Name.Replace("Монитор ", "").Trim();
         }
     }
 }

@@ -75,6 +75,10 @@
       <Project>{d4dbdf90-dad5-4b35-92e9-2e59ec522b27}</Project>
       <Name>DataCollectorCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataCollectorFramework\DataCollectorFramework.csproj">
+      <Project>{abce8f6b-0102-477e-a3c3-c4feea840470}</Project>
+      <Name>DataCollectorFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataCollectors\DataCollectors.csproj">
       <Project>{AC631456-A8EC-4D21-AFD6-6140DC570395}</Project>
       <Name>DataCollectors</Name>

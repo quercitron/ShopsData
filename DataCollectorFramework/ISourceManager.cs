@@ -1,7 +1,7 @@
 ﻿using DataCollectorCore;
 using DataCollectorCore.DataObjects;
 
-namespace TestDataCollector
+namespace DataCollectorFramework
 {
     public interface ISourceManager
     {

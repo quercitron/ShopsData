@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
-
 using DataCollectorCore;
-using DataCollectorCore.DataObjects;
-
+using DataCollectorFramework;
 using DataCollectors;
 
 using Newtonsoft.Json;
@@ -16,7 +15,11 @@ namespace TestDataCollector
     {
         private static void Main(string[] args)
         {
-            GetData();
+            log4net.Config.XmlConfigurator.Configure();
+
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
+            TestGeneralDataCollector();
         }
 
         private static void TestGeneralDataCollector()
@@ -38,6 +41,7 @@ namespace TestDataCollector
 
             var dataSources = dataStore.GetDataSources();
             var productTypes = dataStore.GetProductTypes();
+
             var factory = new DataCollectorFactory();
             foreach (var dataSource in dataSources)
             {

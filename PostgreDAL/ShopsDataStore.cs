@@ -74,7 +74,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            NpgsqlCommand command = new NpgsqlCommand("select (Name) from datasource", conn);
+            NpgsqlCommand command = new NpgsqlCommand("select datasourceid, name from datasource", conn);
 
             var dataSources = new List<DataSource>();
             try
@@ -84,7 +84,8 @@ namespace PostgreDAL
                 {
                     var dataSource = new DataSource();
 
-                    dataSource.Name = dr.GetString(0);
+                    dataSource.DataSourceId = dr.GetInt32(0);
+                    dataSource.Name = dr.GetString(1);
 
                     dataSources.Add(dataSource);
                 }
@@ -210,14 +211,16 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = string.Format("insert into product (name, producttypeid) values (:name, :producttypeid)");
+            var commandText = string.Format("insert into product (name, producttypeid) " +
+                                            "values (:name, :producttypeid) " +
+                                            "returning productid");
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, product.Name);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, product.ProductTypeId);
 
             try
             {
-                command.ExecuteNonQuery();
+                product.ProductId = (int) command.ExecuteScalar();
             }
             finally
             {
@@ -230,8 +233,9 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid) " +
-                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid)";
+            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand) " +
+                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand) " +
+                              "returning productrecordid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, productRecord.Name);
@@ -241,10 +245,12 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("amountavailable", NpgsqlDbType.Integer, productRecord.AmountAvailable);
             command.Parameters.AddWithValue("timestamp", NpgsqlDbType.Timestamp, productRecord.Timestamp);
             command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, productRecord.LocationId);
+            command.Parameters.AddWithValue("externalid", NpgsqlDbType.Text, productRecord.ExternalId);
+            command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, productRecord.Brand);
 
             try
             {
-                command.ExecuteNonQuery();
+                productRecord.ProductRecordId = (int) command.ExecuteScalar();
             }
             finally
             {
@@ -348,7 +354,8 @@ namespace PostgreDAL
             conn.Open();
 
             var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  originalname) " +
-                              "values                    (:datasourceid, :productid, :key, :name, :originalname)";
+                              "values                    (:datasourceid, :productid, :key, :name, :originalname) " +
+                              "returning sourceproductid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, sourceProduct.DataSourceId);
             command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, sourceProduct.ProductId);
@@ -358,7 +365,7 @@ namespace PostgreDAL
 
             try
             {
-                command.ExecuteNonQuery();
+                sourceProduct.SourceProductId = (int) command.ExecuteScalar();
             }
             finally
             {

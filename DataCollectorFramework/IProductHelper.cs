@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
 using DataCollectorCore.DataObjects;
 
-namespace TestDataCollector
+namespace DataCollectorFramework
 {
     public interface IProductHelper
     {
