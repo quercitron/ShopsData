@@ -1,38 +1,61 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.ServiceProcess;
-using System.Threading;
+
 using DataCollectorFramework;
+
+using Quartz;
+using Quartz.Impl;
 
 namespace DataCollectorService
 {
     public partial class ShopsDataCollector : ServiceBase
     {
-        private Timer _timer;
-        private GeneralDataCollector _collector;
+        private readonly IScheduler _scheduler;
 
         public ShopsDataCollector()
-        {
-            InitializeComponent();
-        }
-
-        protected override void OnStart(string[] args)
         {
             log4net.Config.XmlConfigurator.Configure();
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
-            _collector = new GeneralDataCollector();
-            _timer = new Timer(CollectData, null, TimeSpan.Zero, TimeSpan.FromMinutes(30));
+            InitializeComponent();
+
+            // construct a scheduler factory
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
+
+            // get a scheduler
+            _scheduler = schedFact.GetScheduler();
+
+            // define the job and tie it to our HelloJob class
+            IJobDetail job = JobBuilder.Create<DataCollectionJob>()
+                .WithIdentity("DataCollectionJob", "ShopsDataCollection")
+                .Build();
+
+            // Trigger the job to run now, and then every 40 seconds
+            ITrigger trigger = TriggerBuilder.Create()
+              .WithIdentity("DataCollectionTrigger", "ShopsDataCollection")
+              .WithCronSchedule("0 0/30 * * * ?")
+              .Build();
+
+            _scheduler.ScheduleJob(job, trigger);
         }
 
-        private void CollectData(object state)
+        protected override void OnStart(string[] args)
         {
-            _collector.ProcessData();
+            _scheduler.Start();
         }
 
         protected override void OnStop()
         {
-            _timer.Dispose();
+            _scheduler.Shutdown();
+        }
+    }
+
+    public class DataCollectionJob : IJob
+    {
+        public void Execute(IJobExecutionContext context)
+        {
+            var collector = new GeneralDataCollector();
+            collector.ProcessData();
         }
     }
 }

@@ -6,6 +6,6 @@ set PATH=%PATH%;%DOTNETFX4%
 
 echo Installing WindowsService...
 echo ---------------------------------------------------
-InstallUtil /i DataCollectorService.exe
+InstallUtil /i bin\Debug\DataCollectorService.exe
 echo ---------------------------------------------------
 echo Done.
