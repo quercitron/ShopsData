@@ -32,9 +32,11 @@ namespace DataCollectorService
 
             // Trigger the job to run now, and then every 40 seconds
             ITrigger trigger = TriggerBuilder.Create()
-              .WithIdentity("DataCollectionTrigger", "ShopsDataCollection")
-              .WithCronSchedule("0 0/30 * * * ?")
-              .Build();
+                .WithIdentity("DataCollectionTrigger", "ShopsDataCollection")
+                .WithCronSchedule(
+                    "0 0/30 * * * ?",
+                    x => x.WithMisfireHandlingInstructionDoNothing())
+                .Build();
 
             _scheduler.ScheduleJob(job, trigger);
         }
