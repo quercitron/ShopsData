@@ -1,4 +1,6 @@
-﻿namespace DataCollectorCore.DataObjects
+﻿using System;
+
+namespace DataCollectorCore.DataObjects
 {
     public class SourceProduct
     {
@@ -13,5 +15,9 @@
         public string Name { get; set; }
 
         public string OriginalName { get; set; }
+
+        public string Brand { get; set; }
+
+        public DateTime Timestamp { get; set; }
     }
 }

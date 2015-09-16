@@ -192,7 +192,9 @@ CREATE TABLE sourceproduct (
     key text NOT NULL,
     name text NOT NULL,
     originalname text NOT NULL,
-    productid integer NOT NULL
+    productid integer NOT NULL,
+    "timestamp" timestamp without time zone NOT NULL,
+    brand text
 );
 
 
@@ -356,6 +358,13 @@ CREATE INDEX fki_productrecord_fk_sourceproductid ON productrecord USING btree (
 --
 
 CREATE INDEX fki_sourceproduct_fk_productid ON sourceproduct USING btree (productid);
+
+
+--
+-- Name: ix_productrecord_sourceproductid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX ix_productrecord_sourceproductid ON productrecord USING btree (sourceproductid);
 
 
 --

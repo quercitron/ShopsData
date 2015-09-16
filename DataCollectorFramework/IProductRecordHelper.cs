@@ -24,6 +24,8 @@ namespace DataCollectorFramework
                 Key = GetKey(productRecord),
                 Name = ProcessName(productRecord),
                 OriginalName = productRecord.Name,
+                Brand = productRecord.Brand,
+                Timestamp = productRecord.Timestamp,
             };
         }
 

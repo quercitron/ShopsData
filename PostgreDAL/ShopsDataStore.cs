@@ -313,7 +313,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname " +
+            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname, sp.brand, sp.timestamp " +
                               "from sourceproduct sp join product p on sp.productid = p.productid " +
                               "where sp.datasourceid = :datasourceid and p.producttypeid = :producttypeid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
@@ -334,6 +334,8 @@ namespace PostgreDAL
                     sourceProduct.Key = dr.GetString(3);
                     sourceProduct.Name = dr.GetString(4);
                     sourceProduct.OriginalName = dr.GetString(5);
+                    sourceProduct.Brand = dr.GetString(6);
+                    sourceProduct.Timestamp = dr.GetTimeStamp(7);
 
                     sourceProducts.Add(sourceProduct);
                 }
@@ -353,8 +355,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  originalname) " +
-                              "values                    (:datasourceid, :productid, :key, :name, :originalname) " +
+            var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  originalname,  brand,  timestamp) " +
+                              "values                    (:datasourceid, :productid, :key, :name, :originalname, :brand, :timestamp) " +
                               "returning sourceproductid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, sourceProduct.DataSourceId);
@@ -362,6 +364,8 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("key", NpgsqlDbType.Text, sourceProduct.Key);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, sourceProduct.Name);
             command.Parameters.AddWithValue("originalname", NpgsqlDbType.Text, sourceProduct.OriginalName);
+            command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, sourceProduct.Brand);
+            command.Parameters.AddWithValue("timestamp", NpgsqlDbType.Timestamp, sourceProduct.Timestamp);
 
             try
             {
