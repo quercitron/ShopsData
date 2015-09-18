@@ -17,7 +17,7 @@ namespace DataCollectorService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                new ShopsDataCollector() 
+                new ShopsDataCollectorService() 
             };
             ServiceBase.Run(ServicesToRun);
         }

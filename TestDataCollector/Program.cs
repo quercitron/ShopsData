@@ -27,7 +27,7 @@ namespace TestDataCollector
             try
             {
                 var dataCollector = new GeneralDataCollector();
-                dataCollector.ProcessData();
+                dataCollector.CollectData();
             }
             catch (Exception exception)
             {

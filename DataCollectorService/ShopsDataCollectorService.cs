@@ -2,17 +2,19 @@
 using System.ServiceProcess;
 
 using DataCollectorFramework;
-
+using DataCollectorFramework.Logger;
 using Quartz;
 using Quartz.Impl;
 
 namespace DataCollectorService
 {
-    public partial class ShopsDataCollector : ServiceBase
+    public partial class ShopsDataCollectorService : ServiceBase
     {
+        private readonly Logger _logger = new Logger(typeof(ShopsDataCollectorService));
+
         private readonly IScheduler _scheduler;
 
-        public ShopsDataCollector()
+        public ShopsDataCollectorService()
         {
             log4net.Config.XmlConfigurator.Configure();
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
@@ -44,20 +46,26 @@ namespace DataCollectorService
         protected override void OnStart(string[] args)
         {
             _scheduler.Start();
+            _logger.Info("Start Data Collector service.");
         }
 
         protected override void OnStop()
         {
             _scheduler.Shutdown();
+            _logger.Info("Stop Data Collector service.");
         }
     }
 
     public class DataCollectionJob : IJob
     {
+        private readonly Logger _logger = new Logger(typeof (DataCollectionJob));
+
         public void Execute(IJobExecutionContext context)
         {
+            _logger.Info("Data collecting started.");
             var collector = new GeneralDataCollector();
-            collector.ProcessData();
+            collector.CollectData();
+            _logger.Info("Data collecting complete.");
         }
     }
 }

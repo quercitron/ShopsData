@@ -15,13 +15,20 @@ namespace DataCollectorFramework
 
         private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata_test");
 
-        public void ProcessData()
+        public void CollectData()
         {
-            var sources = _dataStore.GetDataSources();
-
-            foreach (var dataSource in sources)
+            try
             {
-                ProcessDataSource(dataSource);
+                var sources = _dataStore.GetDataSources();
+
+                foreach (var dataSource in sources)
+                {
+                    ProcessDataSource(dataSource);
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error("Failed to collect data.", exception);
             }
         }
 
@@ -35,8 +42,18 @@ namespace DataCollectorFramework
 
                 var dataCollector = sourceManager.GetDataCollector();
 
-                var productTypes = _dataStore.GetProductTypes();
                 var locations = _dataStore.GetLocations();
+                if (locations.Count == 0)
+                {
+                    _logger.Info("Locations list is empty.");
+                }
+
+                var productTypes = _dataStore.GetProductTypes();
+                if (productTypes.Count == 0)
+                {
+                    _logger.Info("Product types list is empty.");
+                }
+
                 foreach (var location in locations)
                 {
                     _logger.InfoFormat("Start processing location '{0}'.", location.Name);
@@ -46,19 +63,30 @@ namespace DataCollectorFramework
                         var shopDataResult = dataCollector.GetShopData(location.Name, productType.Name);
                         if (shopDataResult.Success)
                         {
-                            var date = DateTime.UtcNow;
-                            foreach (var product in shopDataResult.Products)
+                            if (shopDataResult.Products != null && shopDataResult.Products.Count > 0)
                             {
-                                product.LocationId = location.LocationId;
-                                product.Timestamp = date;
+                                var date = DateTime.UtcNow;
+                                foreach (var product in shopDataResult.Products)
+                                {
+                                    product.LocationId = location.LocationId;
+                                    product.Timestamp = date;
+                                }
+                                var context = new ProductsContext
+                                {
+                                    DataSource = dataSource,
+                                    Location = location,
+                                    ProductType = productType,
+                                };
+                                AddToDb(context, shopDataResult.Products);
                             }
-                            var context = new ProductsContext
+                            else
                             {
-                                DataSource = dataSource,
-                                Location = location,
-                                ProductType = productType,
-                            };
-                            AddToDb(context, shopDataResult.Products);
+                                _logger.WarnFormat(
+                                    "No products returned for data source '{0}', location '{1}', product type '{2}'.",
+                                    dataSource.Name,
+                                    location.Name,
+                                    productType.Name);
+                            }
                         }
                         else
                         {

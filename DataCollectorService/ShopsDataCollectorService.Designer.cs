@@ -1,6 +1,6 @@
 ﻿namespace DataCollectorService
 {
-    partial class ShopsDataCollector
+    partial class ShopsDataCollectorService
     {
         /// <summary> 
         /// Required designer variable.

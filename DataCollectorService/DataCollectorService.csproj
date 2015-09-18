@@ -55,11 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ShopsDataCollector.cs">
+    <Compile Include="ShopsDataCollectorService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ShopsDataCollector.Designer.cs">
-      <DependentUpon>ShopsDataCollector.cs</DependentUpon>
+    <Compile Include="ShopsDataCollectorService.Designer.cs">
+      <DependentUpon>ShopsDataCollectorService.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
