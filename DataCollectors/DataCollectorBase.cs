@@ -37,15 +37,15 @@ namespace DataCollectors
             catch (Exception exception)
             {
                 return new ShopDataResult
-                       {
-                           Success = false,
-                           Message = string.Format(
-                               "Failed to process type {0} for shop {1} in location {2}.",
-                               productType,
-                               ShopName,
-                               locationName),
-                               Exception = exception,
-                       };
+                {
+                    Success = false,
+                    Message = string.Format(
+                        "Failed to process type {0} for shop {1} in location {2}.",
+                        productType,
+                        ShopName,
+                        locationName),
+                    Exception = exception,
+                };
             }
         }
 

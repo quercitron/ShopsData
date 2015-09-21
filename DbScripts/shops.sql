@@ -361,10 +361,17 @@ CREATE INDEX fki_sourceproduct_fk_productid ON sourceproduct USING btree (produc
 
 
 --
--- Name: ix_productrecord_sourceproductid; Type: INDEX; Schema: public; Owner: -
+-- Name: ix_productrecord_sourceproductid_timestamp_productrecordid; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX ix_productrecord_sourceproductid ON productrecord USING btree (sourceproductid);
+CREATE INDEX ix_productrecord_sourceproductid_timestamp_productrecordid ON productrecord USING btree (sourceproductid, "timestamp", productrecordid);
+
+
+--
+-- Name: ix_productrecord_timestamp; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX ix_productrecord_timestamp ON productrecord USING btree ("timestamp");
 
 
 --

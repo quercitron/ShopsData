@@ -232,5 +232,13 @@ namespace ShopsData.Tests
         }
 
         #endregion
+
+        [Test]
+        public void GetCurrentDataTest()
+        {
+            var dataStore = new ShopsDataStore(TestDbName);
+            var products = dataStore.GetCurrentData(3, 3);
+            Assert.That(products.Count, Is.GreaterThan(100));
+        }
     }
 }

@@ -81,11 +81,12 @@ namespace DataCollectorFramework
                             }
                             else
                             {
-                                _logger.WarnFormat(
+                                var message = string.Format(
                                     "No products returned for data source '{0}', location '{1}', product type '{2}'.",
                                     dataSource.Name,
                                     location.Name,
                                     productType.Name);
+                                _logger.Warn(message, shopDataResult.Exception);
                             }
                         }
                         else

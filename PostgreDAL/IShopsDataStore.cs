@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using DataCollectorCore.DataObjects;
 
@@ -37,5 +38,20 @@ namespace PostgreDAL
         List<SourceProduct> GetSourceProducts(int dataSourceId, int productTypeId);
 
         void AddSourceProduct(SourceProduct sourceProduct);
+
+
+        List<ProductData> GetCurrentData(int locationId, int productTypeId);
+    }
+
+    public class ProductData
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public int ProductTypeId { get; set; }
+        public int DataSourceId { get; set; }
+        public int Price { get; set; }
+        public float Rating { get; set; }
+        public DateTime Timestamp { get; set; }
+        public int LocationId { get; set; }
     }
 }

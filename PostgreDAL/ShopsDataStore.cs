@@ -377,6 +377,54 @@ namespace PostgreDAL
             }
         }
 
+        public List<ProductData> GetCurrentData(int locationId, int productTypeId)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "with list as ( " +
+                              "select p.productid, p.name, p.producttypeid, sp.sourceproductid, sp.datasourceid " +
+                              "from product p " +
+                              "join sourceproduct sp on p.productid = sp.productid " +
+                              "where p.producttypeid = :producttypeid) " +
+                              "select list.productid, list.name, list.producttypeid, list.datasourceid, pr1.price, pr1.rating, pr1.timestamp, pr1.locationid " +
+                              "from list " +
+                              "join productrecord pr1 on list.sourceproductid = pr1.sourceproductid " +
+                              "left join productrecord pr2 on(list.sourceproductid = pr2.sourceproductid and pr1.timestamp < pr2.timestamp) " +
+                              "where pr2.productrecordid is null and pr1.locationid = :locationid and pr1.timestamp > current_date - 14";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, locationId);
+            command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productTypeId);
+
+            var products = new List<ProductData>();
+            try
+            {
+                NpgsqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var product = new ProductData();
+
+                    product.ProductId = dr.GetInt32(0);
+                    product.Name = dr.GetString(1);
+                    product.ProductTypeId = dr.GetInt32(2);
+                    product.DataSourceId = dr.GetInt32(3);
+                    product.Price = dr.GetInt32(4);
+                    product.Rating = dr.GetFloat(5);
+                    product.Timestamp = dr.GetTimeStamp(6);
+                    product.LocationId = dr.GetInt32(7);
+
+                    products.Add(product);
+                }
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return products;
+        }
+
         private void ExecuteNonQueryCommand(string commandText)
         {
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
