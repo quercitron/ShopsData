@@ -175,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\CurrentDataController.cs" />
+    <Compile Include="API\DataSourceController.cs" />
+    <Compile Include="API\ProductTypeController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -199,6 +201,7 @@
     <Content Include="Scripts\Controllers\CurrentDataController.js" />
     <Content Include="Scripts\Controllers\LandingPageController.js" />
     <Content Include="Scripts\Services\CurrentDataService.js" />
+    <Content Include="Scripts\Services\GeneralDataService.js" />
     <Content Include="Scripts\ShopsDataApp.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -220,6 +223,10 @@
     <None Include="Views\Home\CurrentData.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataCollectorCore\DataCollectorCore.csproj">
+      <Project>{D4DBDF90-DAD5-4B35-92E9-2E59EC522B27}</Project>
+      <Name>DataCollectorCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PostgreDAL\PostgreDAL.csproj">
       <Project>{349318E7-0A4C-4A25-AE36-284B4E799C64}</Project>
       <Name>PostgreDAL</Name>

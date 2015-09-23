@@ -1,9 +1,9 @@
 ﻿var CurrentDataService = function ($http) {
     return {
-        getDataSummary: function(locationId, productTypeId) {
+        getDataSummary: function (locationId, productTypeId) {
             return $http({
                 method: 'GET',
-                url: '/api/currentData/' + locationId + '/' + productTypeId
+                url: 'api/currentData/' + locationId + '/' + productTypeId
             });
         }
     };

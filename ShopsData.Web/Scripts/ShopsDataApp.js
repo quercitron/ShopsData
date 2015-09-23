@@ -3,14 +3,15 @@
 ShopsDataApp.controller('LandingPageController', LandingPageController);
 ShopsDataApp.controller('CurrentDataController', CurrentDataController);
 ShopsDataApp.factory('CurrentDataService', CurrentDataService);
+ShopsDataApp.factory('GeneralDataService', GeneralDataService);
 
 var configFunction = function ($routeProvider, $locationProvider) {
     /* todo: hashPefix? */
     $locationProvider.hashPrefix('!').html5Mode(true);
 
     $routeProvider.
-        when('home/currentData/:locationId/:productTypeId', {
-            templateUrl: function (params) { return '/home/currentData/' + params.locationId + '/' + params.productTypeId },
+        when('/home/currentData/:locationId/:productTypeId', {
+            templateUrl: function (params) { return 'home/currentData/' + params.locationId + '/' + params.productTypeId },
             controller: 'CurrentDataController'
         });
 }

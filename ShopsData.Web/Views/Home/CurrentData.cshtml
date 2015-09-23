@@ -2,3 +2,28 @@
 <h2>{{locationId}}</h2>
 <h2>{{productTypeId}}</h2>
 <h2>{{products.length}}</h2>
+<select ng-model="productTypeId">
+    <option ng-repeat="productType in productTypes" value="{{productType.ProductTypeId}}">{{productType.Name}}</option>
+</select>
+<table>
+    <tr>
+        <th>DataSourceId</th>
+        <th>LocationId</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>ProductId</th>
+        <th>ProductTypeId</th>
+        <th>Rating</th>
+        <th>Timestamp</th>
+    </tr>
+    <tr ng-repeat="product in products">
+        <th>{{product.DataSourceId}}</th>
+        <th>{{product.LocationId}}</th>
+        <th>{{product.Name}}</th>
+        <th>{{product.Price}}</th>
+        <th>{{product.ProductId}}</th>
+        <th>{{product.ProductTypeId}}</th>
+        <th>{{product.Rating}}</th>
+        <th>{{product.Timestamp | date:'d MMM HH:mm'}}</th>
+    </tr>
+</table>
