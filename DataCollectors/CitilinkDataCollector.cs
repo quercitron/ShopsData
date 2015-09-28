@@ -27,7 +27,8 @@ namespace DataCollectors
             for (int pageNumber = 1; ; pageNumber++)
             {
                 var pageUrl = string.Format(url, pageNumber);
-                var products = ProcessCitilinkPage(pageUrl);
+                var locationCookie = GetLocationCookie(locationName);
+                var products = ProcessCitilinkPage(pageUrl, locationCookie);
                 if (products != null && products.Count != 0)
                 {
                     result.AddRange(products);
@@ -40,28 +41,54 @@ namespace DataCollectors
             return result;
         }
 
-        private List<ProductRecord> ProcessCitilinkPage(string url)
+        private string GetLocationCookie(string locationName)
+        {
+            string result;
+            switch (locationName.ToLower())
+            {
+                case "vrn":
+                    result = "vrzh_cl%3A";
+                    break;
+                default:
+                    var message = string.Format("Could not find location cookie for location '{0}'.", locationName);
+                    throw new NotSupportedException(message);
+            }
+            return result;
+        }
+
+        private List<ProductRecord> ProcessCitilinkPage(string url, string locationCookie)
         {
             //var uriString = string.Format("http://www.citilink.ru/catalog/computers_and_notebooks/parts/motherboards/?p={0}", pageNumber);
             Uri target = new Uri(url);
 
-            HttpResponseMessage response;
+            /*HttpResponseMessage response;
             using (var client = new HttpClient())
             {
                 response = client.PostAsync(target, null).Result;
+            }*/
+
+            var request = WebRequest.CreateHttp(target);
+
+            request.Accept = @"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+            request.Headers.Add(@"Accept-Encoding", @"gzip, deflate");
+            request.Headers.Add(@"Accept-Language", @"ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+            request.UserAgent = @"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0";
+
+            // we shouldn't set location cookie for default location
+            if (locationCookie != null)
+            {
+                request.CookieContainer = new CookieContainer();
+                request.CookieContainer.Add(new Cookie("_space", locationCookie) { Domain = target.Host });
             }
 
-            /*var request = WebRequest.CreateHttp(target);
-
-            string source;
-            var response = request.GetResponse();*/
+            var response = request.GetResponse();
 
 
             /*if (response.ResponseUri.Equals("http://www.citilink.ru/catalog/"))
             {
                 return null;
             }*/
-            var responseStream = response.Content.ReadAsStreamAsync().Result;
+            var responseStream = response.GetResponseStream();
             string source;
             using (var streamReader = new StreamReader(responseStream, Encoding.UTF8))
             {
