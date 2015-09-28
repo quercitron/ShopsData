@@ -410,7 +410,7 @@ namespace PostgreDAL
                     product.DataSourceId = dr.GetInt32(3);
                     product.Price = dr.GetInt32(4);
                     product.Rating = dr.GetFloat(5);
-                    product.Timestamp = dr.GetTimeStamp(6);
+                    product.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(6), DateTimeKind.Utc);
                     product.LocationId = dr.GetInt32(7);
 
                     products.Add(product);

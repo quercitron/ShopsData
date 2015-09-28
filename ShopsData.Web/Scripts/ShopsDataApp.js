@@ -10,8 +10,8 @@ var configFunction = function ($routeProvider, $locationProvider) {
     $locationProvider.hashPrefix('!').html5Mode(true);
 
     $routeProvider.
-        when('/home/currentData/:locationId/:productTypeId', {
-            templateUrl: function (params) { return 'home/currentData/' + params.locationId + '/' + params.productTypeId },
+        when('/CurrentData/:locationId/:productTypeId', {
+            templateUrl: function (params) { return 'Home/CurrentData/' + params.locationId + '/' + params.productTypeId },
             controller: 'CurrentDataController'
         });
 }

@@ -175,7 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\CurrentDataController.cs" />
+    <Compile Include="API\CurrentDataGroupedController.cs" />
     <Compile Include="API\DataSourceController.cs" />
+    <Compile Include="API\LocationController.cs" />
     <Compile Include="API\ProductTypeController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

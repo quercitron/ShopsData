@@ -14,15 +14,21 @@ namespace ShopsData.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "CurrentData",
+                url: "CurrentData/{locationId}/{productTypeId}",
+                defaults: new { controller = "Home", Action = "Index" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
 
             routes.MapRoute(
-                name: "CurrentData",
-                url: "Home/CurrentData/{locationId}/{productTypeId}",
-                defaults: new { controller = "Home", Action = "CurrentData" }
+                name: "Default2",
+                url: "{controller}/{action}/{locationId}/{productTypeId}",
+                defaults: new { controller = "Home", action = "Index" }
             );
         }
     }

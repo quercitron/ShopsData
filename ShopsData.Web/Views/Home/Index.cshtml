@@ -6,15 +6,15 @@
     @Styles.Render("~/Content/css")
 </head>
 <body>
-    <input type="text" ng-model="models.helloAngular" />
-    <h1>{{models.helloAngular}}</h1>
+    @*<input type="text" ng-model="models.helloAngular" />
+    <h1>{{models.helloAngular}}</h1>*@
 
-    <a href="~/home/currentData/3/3">Data</a>
+    <a href="~/CurrentData/3/3">Data</a>
     @*@Html.ActionLink("Data", "CurrentData", new { locationId = 3, productTypeId = 3 })*@
 
     <div ng-view></div>
 
-@* TODO: update angular version *@
+    @* TODO: update angular version *@
     @* TODO: what about @section scripts? *@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.6/angular-route.js"></script>
