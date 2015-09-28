@@ -50,6 +50,7 @@ namespace DataCollectors
 
                 source = WebUtility.HtmlDecode(response.Response);
                 HtmlDocument document = new HtmlDocument();
+                document.OptionOutputAsXml = true;
                 document.LoadHtml(source);
 
                 /*var table = document.DocumentNode.Descendants()
@@ -77,7 +78,10 @@ namespace DataCollectors
         {
             var item = new ProductRecord();
 
-            item.Name = htmlNode.Attributes["data-ec-item-title"].Value;
+            //item.Name = htmlNode.Attributes["data-ec-item-title"].Value;
+            var nameNode = htmlNode.DescendantFirstOrDefault("div", "item-name").Descendants("a").First();
+            item.Name = nameNode.InnerText;
+
             item.Brand = htmlNode.Attributes["data-ec-item-brand"].Value;
             item.ExternalId = htmlNode.Attributes["data-ec-item-id"].Value;
 

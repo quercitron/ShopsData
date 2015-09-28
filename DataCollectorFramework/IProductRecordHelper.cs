@@ -1,4 +1,8 @@
-﻿using DataCollectorCore.DataObjects;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+using DataCollectorCore.DataObjects;
 
 namespace DataCollectorFramework
 {
@@ -29,9 +33,27 @@ namespace DataCollectorFramework
             };
         }
 
+        // todo: do we really need to replace colors?
+        private static readonly List<Tuple<string, string>> ColorsReplace = new List<Tuple<string, string>>
+        {
+            new Tuple<string, string>("белый", "White"),
+            new Tuple<string, string>("бирюзовый", "Turquoise"),
+            new Tuple<string, string>("красный", "Red"),
+            new Tuple<string, string>("серебристый", "Silver"),
+            new Tuple<string, string>("серый", "Gray"),
+            new Tuple<string, string>("черный", "Black"),
+            new Tuple<string, string>("чёрный", "Black"),
+        };
+
         protected virtual string ProcessName(ProductRecord productRecord)
         {
-            return productRecord.Name;
+            var name = productRecord.Name;
+            foreach (var color in ColorsReplace)
+            {
+                string pattern = string.Format(@"\b{0}\b", color.Item1);
+                name = Regex.Replace(name, pattern, color.Item2, RegexOptions.IgnoreCase);
+            }
+            return name;
         }
     }
 
@@ -39,7 +61,8 @@ namespace DataCollectorFramework
     {
         protected override string ProcessName(ProductRecord productRecord)
         {
-            return productRecord.Name.Replace("Материнская плата", "").Trim();
+            var name = base.ProcessName(productRecord);
+            return name.Replace("Материнская плата", "").Trim();
         }
     }
 
@@ -47,7 +70,8 @@ namespace DataCollectorFramework
     {
         protected override string ProcessName(ProductRecord productRecord)
         {
-            return productRecord.Name.Replace("Блок питания ", "").Trim();
+            var name = base.ProcessName(productRecord);
+            return name.Replace("Блок питания ", "").Trim();
         }
     }
 
@@ -55,7 +79,10 @@ namespace DataCollectorFramework
     {
         protected override string ProcessName(ProductRecord productRecord)
         {
-            return productRecord.Name.Replace("Монитор ", "").Trim();
+            var name = base.ProcessName(productRecord);
+            // todo: add unit tests?
+            name = Regex.Replace(name, "^[0-9.,]+\"", "");
+            return name.Replace("Монитор ЖК ", "").Replace("Монитор ", "").Trim();
         }
     }
 }

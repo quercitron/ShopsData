@@ -91,8 +91,8 @@ namespace DataCollectorFramework
                         }
                         else
                         {
-                            var message = string.Format("Failed to collect data: {0}.", shopDataResult.Message);
-                            _logger.WarnFormat(message, shopDataResult.Exception);
+                            var message = string.Format("Failed to collect data: {0}", shopDataResult.Message);
+                            _logger.Error(message, shopDataResult.Exception);
                         }
                         _logger.InfoFormat("Complete processing product type '{0}'.", productType.Name);
                     }
@@ -133,6 +133,25 @@ namespace DataCollectorFramework
                     Product product;
                     if (matchResult.Success)
                     {
+                        var duplicate = sourceProducts
+                            .FirstOrDefault(
+                                sp => sp.ProductId == matchResult.Product.ProductId &&
+                                      sp.DataSourceId == sourceProduct.DataSourceId);
+                        if (duplicate != null)
+                        {
+                            var message =
+                                string.Format(
+                                    "External duplicate found: two equal products ('{0}') " +
+                                    "with different externalid ('{1}' and '{2}') in the same datasource ('{3}').",
+                                    matchResult.Product.Name,
+                                    duplicate.Key,
+                                    sourceProduct.Key,
+                                    context.DataSource.Name);
+                            _logger.Warn(message);
+                            // todo: how to handle external duplicate?
+                            // todo: add new fake product?
+                        }
+
                         product = matchResult.Product;
                     }
                     else
@@ -140,6 +159,8 @@ namespace DataCollectorFramework
                         product = productHelper.GenerateProduct(context, sourceProduct);
                         _dataStore.AddProduct(product);
                         products.Add(product);
+
+                        ValidateProduct(product);
                     }
 
                     sourceProduct.ProductId = product.ProductId;
@@ -154,6 +175,18 @@ namespace DataCollectorFramework
             foreach (var productRecord in productRecords)
             {
                 _dataStore.AddProductRecord(productRecord);
+            }
+        }
+
+        private void ValidateProduct(Product product)
+        {
+            if (string.IsNullOrWhiteSpace(product.Name))
+            {
+                _logger.WarnFormat("Product with empty name was generated, productId: {0}.", product.ProductId);
+            }
+            else if (product.Name.All(ch => !char.IsLetter(ch)))
+            {
+                _logger.WarnFormat("Product name '{0}' doesn't contain any letter, productId: {1}.", product.Name, product.ProductId);
             }
         }
     }

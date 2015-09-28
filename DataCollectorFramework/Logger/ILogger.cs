@@ -9,6 +9,7 @@ namespace DataCollectorFramework.Logger
         void Info(object message);
         void InfoFormat(string format, params object[] args);
         void WarnFormat(string format, params object[] args);
+        void Warn(object message);
         void Warn(object message, Exception exception);
         void Error(object message);
         void Error(object message, Exception exception);
@@ -41,6 +42,11 @@ namespace DataCollectorFramework.Logger
         public void WarnFormat(string format, params object[] args)
         {
             _logger.WarnFormat(format, args);
+        }
+
+        public void Warn(object message)
+        {
+            _logger.Warn(message);
         }
 
         public void Warn(object message, Exception exception)

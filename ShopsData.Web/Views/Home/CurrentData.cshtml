@@ -3,12 +3,13 @@
     @*<h2>{{locationId}}</h2>
     <h2>{{productTypeId}}</h2>
     <h2>{{products.length}}</h2>*@
-    <select ng-model="productTypeId" ng-change="updatePath()">
-        <option ng-repeat="productType in productTypes" value="{{productType.ProductTypeId}}">{{productType.Name}}</option>
-    </select>
     <select ng-model="locationId" ng-change="updatePath()">
         <option ng-repeat="location in locations" value="{{location.LocationId}}">{{location.Name}}</option>
     </select>
+    <select ng-model="productTypeId" ng-change="updatePath()">
+        <option ng-repeat="productType in productTypes" value="{{productType.ProductTypeId}}">{{productType.Name}}</option>
+    </select>
+    <input type="text" ng-model="searchFilter.ProductName" />
     @*<table>
         <tr>
             <th>DataSourceId</th>
@@ -36,7 +37,7 @@
             <th>Product</th>
             <th ng-repeat="dataSource in dataSources">{{dataSource.Name}}</th>
         </tr>
-        <tr ng-repeat="productGroup in productGroups">
+        <tr ng-repeat="productGroup in productGroups | filter:searchFilter">
             <td>{{productGroup.ProductName}}</td>
             <td ng-repeat="dataSource in dataSources">
                 {{productGroup.Records[dataSource.DataSourceId].Price}}

@@ -77,7 +77,8 @@ namespace DataCollectorFramework
     {
         protected override string ProcessName(ProductRecord productRecord)
         {
-            return productRecord.Name.Replace("Блок питания ", "");
+            var name = base.ProcessName(productRecord);
+            return name.Replace("Блок питания ", "");
         }
     }
 
@@ -129,22 +130,24 @@ namespace DataCollectorFramework
     {
         protected override string ProcessName(ProductRecord productRecord)
         {
-            string name;
-            var match = Regex.Match(productRecord.Name, @"\[(.*)\]");
+            var name = base.ProcessName(productRecord);
+
+            string result;
+            var match = Regex.Match(name, @"\[(.*)\]");
             if (match.Success)
             {
-                name = string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
-                var index = name.IndexOf("/");
+                result = string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
+                var index = result.IndexOf("/");
                 if (index >= 0)
                 {
-                    name = name.Substring(0, index);
+                    result = result.Substring(0, index);
                 }
             }
             else
             {
-                name = productRecord.Name.Replace("Блок питания ", "");
+                result = name.Replace("Блок питания ", "");
             }
-            return name;
+            return result;
         }
     }
 }
