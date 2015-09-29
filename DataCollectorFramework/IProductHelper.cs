@@ -47,7 +47,7 @@ namespace DataCollectorFramework
 
         private string CleanName(string name)
         {
-            return Regex.Replace(name.ToLower(), "[^0-9a-z]", "");
+            return Regex.Replace((name ?? "").ToLower(), "[^0-9a-z]", "");
         }
 
         public Product GenerateProduct(ProductsContext context, SourceProduct sourceProduct)
@@ -56,6 +56,8 @@ namespace DataCollectorFramework
             {
                 ProductTypeId = context.ProductType.ProductTypeId,
                 Name = sourceProduct.Name,
+                Class = sourceProduct.Class,
+                Created = sourceProduct.Timestamp,
             };
         }
     }

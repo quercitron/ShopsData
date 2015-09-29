@@ -110,7 +110,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            NpgsqlCommand command = new NpgsqlCommand("select productid, name, producttypeid from product", conn);
+            NpgsqlCommand command = new NpgsqlCommand("select productid, name, class, producttypeid, created from product", conn);
 
             var products = new List<Product>();
             try
@@ -122,7 +122,9 @@ namespace PostgreDAL
 
                     product.ProductId = dr.GetInt32(0);
                     product.Name = dr.GetString(1);
-                    product.ProductTypeId = dr.GetInt32(2);
+                    product.Class = dr.GetString(2);
+                    product.ProductTypeId = dr.GetInt32(3);
+                    product.Created = dr.GetTimeStamp(4);
 
                     products.Add(product);
                 }
@@ -211,12 +213,14 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = string.Format("insert into product (name, producttypeid) " +
-                                            "values (:name, :producttypeid) " +
+            var commandText = string.Format("insert into product (name, class, producttypeid, created) " +
+                                            "values (:name, :class, :producttypeid, :created) " +
                                             "returning productid");
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, product.Name);
+            command.Parameters.AddWithValue("class", NpgsqlDbType.Text, product.Class);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, product.ProductTypeId);
+            command.Parameters.AddWithValue("created", NpgsqlDbType.Timestamp, product.Created);
 
             try
             {
@@ -313,7 +317,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname, sp.brand, sp.timestamp " +
+            var commandText = "select sp.sourceproductid, sp.datasourceid, sp.productid, sp.key, sp.name, sp.originalname, sp.brand, sp.timestamp, sp.class " +
                               "from sourceproduct sp join product p on sp.productid = p.productid " +
                               "where sp.datasourceid = :datasourceid and p.producttypeid = :producttypeid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
@@ -336,6 +340,7 @@ namespace PostgreDAL
                     sourceProduct.OriginalName = dr.GetString(5);
                     sourceProduct.Brand = dr.GetString(6);
                     sourceProduct.Timestamp = dr.GetTimeStamp(7);
+                    sourceProduct.Class = dr.GetString(8);
 
                     sourceProducts.Add(sourceProduct);
                 }
@@ -355,14 +360,15 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  originalname,  brand,  timestamp) " +
-                              "values                    (:datasourceid, :productid, :key, :name, :originalname, :brand, :timestamp) " +
+            var commandText = "insert into sourceproduct ( datasourceid,  productid,  key,  name,  class,  originalname,  brand,  timestamp) " +
+                              "values                    (:datasourceid, :productid, :key, :name, :class, :originalname, :brand, :timestamp) " +
                               "returning sourceproductid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, sourceProduct.DataSourceId);
             command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, sourceProduct.ProductId);
             command.Parameters.AddWithValue("key", NpgsqlDbType.Text, sourceProduct.Key);
             command.Parameters.AddWithValue("name", NpgsqlDbType.Text, sourceProduct.Name);
+            command.Parameters.AddWithValue("class", NpgsqlDbType.Text, sourceProduct.Class);
             command.Parameters.AddWithValue("originalname", NpgsqlDbType.Text, sourceProduct.OriginalName);
             command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, sourceProduct.Brand);
             command.Parameters.AddWithValue("timestamp", NpgsqlDbType.Timestamp, sourceProduct.Timestamp);
@@ -383,11 +389,11 @@ namespace PostgreDAL
             conn.Open();
 
             var commandText = "with list as ( " +
-                              "select p.productid, p.name, p.producttypeid, sp.sourceproductid, sp.datasourceid " +
+                              "select p.productid, p.name, p.class, p.producttypeid, sp.sourceproductid, sp.datasourceid " +
                               "from product p " +
                               "join sourceproduct sp on p.productid = sp.productid " +
                               "where p.producttypeid = :producttypeid) " +
-                              "select list.productid, list.name, list.producttypeid, list.datasourceid, pr1.price, pr1.rating, pr1.timestamp, pr1.locationid " +
+                              "select list.productid, list.name, list.producttypeid, list.datasourceid, pr1.price, pr1.rating, pr1.timestamp, pr1.locationid, list.class " +
                               "from list " +
                               "join productrecord pr1 on list.sourceproductid = pr1.sourceproductid " +
                               "left join productrecord pr2 on(list.sourceproductid = pr2.sourceproductid and pr1.timestamp < pr2.timestamp) " +
@@ -412,6 +418,7 @@ namespace PostgreDAL
                     product.Rating = dr.GetFloat(5);
                     product.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(6), DateTimeKind.Utc);
                     product.LocationId = dr.GetInt32(7);
+                    product.Class = dr[8] as string;
 
                     products.Add(product);
                 }

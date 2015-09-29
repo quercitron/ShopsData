@@ -101,7 +101,9 @@ ALTER SEQUENCE "ProductType_TypeId_seq" OWNED BY producttype.producttypeid;
 CREATE TABLE product (
     productid integer NOT NULL,
     name text NOT NULL,
-    producttypeid integer NOT NULL
+    producttypeid integer NOT NULL,
+    class text,
+    created timestamp without time zone NOT NULL
 );
 
 
@@ -194,7 +196,8 @@ CREATE TABLE sourceproduct (
     originalname text NOT NULL,
     productid integer NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
-    brand text
+    brand text,
+    class text
 );
 
 

@@ -14,6 +14,8 @@ namespace DataCollectorCore.DataObjects
 
         public string Name { get; set; }
 
+        public string Class { get; set; }
+
         public string OriginalName { get; set; }
 
         public string Brand { get; set; }

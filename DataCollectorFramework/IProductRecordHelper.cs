@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 using DataCollectorCore.DataObjects;
@@ -22,11 +23,13 @@ namespace DataCollectorFramework
 
         public SourceProduct GenerateSourceProduct(DataSource dataSource, ProductRecord productRecord)
         {
+            var processedName = ProcessName(productRecord);
             return new SourceProduct
             {
                 DataSourceId = dataSource.DataSourceId,
                 Key = GetKey(productRecord),
-                Name = ProcessName(productRecord),
+                Name = processedName.Name,
+                Class = processedName.Class,
                 OriginalName = productRecord.Name,
                 Brand = productRecord.Brand,
                 Timestamp = productRecord.Timestamp,
@@ -45,44 +48,76 @@ namespace DataCollectorFramework
             new Tuple<string, string>("чёрный", "Black"),
         };
 
-        protected virtual string ProcessName(ProductRecord productRecord)
+        protected virtual ComplexName ProcessName(ProductRecord productRecord)
         {
             var name = productRecord.Name;
+            var colors = new List<String>();
             foreach (var color in ColorsReplace)
             {
                 string pattern = string.Format(@"\b{0}\b", color.Item1);
-                name = Regex.Replace(name, pattern, color.Item2, RegexOptions.IgnoreCase);
+                if (Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase))
+                {
+                    name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+                    colors.Add(color.Item2);
+                }
             }
-            return name;
+            return new ComplexName
+            {
+                Name = name,
+                Class = colors.Any() ? string.Join(" ", colors) : null,
+            };
         }
+    }
+
+    public class ComplexName
+    {
+        public string Name { get; set; }
+
+        public string Class { get; set; }
     }
 
     class GeneralMotherboardProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override string ProcessName(ProductRecord productRecord)
+        protected override ComplexName ProcessName(ProductRecord productRecord)
         {
-            var name = base.ProcessName(productRecord);
-            return name.Replace("Материнская плата", "").Trim();
+            var baseResult = base.ProcessName(productRecord);
+            return new ComplexName
+            {
+                Name = baseResult.Name.Replace("Материнская плата", "").Trim(),
+                Class = baseResult.Class,
+            };
         }
     }
 
     class GeneralPowerSupplyProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override string ProcessName(ProductRecord productRecord)
+        protected override ComplexName ProcessName(ProductRecord productRecord)
         {
-            var name = base.ProcessName(productRecord);
-            return name.Replace("Блок питания ", "").Trim();
+            var baseResult = base.ProcessName(productRecord);
+            return new ComplexName
+            {
+                Name = baseResult.Name.Replace("Блок питания ", "").Trim(),
+                Class = baseResult.Class,
+            };
         }
     }
 
     class GeneralMonitorProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override string ProcessName(ProductRecord productRecord)
+        protected override ComplexName ProcessName(ProductRecord productRecord)
         {
-            var name = base.ProcessName(productRecord);
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
             // todo: add unit tests?
             name = Regex.Replace(name, "^[0-9.,]+\"", "");
-            return name.Replace("Монитор ЖК ", "").Replace("Монитор ", "").Trim();
+            name = name.Replace("Монитор ЖК ", "").Replace("Монитор ", "").Trim(' ', '.', ',');
+
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+            };
         }
     }
 }

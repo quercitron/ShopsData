@@ -72,7 +72,7 @@ namespace ShopsData.Web.Repository
             {
                 var productGroup = new ProductGroup();
                 productGroup.ProductId = g.Key;
-                productGroup.ProductName = g.First().Name;
+                productGroup.ProductName = g.First().FullName;
                 foreach (var record in g)
                 {
                     productGroup.Records[record.DataSourceId] = record;

@@ -53,5 +53,16 @@ namespace PostgreDAL
         public float Rating { get; set; }
         public DateTime Timestamp { get; set; }
         public int LocationId { get; set; }
+        public string Class { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(Class)
+                    ? Name
+                    : string.Format("{0}, {1}", Name, Class);
+            }
+        }
     }
 }

@@ -75,10 +75,14 @@ namespace DataCollectorFramework
 
     public class CitilinkPowerSupplyHelper : GeneralProductRecordHelper
     {
-        protected override string ProcessName(ProductRecord productRecord)
+        protected override ComplexName ProcessName(ProductRecord productRecord)
         {
-            var name = base.ProcessName(productRecord);
-            return name.Replace("Блок питания ", "");
+            var baseResult = base.ProcessName(productRecord);
+            return new ComplexName
+            {
+                Name = baseResult.Name.Replace("Блок питания ", "").Trim(),
+                Class = baseResult.Class,
+            };
         }
     }
 
@@ -128,9 +132,11 @@ namespace DataCollectorFramework
 
     public class DnsPowerSupplyHelper : GeneralProductRecordHelper
     {
-        protected override string ProcessName(ProductRecord productRecord)
+        protected override ComplexName ProcessName(ProductRecord productRecord)
         {
-            var name = base.ProcessName(productRecord);
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
 
             string result;
             var match = Regex.Match(name, @"\[(.*)\]");
@@ -147,7 +153,12 @@ namespace DataCollectorFramework
             {
                 result = name.Replace("Блок питания ", "");
             }
-            return result;
+
+            return new ComplexName
+            {
+                Name = result,
+                Class = baseResult.Class,
+            };
         }
     }
 }
