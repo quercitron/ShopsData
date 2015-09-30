@@ -29,11 +29,50 @@ namespace DataCollectorFramework
                 case "citilink":
                     sourceManager = new CitilinkSourceManager();
                     break;
+                case "ulmart":
+                    sourceManager = new UlmartSourceManager();
+                    break;
                 default:
                     var message = string.Format("Data source '{0}' is not supported", sourceName);
                     throw new NotSupportedException(message);
             }
             return sourceManager;
+        }
+    }
+
+    public class UlmartSourceManager : ISourceManager
+    {
+        public IShopDataCollector GetDataCollector()
+        {
+            return new UlmartDataCollector();
+        }
+
+        public IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        {
+            IProductRecordHelper productRecordHelper;
+
+            switch (productType.Name)
+            {
+                case ProductTypeName.Motherboard:
+                    productRecordHelper = new GeneralMotherboardProductRecordHelper();
+                    break;
+                case ProductTypeName.Monitor:
+                    productRecordHelper = new GeneralMonitorProductRecordHelper();
+                    break;
+                case ProductTypeName.PowerSupply:
+                    productRecordHelper = new GeneralPowerSupplyProductRecordHelper();
+                    break;
+                default:
+                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
+                    throw new NotSupportedException(message);
+            }
+
+            return productRecordHelper;
+        }
+
+        public IProductHelper GetProductHelper(ProductType productType)
+        {
+            return new GeneralProductHelper();
         }
     }
 
@@ -57,10 +96,10 @@ namespace DataCollectorFramework
                     productRecordHelper = new GeneralMonitorProductRecordHelper();
                     break;
                 case ProductTypeName.PowerSupply:
-                    productRecordHelper = new CitilinkPowerSupplyHelper();
+                    productRecordHelper = new GeneralPowerSupplyProductRecordHelper();
                     break;
                 default:
-                    var message = string.Format((string) "No ProductRecordHelper for product type {0}.", (object) productType.Name);
+                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
             }
 
@@ -71,23 +110,6 @@ namespace DataCollectorFramework
         {
             return new GeneralProductHelper();
         }
-    }
-
-    public class CitilinkPowerSupplyHelper : GeneralProductRecordHelper
-    {
-        protected override ComplexName ProcessName(ProductRecord productRecord)
-        {
-            var baseResult = base.ProcessName(productRecord);
-            return new ComplexName
-            {
-                Name = baseResult.Name.Replace("Блок питания ", "").Trim(),
-                Class = baseResult.Class,
-            };
-        }
-    }
-
-    public class CitilinkMonitorHelper : GeneralProductRecordHelper
-    {
     }
 
     public class DnsSourceManager : ISourceManager
@@ -126,11 +148,7 @@ namespace DataCollectorFramework
         }
     }
 
-    public class DnsMonitorHelper : GeneralProductRecordHelper
-    {
-    }
-
-    public class DnsPowerSupplyHelper : GeneralProductRecordHelper
+    public class DnsPowerSupplyHelper : GeneralPowerSupplyProductRecordHelper
     {
         protected override ComplexName ProcessName(ProductRecord productRecord)
         {

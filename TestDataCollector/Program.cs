@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+
 using DataCollectorCore;
 using DataCollectorFramework;
 using DataCollectors;
@@ -20,6 +21,7 @@ namespace TestDataCollector
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
             TestGeneralDataCollector();
+            //GetData();
         }
 
         private static void TestGeneralDataCollector()
@@ -70,7 +72,7 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new CitilinkDataCollector();
+            var dataCollector = new UlmartDataCollector();
 
             var data = dataCollector.GetShopData("location", ProductTypeName.Monitor);
             //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();

@@ -50,7 +50,6 @@ namespace DataCollectors
 
                 source = WebUtility.HtmlDecode(response.Response);
                 HtmlDocument document = new HtmlDocument();
-                document.OptionOutputAsXml = true;
                 document.LoadHtml(source);
 
                 /*var table = document.DocumentNode.Descendants()

@@ -83,20 +83,52 @@ namespace DataCollectorFramework
             var baseResult = base.ProcessName(productRecord);
             return new ComplexName
             {
-                Name = baseResult.Name.Replace("Материнская плата", "").Trim(),
+                Name = Regex.Replace(baseResult.Name, "Материнская плата", "", RegexOptions.IgnoreCase).Trim(),
                 Class = baseResult.Class,
             };
         }
     }
 
-    class GeneralPowerSupplyProductRecordHelper : GeneralProductRecordHelper
+    public class GeneralPowerSupplyProductRecordHelper : GeneralProductRecordHelper
     {
         protected override ComplexName ProcessName(ProductRecord productRecord)
         {
             var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, "Блок питания ", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "^ATX ", "", RegexOptions.IgnoreCase);
+
+            var powerPattern = @"\b(\d+)W\b";
+            var matchResult = Regex.Match(name, powerPattern, RegexOptions.IgnoreCase);
+            if (matchResult.Success)
+            {
+                var value = matchResult.Groups[1].Value;
+                var valueCount = Regex.Matches(name, value).Count;
+                if (valueCount > 1)
+                {
+                    var regex = new Regex(powerPattern, RegexOptions.IgnoreCase);
+                    name = regex.Replace(name, "", 1);
+                }
+            }
+
+            var startPowerPattern = @"^(\d+W)\s\b";
+            matchResult = Regex.Match(name, startPowerPattern, RegexOptions.IgnoreCase);
+            if (matchResult.Success)
+            {
+                name = Regex.Replace(name, startPowerPattern, "", RegexOptions.IgnoreCase);
+                name = name + " " + matchResult.Groups[1].Value;
+            }
+
+            powerPattern = @"\b(\d+)W\b";
+            name = Regex.Replace(name, powerPattern, @"$1", RegexOptions.IgnoreCase);
+
+            name = name.Replace("  ", " ");
+            name = name.Trim(' ', '.', ',');
+
             return new ComplexName
             {
-                Name = baseResult.Name.Replace("Блок питания ", "").Trim(),
+                Name = name,
                 Class = baseResult.Class,
             };
         }
@@ -112,7 +144,9 @@ namespace DataCollectorFramework
             // todo: add unit tests?
             name = Regex.Replace(name, "^[0-9.,]+\"", "");
             name = Regex.Replace(name, @"\s[0-9.,]+""", "");
-            name = name.Replace("Монитор ЖК ", "").Replace("Монитор ", "").Trim(' ', '.', ',');
+            name = Regex.Replace(name, "Монитор ЖК ", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Монитор ", "", RegexOptions.IgnoreCase);
+            name = name.Trim(' ', '.', ',');
 
             return new ComplexName
             {

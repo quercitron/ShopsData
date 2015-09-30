@@ -86,7 +86,7 @@ namespace DataCollectorFramework
                                     dataSource.Name,
                                     location.Name,
                                     productType.Name);
-                                _logger.Warn(message, shopDataResult.Exception);
+                                _logger.Error(message, shopDataResult.Exception);
                             }
                         }
                         else

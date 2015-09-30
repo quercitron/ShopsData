@@ -25,12 +25,12 @@ namespace ShopsData.Tests
                     FirstSetting = new TestSetting
                     {
                         FilePath = "TestData/Monitor_Dns.txt",
-                        Helper = new DnsMonitorHelper(),
+                        Helper = new GeneralProductRecordHelper(),
                     },
                     SecondSetting = new TestSetting
                     {
                         FilePath = "TestData/Monitor_Citilink.txt",
-                        Helper = new CitilinkMonitorHelper(),
+                        Helper = new GeneralProductRecordHelper(),
                     },
                 }
             }
