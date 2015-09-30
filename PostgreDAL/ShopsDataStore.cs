@@ -122,7 +122,7 @@ namespace PostgreDAL
 
                     product.ProductId = dr.GetInt32(0);
                     product.Name = dr.GetString(1);
-                    product.Class = dr.GetString(2);
+                    product.Class = dr[2] as string;
                     product.ProductTypeId = dr.GetInt32(3);
                     product.Created = dr.GetTimeStamp(4);
 
@@ -143,7 +143,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "select p.productid, p.name, p.producttypeid " +
+            var commandText = "select p.productid, p.name, p.producttypeid, p.class, p.created " +
                               "from product p join producttype pt on p.producttypeid = pt.producttypeid " +
                               "where pt.name = :producttypename";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
@@ -160,6 +160,8 @@ namespace PostgreDAL
                     product.ProductId = dr.GetInt32(0);
                     product.Name = dr.GetString(1);
                     product.ProductTypeId = dr.GetInt32(2);
+                    product.Class = dr[3] as string;
+                    product.Created = dr.GetTimeStamp(4);
 
                     products.Add(product);
                 }
@@ -178,7 +180,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "select productid, name, producttypeid from product " +
+            var commandText = "select productid, name, producttypeid, class, created from product " +
                               "where producttypeid = :producttypeid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productTypeId);
@@ -194,6 +196,8 @@ namespace PostgreDAL
                     product.ProductId = dr.GetInt32(0);
                     product.Name = dr.GetString(1);
                     product.ProductTypeId = dr.GetInt32(2);
+                    product.Class = dr[3] as string;
+                    product.Created = dr.GetTimeStamp(4);
 
                     products.Add(product);
                 }
@@ -225,6 +229,32 @@ namespace PostgreDAL
             try
             {
                 product.ProductId = (int) command.ExecuteScalar();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = string.Format(
+                "update product " +
+                "set name = :name, class = :class, producttypeid = :producttypeid, created = :created " +
+                "where productid = :productid");
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("name", NpgsqlDbType.Text, product.Name);
+            command.Parameters.AddWithValue("class", NpgsqlDbType.Text, product.Class);
+            command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, product.ProductTypeId);
+            command.Parameters.AddWithValue("created", NpgsqlDbType.Timestamp, product.Created);
+            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, product.ProductId);
+
+            try
+            {
+                command.ExecuteScalar();
             }
             finally
             {

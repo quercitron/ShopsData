@@ -26,6 +26,8 @@ namespace PostgreDAL
 
         void AddProduct(Product product);
 
+        void UpdateProduct(Product product);
+
 
         void AddProductRecord(ProductRecord productRecord);
 

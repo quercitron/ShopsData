@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using DataCollectorCore.DataObjects;
 
@@ -18,31 +19,74 @@ namespace DataCollectorFramework
         public MatchResult FindMatch(SourceProduct sourceProduct, IEnumerable<Product> products)
         {
             int bestDistance = int.MaxValue;
-            Product bestMatch = null;
+            var bestMatchProducts = new List<Product>();
 
             var targetName = CleanName(sourceProduct.Name);
             foreach (var product in products)
             {
                 var productName = CleanName(product.Name);
                 var distance = WordsHelper.LevenshteinDistance(targetName, productName);
-                if (bestMatch == null || distance < bestDistance)
+                if (distance < bestDistance)
                 {
-                    bestMatch = product;
                     bestDistance = distance;
+                    bestMatchProducts = new List<Product> { product };
+                }
+                else if (distance == bestDistance)
+                {
+                    bestMatchProducts.Add(product);
                 }
             }
 
-            var result = new MatchResult();
-            if (bestMatch == null || bestDistance > MatchLimit)
+            if (bestDistance > MatchLimit || bestMatchProducts.Count == 0)
             {
-                result.Success = false;
+                return new MatchResult { Success = false };
+            }
+
+            if (bestMatchProducts.Count > 1)
+            {
+                var message = string.Format(
+                    "For source product '{0}' found {1} best much products: {2}.",
+                    sourceProduct.Name,
+                    bestMatchProducts.Count,
+                    string.Join(", ", bestMatchProducts.Select(p => p.Name)));
+                // todo: log?
+            }
+
+            bestMatchProducts = bestMatchProducts.OrderBy(p => p.Created).ToList();
+
+            if (!string.IsNullOrWhiteSpace(sourceProduct.Class))
+            {
+                var product = bestMatchProducts.FirstOrDefault(p => CleanName(p.Class) == CleanName(sourceProduct.Class));
+                if (product != null)
+                {
+                    return new MatchResult { Success = true, Product = product };
+                }
+
+                product = bestMatchProducts.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.Class));
+                if (product != null)
+                {
+                    product.Class = sourceProduct.Class;
+                    return new MatchResult { Success = true, Product = product, UpdateProduct = true };
+                }
+
+                return new MatchResult { Success = false };
             }
             else
             {
-                result.Success = true;
-                result.Product = bestMatch;
+                var product = bestMatchProducts.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.Class));
+                if (product != null)
+                {
+                    return new MatchResult { Success = true, Product = product };
+                }
+
+                product = bestMatchProducts.FirstOrDefault();
+                if (product != null)
+                {
+                    return new MatchResult { Success = true, Product = product };
+                }
+
+                return new MatchResult { Success = false };
             }
-            return result;
         }
 
         private string CleanName(string name)
@@ -67,6 +111,8 @@ namespace DataCollectorFramework
         public bool Success { get; set; }
 
         public Product Product { get; set; }
+
+        public bool UpdateProduct { get; set; }
     }
 
     public static class WordsHelper

@@ -152,6 +152,11 @@ namespace DataCollectorFramework
                             // todo: add new fake product?
                         }
 
+                        if (matchResult.UpdateProduct)
+                        {
+                            _dataStore.UpdateProduct(matchResult.Product);
+                        }
+
                         product = matchResult.Product;
                     }
                     else

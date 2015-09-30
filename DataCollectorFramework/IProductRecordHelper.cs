@@ -111,6 +111,7 @@ namespace DataCollectorFramework
             var name = baseResult.Name;
             // todo: add unit tests?
             name = Regex.Replace(name, "^[0-9.,]+\"", "");
+            name = Regex.Replace(name, @"\s[0-9.,]+""", "");
             name = name.Replace("Монитор ЖК ", "").Replace("Монитор ", "").Trim(' ', '.', ',');
 
             return new ComplexName
