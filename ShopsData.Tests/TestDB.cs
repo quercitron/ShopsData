@@ -14,8 +14,6 @@ namespace ShopsData.Tests
     [TestFixture]
     public class TestDB
     {
-        public const string TestDbName = "shopsdata_test";
-
         #region ProductType
 
         [Test]
@@ -28,13 +26,13 @@ namespace ShopsData.Tests
 
         private ShopsDataStore GetDataStore()
         {
-            return new ShopsDataStore(TestDbName);
+            return new ShopsDataStore();
         }
 
         [Test]
         public void ProductTypeGetTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             dataStore.GetProductTypes();
         }
 
@@ -43,7 +41,7 @@ namespace ShopsData.Tests
         {
             var newTypeCount = 10;
 
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
 
             var initialTypes = dataStore.GetProductTypes().Select(pt => pt.Name);
 
@@ -78,7 +76,7 @@ namespace ShopsData.Tests
         [Test]
         public void ProductTypeNameIsUniqueTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             var newProductType = "New Type " + Guid.NewGuid();
             dataStore.AddProductType(newProductType);
             Assert.Throws(Is.InstanceOf(typeof(DbException)), () => dataStore.AddProductType(newProductType));
@@ -91,7 +89,7 @@ namespace ShopsData.Tests
         [Test]
         public void DataSourceAddTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             var newDataSource = "New Type " + Guid.NewGuid();
             dataStore.AddDataSource(newDataSource);
         }
@@ -99,7 +97,7 @@ namespace ShopsData.Tests
         [Test]
         public void DataSourceGetTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             dataStore.GetDataSources();
         }
 
@@ -108,7 +106,7 @@ namespace ShopsData.Tests
         {
             var newDataSourceCount = 10;
 
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
 
             var initialDataSources = dataStore.GetDataSources().Select(pt => pt.Name);
 
@@ -143,7 +141,7 @@ namespace ShopsData.Tests
         [Test]
         public void DataSourceNameIsUniqueTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             var newDataSource = "New Type " + Guid.NewGuid();
             dataStore.AddDataSource(newDataSource);
             Assert.Throws(Is.InstanceOf(typeof(DbException)), () => dataStore.AddDataSource(newDataSource));
@@ -156,7 +154,7 @@ namespace ShopsData.Tests
         [Test]
         public void ProductAddTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
 
             var productTypeId = dataStore.GetProductTypes().First().ProductTypeId;
 
@@ -170,7 +168,7 @@ namespace ShopsData.Tests
         [Test]
         public void ProductGetTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             var products = dataStore.GetProducts();
             Assert.That(products, Is.Not.Empty);
         }
@@ -178,7 +176,7 @@ namespace ShopsData.Tests
         [Test]
         public void ProductGetByTypeNameTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
 
             var productType = dataStore.GetProductTypes().First();
 
@@ -203,7 +201,7 @@ namespace ShopsData.Tests
             location.LocationId = 1;
             location.Name = "City";
 
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             dataStore.AddLocation(location);
         }
 
@@ -214,7 +212,7 @@ namespace ShopsData.Tests
         [Test]
         public void ProductRecordAddTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
 
             var productId = dataStore.GetProducts().First().ProductId;
 
@@ -236,7 +234,7 @@ namespace ShopsData.Tests
         [Test]
         public void GetCurrentDataTest()
         {
-            var dataStore = new ShopsDataStore(TestDbName);
+            var dataStore = new ShopsDataStore();
             var products = dataStore.GetCurrentData(3, 3);
             Assert.That(products.Count, Is.GreaterThan(100));
         }

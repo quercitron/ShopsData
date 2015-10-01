@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 using DataCollectorCore.DataObjects;
 
@@ -13,24 +14,22 @@ namespace PostgreDAL
     {
         private readonly string _connectionString;
 
-        private readonly string _dbName;
-        private readonly string _user = "shopsuser";
-        private readonly string _password = "123123";
-
-        public ShopsDataStore(string dbName)
+        public ShopsDataStore()
+            : this(null)
         {
-            if (dbName == null)
+
+        }
+
+        public ShopsDataStore(string connectionString)
+        {
+            if (connectionString != null)
             {
-                throw new ArgumentNullException("dbName");
+                _connectionString = connectionString;
             }
-
-            _dbName = dbName;
-
-            _connectionString = string.Format(
-                "Server=127.0.0.1;Port=5433;User Id={0};Password={1};Database={2};",
-                _user,
-                _password,
-                _dbName);
+            else
+            {
+                _connectionString = ConfigurationManager.ConnectionStrings["ShopsData"].ConnectionString;
+            }
         }
 
         public List<ProductType> GetProductTypes()

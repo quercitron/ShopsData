@@ -13,7 +13,7 @@ namespace DataCollectorFramework
 
         private readonly SourceManagerFactory _sourceManagerFactory = new SourceManagerFactory();
 
-        private readonly IShopsDataStore _dataStore = new ShopsDataStore("shopsdata_test");
+        private readonly IShopsDataStore _dataStore = new ShopsDataStore();
 
         public void CollectData()
         {
