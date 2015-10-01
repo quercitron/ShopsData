@@ -9,7 +9,7 @@
     <select ng-model="productTypeId" ng-change="updatePath()">
         <option ng-repeat="productType in productTypes" value="{{productType.ProductTypeId}}">{{productType.Name}}</option>
     </select>
-    <input type="text" ng-model="searchFilter.ProductName" />
+    <input type="text" ng-model="searchFilter.ProductName" ng-model-options="{ debounce: 500 }" />
     @*<table>
         <tr>
             <th>DataSourceId</th>

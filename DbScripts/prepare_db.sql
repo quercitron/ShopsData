@@ -11,4 +11,4 @@ DELETE FROM location;
 INSERT INTO location (name) values ('vrn');
 
 DELETE FROM producttype;
-INSERT INTO producttype (name) values ('motherboard'), ('monitor'), ('powersupply');
+INSERT INTO producttype (name) values ('motherboard'), ('monitor'), ('powersupply'), ('screwdriver');

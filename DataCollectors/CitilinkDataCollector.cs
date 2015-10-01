@@ -218,6 +218,9 @@ namespace DataCollectors
                 case ProductTypeName.Monitor:
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/monitors/?available=1&status=0&p={0}";
                     break;
+                case ProductTypeName.Screwdriver:
+                    url = "http://www.citilink.ru/catalog/power_tools_and_garden_equipments/screwdrivers/?available=1&status=0&p={0}";
+                    break;
             }
             return url;
         }

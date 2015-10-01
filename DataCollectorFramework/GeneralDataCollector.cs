@@ -141,9 +141,10 @@ namespace DataCollectorFramework
                         {
                             var message =
                                 string.Format(
-                                    "External duplicate found: two equal products ('{0}') " +
-                                    "with different externalid ('{1}' and '{2}') in the same datasource ('{3}').",
-                                    matchResult.Product.Name,
+                                    "External duplicate found: two equal products ('{0}' and '{1}') " +
+                                    "with different externalid ('{2}' and '{3}') in the same datasource ('{4}').",
+                                    duplicate.OriginalName,
+                                    sourceProduct.OriginalName,
                                     duplicate.Key,
                                     sourceProduct.Key,
                                     context.DataSource.Name);

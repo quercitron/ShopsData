@@ -130,6 +130,10 @@ namespace DataCollectors
                 case ProductTypeName.PowerSupply:
                     productTypeName = "power_supply2";
                     break;
+
+                case ProductTypeName.Screwdriver:
+                    productTypeName = "sandingscrew";
+                    break;
             }
 
             if (productTypeName != null)

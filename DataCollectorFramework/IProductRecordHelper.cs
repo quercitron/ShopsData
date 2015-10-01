@@ -48,7 +48,7 @@ namespace DataCollectorFramework
             new Tuple<string, string>("чёрный", "Black"),
         };
 
-        protected virtual ComplexName ProcessName(ProductRecord productRecord)
+        public virtual ComplexName ProcessName(ProductRecord productRecord)
         {
             var name = productRecord.Name;
             var colors = new List<String>();
@@ -63,7 +63,7 @@ namespace DataCollectorFramework
             }
             return new ComplexName
             {
-                Name = name,
+                Name = name.Trim(' ', '.', ','),
                 Class = colors.Any() ? string.Join(" ", colors) : null,
             };
         }
@@ -76,14 +76,24 @@ namespace DataCollectorFramework
         public string Class { get; set; }
     }
 
-    class GeneralMotherboardProductRecordHelper : GeneralProductRecordHelper
+    public class GeneralMotherboardProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override ComplexName ProcessName(ProductRecord productRecord)
+        public override ComplexName ProcessName(ProductRecord productRecord)
         {
             var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, "Материнская плата", "Материнская плата", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Серверная материнская плата", "Серверная материнская плата", RegexOptions.IgnoreCase);
+            if (!Regex.IsMatch(name, "Материнская плата", RegexOptions.IgnoreCase))
+            {
+                name = "Материнская плата " + name;
+            }
+            name = name.Trim();
+
             return new ComplexName
             {
-                Name = Regex.Replace(baseResult.Name, "Материнская плата", "", RegexOptions.IgnoreCase).Trim(),
+                Name = name,
                 Class = baseResult.Class,
             };
         }
@@ -91,13 +101,16 @@ namespace DataCollectorFramework
 
     public class GeneralPowerSupplyProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override ComplexName ProcessName(ProductRecord productRecord)
+        public override ComplexName ProcessName(ProductRecord productRecord)
         {
             var baseResult = base.ProcessName(productRecord);
 
             var name = baseResult.Name;
-            name = Regex.Replace(name, "Блок питания ", "", RegexOptions.IgnoreCase);
-            name = Regex.Replace(name, "^ATX ", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Блок питания", "Блок питания", RegexOptions.IgnoreCase);
+            // [ATX350-PNR] -> [ATX-350PNR]
+            name = Regex.Replace(name, @"\bATX-?(\d+)-?PNR", "ATX-$1PNR", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"ATX-", "ATX ", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\bATX ", "", RegexOptions.IgnoreCase);
 
             var powerPattern = @"\b(\d+)W\b";
             var matchResult = Regex.Match(name, powerPattern, RegexOptions.IgnoreCase);
@@ -112,15 +125,15 @@ namespace DataCollectorFramework
                 }
             }
 
-            var startPowerPattern = @"^(\d+W)\s\b";
+            var startPowerPattern = @"Блок питания (\d+W)\s\b";
             matchResult = Regex.Match(name, startPowerPattern, RegexOptions.IgnoreCase);
             if (matchResult.Success)
             {
-                name = Regex.Replace(name, startPowerPattern, "", RegexOptions.IgnoreCase);
+                name = Regex.Replace(name, startPowerPattern, "Блок питания ", RegexOptions.IgnoreCase);
                 name = name + " " + matchResult.Groups[1].Value;
             }
 
-            powerPattern = @"\b(\d+)W\b";
+            powerPattern = @"(\d+)W\b";
             name = Regex.Replace(name, powerPattern, @"$1", RegexOptions.IgnoreCase);
 
             name = name.Replace("  ", " ");
@@ -134,9 +147,9 @@ namespace DataCollectorFramework
         }
     }
 
-    class GeneralMonitorProductRecordHelper : GeneralProductRecordHelper
+    public class GeneralMonitorProductRecordHelper : GeneralProductRecordHelper
     {
-        protected override ComplexName ProcessName(ProductRecord productRecord)
+        public override ComplexName ProcessName(ProductRecord productRecord)
         {
             var baseResult = base.ProcessName(productRecord);
 
@@ -144,8 +157,11 @@ namespace DataCollectorFramework
             // todo: add unit tests?
             name = Regex.Replace(name, "^[0-9.,]+\"", "");
             name = Regex.Replace(name, @"\s[0-9.,]+""", "");
-            name = Regex.Replace(name, "Монитор ЖК ", "", RegexOptions.IgnoreCase);
-            name = Regex.Replace(name, "Монитор ", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Монитор ЖК", "Монитор", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Монитор", "Монитор", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\(00/01\)", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"00\(01\)", "", RegexOptions.IgnoreCase);
+            name = name.Replace("  ", " ");
             name = name.Trim(' ', '.', ',');
 
             return new ComplexName

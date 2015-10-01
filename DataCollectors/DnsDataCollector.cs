@@ -124,6 +124,9 @@ namespace DataCollectors
                 case ProductTypeName.PowerSupply:
                     url = "http://www.dns-shop.ru/catalog/3670/bloki-pitaniya/ajax/?p={0}&offset={1}";
                     break;
+                case ProductTypeName.Screwdriver:
+                    url = "http://www.dns-shop.ru/catalog/5083/shurupovyorty/ajax/?p={0}&offset={1}";
+                    break;
             }
             return url;
         }

@@ -62,6 +62,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.PowerSupply:
                     productRecordHelper = new GeneralPowerSupplyProductRecordHelper();
                     break;
+                case ProductTypeName.Screwdriver:
+                    productRecordHelper = new GeneralScrewdriverProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -98,6 +101,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.PowerSupply:
                     productRecordHelper = new GeneralPowerSupplyProductRecordHelper();
                     break;
+                case ProductTypeName.Screwdriver:
+                    productRecordHelper = new GeneralScrewdriverProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -109,6 +115,38 @@ namespace DataCollectorFramework
         public IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
+        }
+    }
+
+    public class GeneralScrewdriverProductRecordHelper : GeneralProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, "Ударная дрель-шуруповерт", "Шуруповерт ударный", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Ударный шуруповерт", "Шуруповерт ударный", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Аккумуляторный шуруповерт", "Шуруповерт", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Дрель-шуруповерт", "Шуруповерт", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Шуруповерт", "Шуруповерт", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Аккумуляторная отвертка", "Аккумуляторная отвертка", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Аккумуляторный гайковерт", "Гайковерт", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Гайковерт", "Гайковерт", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\([\d\.]+\)", "");
+
+            name = Regex.Replace(name, "ИНТЕРСКОЛ", "INTERSKOL", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "ЗУБР", "ZUBR", RegexOptions.IgnoreCase);
+
+            name = Regex.Replace(name, @"\(без аккумулятора и з/у\)", "(without battery and charger)", RegexOptions.IgnoreCase);
+
+            name = name.Trim();
+
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+            };
         }
     }
 
@@ -134,6 +172,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.Monitor:
                     productRecordHelper = new GeneralMonitorProductRecordHelper();
                     break;
+                case ProductTypeName.Screwdriver:
+                    productRecordHelper = new GeneralScrewdriverProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -150,31 +191,26 @@ namespace DataCollectorFramework
 
     public class DnsPowerSupplyHelper : GeneralPowerSupplyProductRecordHelper
     {
-        protected override ComplexName ProcessName(ProductRecord productRecord)
+        public override ComplexName ProcessName(ProductRecord productRecord)
         {
             var baseResult = base.ProcessName(productRecord);
 
             var name = baseResult.Name;
 
-            string result;
             var match = Regex.Match(name, @"\[(.*)\]");
             if (match.Success)
             {
-                result = string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
-                var index = result.IndexOf("/");
+                name = "Блок питания " + string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
+                var index = name.IndexOf("/");
                 if (index >= 0)
                 {
-                    result = result.Substring(0, index);
+                    name = name.Substring(0, index);
                 }
-            }
-            else
-            {
-                result = name.Replace("Блок питания ", "");
             }
 
             return new ComplexName
             {
-                Name = result,
+                Name = name,
                 Class = baseResult.Class,
             };
         }
