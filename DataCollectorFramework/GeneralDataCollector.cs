@@ -68,7 +68,9 @@ namespace DataCollectorFramework
                                 var date = DateTime.UtcNow;
                                 foreach (var product in shopDataResult.Products)
                                 {
+                                    product.DataSourceId = dataSource.DataSourceId;
                                     product.LocationId = location.LocationId;
+                                    product.ProductTypeId = productType.ProductTypeId;
                                     product.Timestamp = date;
                                 }
                                 var context = new ProductsContext

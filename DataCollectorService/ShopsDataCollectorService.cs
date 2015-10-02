@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Configuration;
+using System.Globalization;
 using System.ServiceProcess;
 
 using DataCollectorFramework;
@@ -33,10 +34,12 @@ namespace DataCollectorService
                 .Build();
 
             // Trigger the job to run now, and then every 40 seconds
+            var schedule = ConfigurationManager.AppSettings["schedule"];
+
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("DataCollectionTrigger", "ShopsDataCollection")
                 .WithCronSchedule(
-                    "0 0/30 * * * ?",
+                    schedule,
                     x => x.WithMisfireHandlingInstructionDoNothing())
                 .Build();
 

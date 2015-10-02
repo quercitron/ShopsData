@@ -26,6 +26,10 @@ namespace DataCollectorCore.DataObjects
 
         public string Brand { get; set; }
 
+        public int ProductTypeId { get; set; }
+
+        public int DataSourceId { get; set; }
+
         public override string ToString()
         {
             return string.Format("Name: {0}, Price: {1}, Description: {2}, Rating: {3}", Name, Price, Description, Rating);

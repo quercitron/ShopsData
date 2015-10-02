@@ -266,8 +266,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand) " +
-                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand) " +
+            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid) " +
+                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid) " +
                               "returning productrecordid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
@@ -280,6 +280,8 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, productRecord.LocationId);
             command.Parameters.AddWithValue("externalid", NpgsqlDbType.Text, productRecord.ExternalId);
             command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, productRecord.Brand);
+            command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productRecord.ProductTypeId);
+            command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, productRecord.DataSourceId);
 
             try
             {
@@ -369,7 +371,7 @@ namespace PostgreDAL
                     sourceProduct.OriginalName = dr.GetString(5);
                     sourceProduct.Brand = dr.GetString(6);
                     sourceProduct.Timestamp = dr.GetTimeStamp(7);
-                    sourceProduct.Class = dr.GetString(8);
+                    sourceProduct.Class = dr[8] as string;
 
                     sourceProducts.Add(sourceProduct);
                 }
