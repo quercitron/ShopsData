@@ -20,7 +20,20 @@ namespace ShopsData.Web
 
             config.Routes.MapHttpRoute(
                 name: "CurrentDataApi",
-                routeTemplate: "api/{controller}/{locationId}/{productTypeId}"
+                routeTemplate: "api/CurrentData/{locationId}/{productTypeId}",
+                defaults: new { controller = "CurrentData" }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "CurrentDataGroupedApi",
+                routeTemplate: "api/CurrentDataGrouped/{locationId}/{productTypeId}",
+                defaults: new { controller = "CurrentDataGrouped" }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "ProductDetailsApi",
+                routeTemplate: "api/ProductDetails/{locationId}/{productId}",
+                defaults: new { controller = "ProductDetails" }
             );
 
             // todo: is it a good method to set JSON formatter as default?

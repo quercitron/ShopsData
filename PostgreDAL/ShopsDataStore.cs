@@ -261,6 +261,49 @@ namespace PostgreDAL
             }
         }
 
+        public List<ProductDetail> GetProductDetails(int locationId, int productId)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText =
+                "select p.productid, p.name, p.class, sp.datasourceid, pr.price, pr.rating, pr.timestamp, pr.description " +
+                "from product p " +
+                "join sourceproduct sp on p.productid = sp.productid " +
+                "join productrecord pr on sp.sourceproductid = pr.sourceproductid " +
+                "where pr.locationid = :locationid and p.productid = :productid";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, locationId);
+            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productId);
+
+            var productDetails = new List<ProductDetail>();
+            try
+            {
+                NpgsqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var detail = new ProductDetail();
+
+                    detail.ProductId = dr.GetInt32(0);
+                    detail.Name = dr.GetString(1);
+                    detail.Class = dr[2] as string;
+                    detail.DataSourceId = dr.GetInt32(3);
+                    detail.Price = dr.GetInt32(4);
+                    detail.Rating = dr.GetFloat(5);
+                    detail.Timestamp = dr.GetTimeStamp(6);
+                    detail.Description = dr.GetString(7);
+
+                    productDetails.Add(detail);
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return productDetails;
+        }
+
         public void AddProductRecord(ProductRecord productRecord)
         {
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);

@@ -20,15 +20,27 @@ namespace ShopsData.Web
             );
 
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                name: "ProductDetails",
+                url: "ProductDetails/{locationId}/{productId}",
+                defaults: new { controller = "Home", Action = "Index" }
             );
 
             routes.MapRoute(
-                name: "Default2",
-                url: "{controller}/{action}/{locationId}/{productTypeId}",
-                defaults: new { controller = "Home", action = "Index" }
+                name: "CurrentDataPartial",
+                url: "{controller}/CurrentData/{locationId}/{productTypeId}",
+                defaults: new { controller = "Home", action = "CurrentData" }
+            );
+
+            routes.MapRoute(
+                name: "ProductDetailsPartial",
+                url: "{controller}/ProductDetails/{locationId}/{productId}",
+                defaults: new { controller = "Home", action = "ProductDetails" }
+            );
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

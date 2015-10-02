@@ -77,6 +77,34 @@ namespace ShopsData.Web.Repository
             var locations = shopsDataStore.GetLocations();
             return locations;
         }
+
+        public ProductDetailsModel GetProductDetails(int locationId, int productId)
+        {
+            var shopsDataStore = new ShopsDataStore();
+            var details = shopsDataStore.GetProductDetails(locationId, productId);
+
+            var productDetailsModel = new ProductDetailsModel();
+            productDetailsModel.ProductId = productId;
+            productDetailsModel.ProductName = details.First().Name;
+            productDetailsModel.SourceDetails =
+                details
+                    .GroupBy(d => d.DataSourceId)
+                    .ToDictionary(g => g.Key, g => new SourceDetail { Records = g.ToList() });
+
+            return productDetailsModel;
+        }
+    }
+
+    public class ProductDetailsModel
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public Dictionary<int, SourceDetail> SourceDetails { get; set; }
+    }
+
+    public class SourceDetail
+    {
+        public List<ProductDetail> Records { get; set; }
     }
 
     public class ProductGroup

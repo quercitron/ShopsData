@@ -17,5 +17,10 @@ namespace ShopsData.Web.Controllers
         {
             return PartialView();
         }
+
+        public ActionResult ProductDetails(int locationId, int productId)
+        {
+            return PartialView();
+        }
     }
 }

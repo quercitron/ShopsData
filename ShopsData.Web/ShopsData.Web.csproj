@@ -178,6 +178,7 @@
     <Compile Include="API\CurrentDataGroupedController.cs" />
     <Compile Include="API\DataSourceController.cs" />
     <Compile Include="API\LocationController.cs" />
+    <Compile Include="API\ProductDetailsController.cs" />
     <Compile Include="API\ProductTypeController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -202,8 +203,10 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\Controllers\CurrentDataController.js" />
     <Content Include="Scripts\Controllers\LandingPageController.js" />
+    <Content Include="Scripts\Controllers\ProductDetailsController.js" />
     <Content Include="Scripts\Services\CurrentDataService.js" />
     <Content Include="Scripts\Services\GeneralDataService.js" />
+    <Content Include="Scripts\Services\ProductDetailsService.js" />
     <Content Include="Scripts\ShopsDataApp.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -223,6 +226,7 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <None Include="Views\Home\CurrentData.cshtml" />
+    <Content Include="Views\Home\ProductDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataCollectorCore\DataCollectorCore.csproj">

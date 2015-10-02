@@ -28,6 +28,8 @@ namespace PostgreDAL
 
         void UpdateProduct(Product product);
 
+        List<ProductDetail> GetProductDetails(int locationId, int productId);
+
 
         void AddProductRecord(ProductRecord productRecord);
 
@@ -43,6 +45,18 @@ namespace PostgreDAL
 
 
         List<ProductData> GetCurrentData(int locationId, int productTypeId);
+    }
+
+    public class ProductDetail
+    {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public string Class { get; set; }
+        public int DataSourceId { get; set; }
+        public int Price { get; set; }
+        public float Rating { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string Description { get; set; }
     }
 
     public class ProductData
