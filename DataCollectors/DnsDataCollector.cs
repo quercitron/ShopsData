@@ -14,6 +14,8 @@ namespace DataCollectors
 {
     public class DnsDataCollector : DataCollectorBase
     {
+        private static readonly int AttemptCount = 3;
+
         public override string ShopName
         {
             get { return "DNS"; }
@@ -32,13 +34,33 @@ namespace DataCollectors
 
                 //Uri target = new Uri("http://www.dns-shop.ru/catalog/3633/monitory/?length_1=0");
                 Uri target = new Uri(targetUri);
-                var request = WebRequest.CreateHttp(target);
-                /*Cookie cookie = new Cookie("city_path", "voronezh") { Domain = target.Host };
-                var cookieContainer = new CookieContainer();
-                cookieContainer.Add(cookie);
-                request.CookieContainer = cookieContainer;*/
 
-                var source = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+                string source = null;
+
+                for (int i = 0; i < AttemptCount; i++)
+                {
+                    try
+                    {
+                        // todo: add headers
+                        // todo: all location
+                        var request = WebRequest.CreateHttp(target);
+                        /*Cookie cookie = new Cookie("city_path", "voronezh") { Domain = target.Host };
+                        var cookieContainer = new CookieContainer();
+                        cookieContainer.Add(cookie);
+                        request.CookieContainer = cookieContainer;*/
+
+                        source = new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+
+                        break;
+                    }
+                    catch
+                    {
+                        if (i + 1 == AttemptCount)
+                        {
+                            throw;
+                        }
+                    }
+                }
 
                 /*HttpClient http = new HttpClient();
                 var response = http.GetByteArrayAsync("http://www.dns-shop.ru/catalog/3633/monitory/?length_1=0");
@@ -80,6 +102,8 @@ namespace DataCollectors
             //item.Name = htmlNode.Attributes["data-ec-item-title"].Value;
             var nameNode = htmlNode.DescendantFirstOrDefault("div", "item-name").Descendants("a").First();
             item.Name = nameNode.InnerText;
+            // todo: move to const
+            item.SourceLink = "http://www.dns-shop.ru" + nameNode.Attributes["href"].Value;
 
             item.Brand = htmlNode.Attributes["data-ec-item-brand"].Value;
             item.ExternalId = htmlNode.Attributes["data-ec-item-id"].Value;

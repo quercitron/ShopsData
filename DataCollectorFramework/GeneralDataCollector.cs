@@ -15,6 +15,55 @@ namespace DataCollectorFramework
 
         private readonly IShopsDataStore _dataStore = new ShopsDataStore();
 
+        public void ReprocessRecords()
+        {
+            try
+            {
+                _logger.Info("Product records reprocessing started.");
+
+                var locations = _dataStore.GetLocations();
+                var dataSources = _dataStore.GetDataSources();
+                var productTypes = _dataStore.GetProductTypes();
+
+                // todo: batch processing
+                int batchSize = 50000;
+                for (int offset = 0;; offset += batchSize)
+                {
+                    _logger.InfoFormat("Process records {0}-{1}.", offset + 1, offset + batchSize);
+
+                    var productRecords = _dataStore.GetProductRecords(batchSize, offset);
+
+                    _logger.InfoFormat("{0} records taken.", productRecords.Count);
+
+                    if (productRecords.Count == 0)
+                    {
+                        break;
+                    }
+                    var recordGroups = productRecords.GroupBy(pr => new { pr.LocationId, pr.DataSourceId, pr.ProductTypeId });
+                    foreach (var recordGroup in recordGroups)
+                    {
+                        var context = new ProductsContext
+                        {
+                            Location = locations.First(l => l.LocationId == recordGroup.Key.LocationId),
+                            DataSource = dataSources.First(ds => ds.DataSourceId == recordGroup.Key.DataSourceId),
+                            ProductType = productTypes.First(pt => pt.ProductTypeId == recordGroup.Key.ProductTypeId),
+                        };
+                        var records = recordGroup.ToList();
+                        AddToDb(context, records, true);
+                    }
+
+                    _logger.Info("Batch processed.");
+                }
+
+                _logger.Info("Product records reprocessing complete.");
+            }
+            catch (Exception exception)
+            {
+                var message = "Failed to reprocess product records.";
+                _logger.Error(message, exception);
+            }
+        }
+
         public void CollectData()
         {
             try
@@ -110,7 +159,7 @@ namespace DataCollectorFramework
             _logger.InfoFormat("Complete processing data source '{0}'.", dataSource.Name);
         }
 
-        private void AddToDb(ProductsContext context, IList<ProductRecord> productRecords)
+        private void AddToDb(ProductsContext context, IList<ProductRecord> productRecords, bool updateProductRecords = false)
         {
             var sourceManager = _sourceManagerFactory.GetManager(context.DataSource.Name);
 
@@ -180,9 +229,19 @@ namespace DataCollectorFramework
                 productRecord.SourceProductId = sourceProduct.SourceProductId;
             }
 
-            foreach (var productRecord in productRecords)
+            if (updateProductRecords)
             {
-                _dataStore.AddProductRecord(productRecord);
+                foreach (var productRecord in productRecords)
+                {
+                    _dataStore.UpdateProductRecord(productRecord);
+                }
+            }
+            else
+            {
+                foreach (var productRecord in productRecords)
+                {
+                    _dataStore.AddProductRecord(productRecord);
+                }
             }
         }
 

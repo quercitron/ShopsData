@@ -1,20 +1,6 @@
 select dblink_disconnect('myconn');
 select dblink_connect('myconn','host=localhost port=5433 dbname=shopsdata_restore user=postgres password=123123'); 
-insert into productrecord_temp (
-    productrecordid,
-    sourceproductid,
-    price,
-    rating,
-    "timestamp",
-    amountavailable,
-    description,
-    name,
-    locationid,
-    externalid,
-    brand,
-    producttypeid,
-    datasourceid
-)
+insert into productrecord_temp 
 select *
 from dblink('myconn','SELECT * FROM productrecord') as tmp(
     productrecordid integer,
@@ -28,7 +14,5 @@ from dblink('myconn','SELECT * FROM productrecord') as tmp(
     locationid integer,
     externalid text,
     brand text,
-    producttypeid integer,
-    datasourceid integer
+    producttypeid integer
 );
-select dblink_disconnect('myconn');

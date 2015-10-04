@@ -30,6 +30,7 @@ namespace DataCollectors
 
                 Uri target = new Uri(targetUri);
 
+                // todo: all location
                 var request = WebRequest.CreateHttp(target);
                 request.Accept = @"text/html, */*; q=0.01";
                 // todo: how does Accept-Encoding affect response encoding?
@@ -96,6 +97,9 @@ namespace DataCollectors
 
             var descriptionNode = center.DescendantFirstOrDefault("div", "b-product__descr");
             record.Description = descriptionNode.InnerText;
+
+            var hrefNode = htmlNode.Descendants("a").First(x => x.Class().Contains("js-gtm-product-click"));
+            record.SourceLink = "http://www.ulmart.ru" + hrefNode.Attributes["href"].Value;
 
             var ratingNode = center.Descendants("div").First(x => x.Class().StartsWith("b-small-stars "));
             var ratingClass = ratingNode.Class();

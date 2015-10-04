@@ -91,6 +91,47 @@ namespace ShopsData.Web.Repository
                     .GroupBy(d => d.DataSourceId)
                     .ToDictionary(g => g.Key, g => new SourceDetail { Records = g.ToList() });
 
+            var dataSources = shopsDataStore.GetDataSources();
+
+            var prices = new Prices();
+            prices.Labels = new List<string> { "Date" };
+            prices.Labels.AddRange(dataSources.Select(ds => ds.Name));
+
+            var dsDict = new Dictionary<int, int>();
+            for (int i = 0; i < dataSources.Count; i++)
+            {
+                dsDict.Add(dataSources[i].DataSourceId, i);
+            }
+            prices.PlotData = new List<object[]>();
+            var date = new DateTime();
+            object[] plotData = null;
+            foreach (var productDetail in details.OrderBy(d => d.Timestamp))
+            {
+                // todo: increase time interval?
+                if (productDetail.Timestamp.Subtract(date).TotalMinutes < 5)
+                {
+                    plotData[dsDict[productDetail.DataSourceId] + 1] = productDetail.Price;
+                }
+                else
+                {
+                    date = productDetail.Timestamp;
+
+                    if (plotData != null)
+                    {
+                        prices.PlotData.Add(plotData);
+                    }
+                    plotData = new object[dataSources.Count + 1];
+                    plotData[0] = productDetail.Timestamp;
+                    plotData[dsDict[productDetail.DataSourceId] + 1] = productDetail.Price;
+                }
+            }
+            if (plotData != null)
+            {
+                prices.PlotData.Add(plotData);
+            }
+
+            productDetailsModel.Prices = prices;
+
             return productDetailsModel;
         }
     }
@@ -100,6 +141,13 @@ namespace ShopsData.Web.Repository
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public Dictionary<int, SourceDetail> SourceDetails { get; set; }
+        public Prices Prices { get; set; }
+    }
+
+    public class Prices
+    {
+        public List<string> Labels { get; set; }
+        public List<object[]> PlotData { get; set; }
     }
 
     public class SourceDetail

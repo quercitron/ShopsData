@@ -33,6 +33,10 @@ namespace PostgreDAL
 
         void AddProductRecord(ProductRecord productRecord);
 
+        List<ProductRecord> GetProductRecords(int limit = 0, int offset = 0);
+
+        void UpdateProductRecord(ProductRecord productRecord);
+
 
         void AddLocation(Location location);
 

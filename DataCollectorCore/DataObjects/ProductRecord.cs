@@ -30,6 +30,8 @@ namespace DataCollectorCore.DataObjects
 
         public int DataSourceId { get; set; }
 
+        public string SourceLink { get; set; }
+
         public override string ToString()
         {
             return string.Format("Name: {0}, Price: {1}, Description: {2}, Rating: {3}", Name, Price, Description, Rating);

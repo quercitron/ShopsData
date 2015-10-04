@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.ServiceProcess;
 
@@ -66,9 +67,11 @@ namespace DataCollectorService
         public void Execute(IJobExecutionContext context)
         {
             _logger.Info("Data collecting started.");
+            var stopwatch = Stopwatch.StartNew();
             var collector = new GeneralDataCollector();
             collector.CollectData();
-            _logger.Info("Data collecting complete.");
+            stopwatch.Stop();
+            _logger.InfoFormat("Data collecting complete in {0} ms.", stopwatch.ElapsedMilliseconds);
         }
     }
 }

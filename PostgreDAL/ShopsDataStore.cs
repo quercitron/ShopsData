@@ -290,7 +290,7 @@ namespace PostgreDAL
                     detail.DataSourceId = dr.GetInt32(3);
                     detail.Price = dr.GetInt32(4);
                     detail.Rating = dr.GetFloat(5);
-                    detail.Timestamp = dr.GetTimeStamp(6);
+                    detail.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(6), DateTimeKind.Utc);
                     detail.Description = dr.GetString(7);
 
                     productDetails.Add(detail);
@@ -309,8 +309,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid) " +
-                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid) " +
+            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink) " +
+                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink) " +
                               "returning productrecordid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
@@ -325,6 +325,7 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, productRecord.Brand);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productRecord.ProductTypeId);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, productRecord.DataSourceId);
+            command.Parameters.AddWithValue("sourcelink", NpgsqlDbType.Text, productRecord.SourceLink);
 
             try
             {
@@ -334,6 +335,96 @@ namespace PostgreDAL
             {
                 conn.Close();
             }
+        }
+
+        public void UpdateProductRecord(ProductRecord productRecord)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "update productrecord " +
+                              "set ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink) " +
+                              "  = (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink) " +
+                              "where productrecordid = :productrecordid";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("productrecordid", NpgsqlDbType.Integer, productRecord.ProductRecordId);
+            command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
+            command.Parameters.AddWithValue("name", NpgsqlDbType.Text, productRecord.Name);
+            command.Parameters.AddWithValue("description", NpgsqlDbType.Text, productRecord.Description);
+            command.Parameters.AddWithValue("price", NpgsqlDbType.Integer, productRecord.Price);
+            command.Parameters.AddWithValue("rating", NpgsqlDbType.Real, productRecord.Rating);
+            command.Parameters.AddWithValue("amountavailable", NpgsqlDbType.Integer, productRecord.AmountAvailable);
+            command.Parameters.AddWithValue("timestamp", NpgsqlDbType.Timestamp, productRecord.Timestamp);
+            command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, productRecord.LocationId);
+            command.Parameters.AddWithValue("externalid", NpgsqlDbType.Text, productRecord.ExternalId);
+            command.Parameters.AddWithValue("brand", NpgsqlDbType.Text, productRecord.Brand);
+            command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productRecord.ProductTypeId);
+            command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, productRecord.DataSourceId);
+            command.Parameters.AddWithValue("sourcelink", NpgsqlDbType.Text, productRecord.SourceLink);
+
+            try
+            {
+                command.ExecuteScalar();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public List<ProductRecord> GetProductRecords(int limit = 0, int offset = 0)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "SELECT productrecordid, sourceproductid, price, rating, timestamp, " +
+                              "amountavailable, description, name, locationid, externalid, brand, " +
+                              "producttypeid, datasourceid, sourcelink " +
+                              "FROM productrecord " +
+                              "ORDER BY productrecordid";
+            if (limit > 0)
+            {
+                commandText += " LIMIT " + limit;
+            }
+            if (offset > 0)
+            {
+                commandText += " OFFSET " + offset;
+            }
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+
+            var productRecords = new List<ProductRecord>();
+            try
+            {
+                NpgsqlDataReader dr = command.ExecuteReader();
+                while (dr.Read())
+                {
+                    var productRecord = new ProductRecord();
+
+                    productRecord.ProductRecordId = dr.GetInt32(0);
+                    productRecord.SourceProductId = dr.GetInt32(1);
+                    productRecord.Price = dr.GetInt32(2);
+                    productRecord.Rating = dr.GetFloat(3);
+                    productRecord.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(4), DateTimeKind.Utc);
+                    productRecord.AmountAvailable = dr.GetInt32(5);
+                    productRecord.Description = dr[6] as string;
+                    productRecord.Name = dr.GetString(7);
+                    productRecord.LocationId = dr.GetInt32(8);
+                    productRecord.ExternalId = dr.GetString(9);
+                    productRecord.Brand = dr[10] as string;
+                    productRecord.ProductTypeId = dr.GetInt32(11);
+                    productRecord.DataSourceId = dr.GetInt32(12);
+                    productRecord.SourceLink = dr[13] as string;
+
+                    productRecords.Add(productRecord);
+                }
+
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return productRecords;
         }
 
         public void AddLocation(Location location)

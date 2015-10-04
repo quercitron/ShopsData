@@ -124,6 +124,7 @@ namespace DataCollectors
 
                 var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "product_link__js");
                 item.Name = titleNode.Attributes["title"].Value;
+                item.SourceLink = "http://www.citilink.ru" + titleNode.Attributes["href"].Value;
 
                 var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
                 item.Description = descriptionNode.InnerText;
