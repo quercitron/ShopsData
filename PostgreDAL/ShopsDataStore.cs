@@ -267,7 +267,7 @@ namespace PostgreDAL
             conn.Open();
 
             var commandText =
-                "select p.productid, p.name, p.class, sp.datasourceid, pr.price, pr.rating, pr.timestamp, pr.description " +
+                "select p.productid, p.name, p.class, sp.datasourceid, pr.price, pr.rating, pr.timestamp, pr.description, pr.sourcelink, pr.image " +
                 "from product p " +
                 "join sourceproduct sp on p.productid = sp.productid " +
                 "join productrecord pr on sp.sourceproductid = pr.sourceproductid " +
@@ -292,6 +292,8 @@ namespace PostgreDAL
                     detail.Rating = dr.GetFloat(5);
                     detail.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(6), DateTimeKind.Utc);
                     detail.Description = dr.GetString(7);
+                    detail.SourceLink = dr[8] as string;
+                    detail.Image = dr[9] as string;
 
                     productDetails.Add(detail);
                 }

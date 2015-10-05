@@ -28,6 +28,8 @@
                     showRoller: false,
                     legend: 'always',
                     //labelsSeparateLines: true,
+                    drawPoints: true,
+                    //drawAxesAtZero: true,
                     axes:
                     {
                         x:

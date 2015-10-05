@@ -38,7 +38,7 @@
             <th ng-repeat="dataSource in dataSources">{{dataSource.Name}}</th>
         </tr>
         <tr ng-repeat="productGroup in productGroups | filter:searchFilter">
-            <td><a href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">{{productGroup.ProductName}}</a></td>
+            <td><a ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">{{productGroup.ProductName}}</a></td>
             <td ng-repeat="dataSource in dataSources">
                 {{productGroup.Records[dataSource.DataSourceId].Price}}
                 @*<br/>

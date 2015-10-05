@@ -24,6 +24,11 @@ namespace DataCollectors
             return htmlNode.Childs(name).Where(node => node.Class().ContainsIgnoreCase(className));
         }
 
+        public static HtmlNode Child(this HtmlNode htmlNode, string name)
+        {
+            return htmlNode.Childs(name).FirstOrDefault();
+        }
+
         public static HtmlNode Child(this HtmlNode htmlNode, string name, string className)
         {
             return htmlNode.Childs(name, className).FirstOrDefault();

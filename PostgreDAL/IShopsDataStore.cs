@@ -61,6 +61,8 @@ namespace PostgreDAL
         public float Rating { get; set; }
         public DateTime Timestamp { get; set; }
         public string Description { get; set; }
+        public string SourceLink { get; set; }
+        public string Image { get; set; }
     }
 
     public class ProductData

@@ -129,7 +129,8 @@ namespace DataCollectors
                 }
             }
 
-            // todo: add rating
+            var imageNode = htmlNode.Descendant("div", "image").Child("a").Child("img");
+            item.Image = imageNode.Attributes["src"].Value;
 
             return item;
         }

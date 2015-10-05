@@ -112,6 +112,12 @@ namespace DataCollectors
                 }
             }
 
+            var imageNode = htmlNode.Descendant("img", "b-img2__img");
+            if (imageNode != null)
+            {
+                record.Image = imageNode.Attributes["src"].Value;
+            }
+
             return record;
         }
 

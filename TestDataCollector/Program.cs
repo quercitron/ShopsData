@@ -75,9 +75,9 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new KeyDataCollector();
+            var dataCollector = new CitilinkDataCollector();
 
-            var data = dataCollector.GetShopData("location", ProductTypeName.PowerSupply);
+            var data = dataCollector.GetShopData("vrn", ProductTypeName.Monitor);
             //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();
 
             using (var writer = File.CreateText("output.txt"))
@@ -90,6 +90,9 @@ namespace TestDataCollector
                 {
                     writer.WriteLine(data.Message);
                     writer.WriteLine(data.Exception);
+
+                    Console.WriteLine(data.Message);
+                    Console.WriteLine(data.Exception);
                 }
             }
         }

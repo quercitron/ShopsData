@@ -29,6 +29,12 @@ namespace ShopsData.Tests
             result = helper.ProcessName(new ProductRecord { Name = "блок питания ATX 450W Storm 45SHB" });
             Assert.That(result.Name, Is.EqualTo("Блок питания Storm 45SHB 450"));
 
+            result = helper.ProcessName(new ProductRecord { Name = "БП Thermaltake ToughPower Grand 1200W ATX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Thermaltake ToughPower Grand 1200"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания БП Thermaltake Russian Gold Baikal 1500W ATX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Thermaltake Russian Gold Baikal 1500"));
+
             // dns
             helper = new DnsPowerSupplyHelper();
 
@@ -70,6 +76,12 @@ namespace ShopsData.Tests
 
             result = helper.ProcessName(new ProductRecord { Name = "MSI A68HM-E33" });
             Assert.That(result.Name, Is.EqualTo("Материнская плата MSI A68HM-E33"));
+
+            // key
+            helper = new KeyMotherboardHelper();
+
+            result = helper.ProcessName(new ProductRecord { Name = "Материнская плата MB Asus A58M-K" });
+            Assert.That(result.Name, Is.EqualTo("Материнская плата Asus A58M-K"));
         }
 
         [Test]
@@ -83,6 +95,26 @@ namespace ShopsData.Tests
             result = helper.ProcessName(new ProductRecord { Name = "21.5\" Монитор Philips 226V4LSB, 00(01) черный" });
             Assert.That(result.Name, Is.EqualTo("Монитор Philips 226V4LSB"));
             Assert.That(result.Class, Is.EqualTo("Black"));
+
+
+            // key
+            helper = new KeyMonitorHelper();
+
+            result = helper.ProcessName(new ProductRecord { Name = "Монитор Acer G246HYLbmjj Black" });
+            Assert.That(result.Name, Is.EqualTo("Монитор Acer G246HYLbmjj"));
+            Assert.That(result.Class, Is.EqualTo("Black"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Монитор LG 34UM95-P Black&Silver" });
+            Assert.That(result.Name, Is.EqualTo("Монитор LG 34UM95-P"));
+            Assert.That(result.Class, Is.EqualTo("Silver Black"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Монитор LG 22MP56HQ-T Black/Silver" });
+            Assert.That(result.Name, Is.EqualTo("Монитор LG 22MP56HQ-T"));
+            Assert.That(result.Class, Is.EqualTo("Silver Black"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Монитор Philips 223V5QHSB6/ Black Hairline" });
+            Assert.That(result.Name, Is.EqualTo("Монитор Philips 223V5QHSB6"));
+            Assert.That(result.Class, Is.EqualTo("Black Hairline"));
         }
     }
 }

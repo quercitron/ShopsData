@@ -129,6 +129,23 @@ namespace DataCollectors
                 var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
                 item.Description = descriptionNode.InnerText;
 
+                var imageTd = row.Descendant("td", "image");
+                if (imageTd != null)
+                {
+                    var imageNode = imageTd.Descendant("img");
+                    if (imageNode != null)
+                    {
+                        if (imageNode.Attributes["src"] != null)
+                        {
+                            item.Image = imageNode.Attributes["src"].Value;
+                        }
+                        else if (imageNode.Attributes["data-src"] != null)
+                        {
+                            item.Image = imageNode.Attributes["data-src"].Value;
+                        }
+                    }
+                }
+
                 var ratingDiv = row.Descendant("div", "ratings");
                 if (ratingDiv != null)
                 {

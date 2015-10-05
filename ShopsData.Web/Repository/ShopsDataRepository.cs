@@ -86,12 +86,21 @@ namespace ShopsData.Web.Repository
             var productDetailsModel = new ProductDetailsModel();
             productDetailsModel.ProductId = productId;
             productDetailsModel.ProductName = details.First().Name;
-            productDetailsModel.SourceDetails =
-                details
-                    .GroupBy(d => d.DataSourceId)
-                    .ToDictionary(g => g.Key, g => new SourceDetail { Records = g.ToList() });
-
             var dataSources = shopsDataStore.GetDataSources();
+
+            var sourceDetailsGroups = details.GroupBy(d => d.DataSourceId);
+            productDetailsModel.SourceDetails = new List<SourceDetail>();
+            foreach (var dataSource in dataSources)
+            {
+                var sourceDetail = new SourceDetail { DataSource = dataSource };
+                var sourceGroup = sourceDetailsGroups.FirstOrDefault(x => x.Key == dataSource.DataSourceId);
+                if (sourceGroup != null)
+                {
+                    sourceDetail.Records = sourceGroup.ToList();
+                    sourceDetail.LastRecord = sourceGroup.OrderByDescending(x => x.Timestamp).FirstOrDefault();
+                }
+                productDetailsModel.SourceDetails.Add(sourceDetail);
+            }
 
             var prices = new Prices();
             prices.Labels = new List<string> { "Date" };
@@ -140,7 +149,7 @@ namespace ShopsData.Web.Repository
     {
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public Dictionary<int, SourceDetail> SourceDetails { get; set; }
+        public List<SourceDetail> SourceDetails { get; set; }
         public Prices Prices { get; set; }
     }
 
@@ -152,6 +161,8 @@ namespace ShopsData.Web.Repository
 
     public class SourceDetail
     {
+        public DataSource DataSource { get; set; }
+        public ProductDetail LastRecord { get; set; }
         public List<ProductDetail> Records { get; set; }
     }
 

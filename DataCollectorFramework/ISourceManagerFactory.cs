@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using DataCollectorCore;
 using DataCollectorCore.DataObjects;
@@ -32,6 +34,9 @@ namespace DataCollectorFramework
                 case "ulmart":
                     sourceManager = new UlmartSourceManager();
                     break;
+                case "key":
+                    sourceManager = new KeySourceManager();
+                    break;
                 default:
                     var message = string.Format("Data source '{0}' is not supported", sourceName);
                     throw new NotSupportedException(message);
@@ -40,14 +45,84 @@ namespace DataCollectorFramework
         }
     }
 
-    public class UlmartSourceManager : ISourceManager
+    public class UlmartSourceManager : GeneralSourceManager
     {
-        public IShopDataCollector GetDataCollector()
+        public override IShopDataCollector GetDataCollector()
         {
             return new UlmartDataCollector();
         }
 
-        public IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        public override IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        {
+            switch (productType.Name)
+            {
+                case ProductTypeName.Motherboard:
+                    return new KeyMotherboardHelper();
+                case ProductTypeName.Monitor:
+                    return new KeyMonitorHelper();
+            }
+            return base.GetProductRecordHelper(productType);
+        }
+    }
+
+    public class KeyMonitorHelper : GeneralMonitorProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            var productClass = baseResult.Class;
+
+            name = Regex.Replace(name, "Материнская плата MB ", "Материнская плата ", RegexOptions.IgnoreCase);
+
+            var newColors = new List<string>();
+            foreach (var color in ColorsReplace)
+            {
+                var pattern = string.Format(@"\b{0}\b", color.Item2);
+                if (Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase))
+                {
+                    name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+                    newColors.Add(color.Item2);
+                }
+            }
+            if (newColors.Any())
+            {
+                productClass += " " + String.Join(" ", newColors);
+                productClass = productClass.Trim();
+            }
+            name = name.Trim(' ', ',', '.', '&', '/', '\\');
+
+            return new ComplexName { Name = name, Class = productClass };
+        }
+    }
+
+    public class KeyMotherboardHelper : GeneralMotherboardProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, "Материнская плата MB ", "Материнская плата ", RegexOptions.IgnoreCase);
+
+            return new ComplexName { Name = name, Class = baseResult.Class };
+        }
+    }
+
+    public class KeySourceManager : GeneralSourceManager
+    {
+        public override IShopDataCollector GetDataCollector()
+        {
+            return new KeyDataCollector();
+        }
+    }
+
+    public abstract class GeneralSourceManager : ISourceManager
+    {
+        public abstract IShopDataCollector GetDataCollector();
+
+        public virtual IProductRecordHelper GetProductRecordHelper(ProductType productType)
         {
             IProductRecordHelper productRecordHelper;
 
@@ -73,7 +148,7 @@ namespace DataCollectorFramework
             return productRecordHelper;
         }
 
-        public IProductHelper GetProductHelper(ProductType productType)
+        public virtual IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
         }

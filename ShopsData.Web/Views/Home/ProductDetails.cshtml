@@ -2,5 +2,24 @@
     <h1>Product Details</h1>
     <h2>{{details.ProductName}}</h2>
 
+    <table>
+        <tr>
+            <th>Source Name</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+        <tr ng-repeat="sourceDetail in details.SourceDetails">
+            <td><a ng-href="{{sourceDetail.LastRecord.SourceLink}}">{{sourceDetail.DataSource.Name}}</a></td>
+            <td>
+                <a ng-href="{{sourceDetail.LastRecord.SourceLink}}">
+                    <img ng-src="{{sourceDetail.LastRecord.Image}}">
+                </a>
+            </td>
+            <td>{{sourceDetail.LastRecord.Price}}</td>
+            <td>{{sourceDetail.LastRecord.Description}}</td>
+        </tr>
+    </table>
+
     <div id="graphdiv"></div>
 </div>

@@ -37,7 +37,7 @@ namespace DataCollectorFramework
         }
 
         // todo: do we really need to replace colors?
-        private static readonly List<Tuple<string, string>> ColorsReplace = new List<Tuple<string, string>>
+        public static readonly List<Tuple<string, string>> ColorsReplace = new List<Tuple<string, string>>
         {
             new Tuple<string, string>("белый", "White"),
             new Tuple<string, string>("бирюзовый", "Turquoise"),
@@ -46,6 +46,7 @@ namespace DataCollectorFramework
             new Tuple<string, string>("серый", "Gray"),
             new Tuple<string, string>("черный", "Black"),
             new Tuple<string, string>("чёрный", "Black"),
+            new Tuple<string, string>("волосной", "Hairline"),
         };
 
         public virtual ComplexName ProcessName(ProductRecord productRecord)
@@ -106,11 +107,13 @@ namespace DataCollectorFramework
             var baseResult = base.ProcessName(productRecord);
 
             var name = baseResult.Name;
+            name = Regex.Replace(name, "Блок питания БП ", "Блок питания ", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "^БП ", "Блок питания ", RegexOptions.IgnoreCase);
             name = Regex.Replace(name, "Блок питания", "Блок питания", RegexOptions.IgnoreCase);
             // [ATX350-PNR] -> [ATX-350PNR]
             name = Regex.Replace(name, @"\bATX-?(\d+)-?PNR", "ATX-$1PNR", RegexOptions.IgnoreCase);
             name = Regex.Replace(name, @"ATX-", "ATX ", RegexOptions.IgnoreCase);
-            name = Regex.Replace(name, @"\bATX ", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\bATX\s?", "", RegexOptions.IgnoreCase);
 
             var powerPattern = @"\b(\d+)W\b";
             var matchResult = Regex.Match(name, powerPattern, RegexOptions.IgnoreCase);

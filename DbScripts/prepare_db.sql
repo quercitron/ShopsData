@@ -5,7 +5,7 @@ DELETE FROM sourceproduct;
 DELETE FROM product;
 
 DELETE FROM datasource;
-INSERT INTO datasource (name) values ('citilink'), ('dns'), ('ulmart');
+INSERT INTO datasource (name) values ('citilink'), ('dns'), ('ulmart'), ('key');
 
 DELETE FROM location;
 INSERT INTO location (name) values ('vrn');
