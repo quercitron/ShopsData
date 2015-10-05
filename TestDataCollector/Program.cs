@@ -75,9 +75,9 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new DnsDataCollector();
+            var dataCollector = new KeyDataCollector();
 
-            var data = dataCollector.GetShopData("location", ProductTypeName.Screwdriver);
+            var data = dataCollector.GetShopData("location", ProductTypeName.PowerSupply);
             //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();
 
             using (var writer = File.CreateText("output.txt"))

@@ -84,18 +84,18 @@ namespace DataCollectors
         {
             var record = new ProductRecord();
 
-            var helperNode = htmlNode.DescendantFirstOrDefault("span", "js_gtm_helper");
+            var helperNode = htmlNode.Descendant("span", "js_gtm_helper");
             record.Name = helperNode.Attributes["data-gtm-eventProductName"].Value;
             record.ExternalId = helperNode.Attributes["data-gtm-eventProductId"].Value;
             record.Brand = helperNode.Attributes["data-gtm-eventVendorName"].Value;
             record.Price = (int)decimal.Parse(helperNode.Attributes["data-gtm-eventProductPrice"].Value);
 
-            var center = htmlNode.DescendantFirstOrDefault("div", "b-product__center");
-            /*var titleBlock = center.DescendantFirstOrDefault("div", "b-product__title");
+            var center = htmlNode.Descendant("div", "b-product__center");
+            /*var titleBlock = center.Descendant("div", "b-product__title");
             var titleNode = titleBlock.Descendants("a").First();
             record.Name = titleNode.InnerText;*/
 
-            var descriptionNode = center.DescendantFirstOrDefault("div", "b-product__descr");
+            var descriptionNode = center.Descendant("div", "b-product__descr");
             record.Description = descriptionNode.InnerText;
 
             var hrefNode = htmlNode.Descendants("a").First(x => x.Class().Contains("js-gtm-product-click"));
@@ -115,7 +115,7 @@ namespace DataCollectors
             return record;
         }
 
-        protected override string GetUrl(string productType)
+        protected override GetUrlResult GetUrl(string productType)
         {
             string baseUrl = "http://www.ulmart.ru/catalogAdditional/{productType}?sort=5&viewType=1&destination=&extended=" +
                              "&filters=&numericFilters=&brands=&warranties=&shops=&labels=&available=&reserved=" +
@@ -142,9 +142,10 @@ namespace DataCollectors
 
             if (productTypeName != null)
             {
-                return baseUrl.Replace("{productType}", productTypeName);
+                var url = baseUrl.Replace("{productType}", productTypeName);
+                return new GetUrlResult { Url = url };
             }
-            return null;
+            return new GetUrlResult();
         }
     }
 }

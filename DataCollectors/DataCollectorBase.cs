@@ -14,20 +14,25 @@ namespace DataCollectors
         {
             try
             {
-                var url = GetUrl(productType);
-                if (url == null)
+                var urlResult = GetUrl(productType);
+                if (urlResult != null && urlResult.NotSell)
+                {
+                    // todo: add logging?
+                    return new ShopDataResult { Success = true };
+                }
+                if (urlResult == null || urlResult.Url == null)
                 {
                     return new ShopDataResult
-                           {
-                               Success = false,
-                               Message = string.Format(
-                                   "Product type {0} is not supported for {1} shop",
-                                   productType,
-                                   ShopName),
-                           };
+                    {
+                        Success = false,
+                        Message = string.Format(
+                            "Product type {0} is not supported for {1} shop",
+                            productType,
+                            ShopName),
+                    };
                 }
 
-                var products = GetProducts(locationName, url);
+                var products = GetProducts(locationName, urlResult.Url);
                 return new ShopDataResult
                        {
                            Success = true,
@@ -51,6 +56,13 @@ namespace DataCollectors
 
         protected abstract List<ProductRecord> GetProducts(string locationName, string url);
 
-        protected abstract string GetUrl(string productType);
+        protected abstract GetUrlResult GetUrl(string productType);
+    }
+
+    public class GetUrlResult
+    {
+        public string Url { get; set; }
+
+        public bool NotSell { get; set; }
     }
 }

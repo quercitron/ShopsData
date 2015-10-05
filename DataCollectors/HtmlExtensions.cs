@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using HtmlAgilityPack;
 
 namespace DataCollectors
@@ -13,21 +14,39 @@ namespace DataCollectors
             return classAttribute != null ? classAttribute.Value : string.Empty;
         }
 
+        public static IEnumerable<HtmlNode> Childs(this HtmlNode htmlNode, string name)
+        {
+            return htmlNode.ChildNodes.Where(node => node.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static IEnumerable<HtmlNode> Childs(this HtmlNode htmlNode, string name, string className)
+        {
+            return htmlNode.Childs(name).Where(node => node.Class().ContainsIgnoreCase(className));
+        }
+
         public static HtmlNode Child(this HtmlNode htmlNode, string name, string className)
         {
-            return htmlNode.ChildNodes
-                .FirstOrDefault(n => n.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase) &&
-                                     n.Class().Equals(className, StringComparison.InvariantCultureIgnoreCase));
+            return htmlNode.Childs(name, className).FirstOrDefault();
         }
 
         public static IEnumerable<HtmlNode> Descendants(this HtmlNode htmlNode, string name, string className)
         {
-            return htmlNode.Descendants(name).Where(x => x.Class().Equals(className, StringComparison.InvariantCultureIgnoreCase));
+            return htmlNode.Descendants(name).Where(x => x.Class().ContainsIgnoreCase(className));
         }
 
-        public static HtmlNode DescendantFirstOrDefault(this HtmlNode htmlNode, string name, string className)
+        public static HtmlNode Descendant(this HtmlNode htmlNode, string name)
+        {
+            return htmlNode.Descendants(name).FirstOrDefault();
+        }
+
+        public static HtmlNode Descendant(this HtmlNode htmlNode, string name, string className)
         {
             return htmlNode.Descendants(name, className).FirstOrDefault();
+        }
+
+        private static bool ContainsIgnoreCase(this string source, string value)
+        {
+            return source.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

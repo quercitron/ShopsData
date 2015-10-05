@@ -309,8 +309,8 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink) " +
-                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink) " +
+            var commandText = "insert into productrecord ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink,  image) " +
+                              "values                    (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink, :image) " +
                               "returning productrecordid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("sourceproductid", NpgsqlDbType.Integer, productRecord.SourceProductId);
@@ -326,6 +326,7 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productRecord.ProductTypeId);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, productRecord.DataSourceId);
             command.Parameters.AddWithValue("sourcelink", NpgsqlDbType.Text, productRecord.SourceLink);
+            command.Parameters.AddWithValue("image", NpgsqlDbType.Text, productRecord.Image);
 
             try
             {
@@ -343,8 +344,8 @@ namespace PostgreDAL
             conn.Open();
 
             var commandText = "update productrecord " +
-                              "set ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink) " +
-                              "  = (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink) " +
+                              "set ( sourceproductid,  name,  description,  price,  rating,  amountavailable,  timestamp,  locationid,  externalid,  brand,  producttypeid,  datasourceid,  sourcelink,  image) " +
+                              "  = (:sourceproductid, :name, :description, :price, :rating, :amountavailable, :timestamp, :locationid, :externalid, :brand, :producttypeid, :datasourceid, :sourcelink, :image) " +
                               "where productrecordid = :productrecordid";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("productrecordid", NpgsqlDbType.Integer, productRecord.ProductRecordId);
@@ -361,6 +362,7 @@ namespace PostgreDAL
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productRecord.ProductTypeId);
             command.Parameters.AddWithValue("datasourceid", NpgsqlDbType.Integer, productRecord.DataSourceId);
             command.Parameters.AddWithValue("sourcelink", NpgsqlDbType.Text, productRecord.SourceLink);
+            command.Parameters.AddWithValue("image", NpgsqlDbType.Text, productRecord.Image);
 
             try
             {
@@ -379,7 +381,7 @@ namespace PostgreDAL
 
             var commandText = "SELECT productrecordid, sourceproductid, price, rating, timestamp, " +
                               "amountavailable, description, name, locationid, externalid, brand, " +
-                              "producttypeid, datasourceid, sourcelink " +
+                              "producttypeid, datasourceid, sourcelink, image " +
                               "FROM productrecord " +
                               "ORDER BY productrecordid";
             if (limit > 0)
@@ -414,6 +416,7 @@ namespace PostgreDAL
                     productRecord.ProductTypeId = dr.GetInt32(11);
                     productRecord.DataSourceId = dr.GetInt32(12);
                     productRecord.SourceLink = dr[13] as string;
+                    productRecord.Image = dr[14] as string;
 
                     productRecords.Add(productRecord);
                 }
@@ -503,7 +506,7 @@ namespace PostgreDAL
                     sourceProduct.Key = dr.GetString(3);
                     sourceProduct.Name = dr.GetString(4);
                     sourceProduct.OriginalName = dr.GetString(5);
-                    sourceProduct.Brand = dr.GetString(6);
+                    sourceProduct.Brand = dr[6] as string;
                     sourceProduct.Timestamp = dr.GetTimeStamp(7);
                     sourceProduct.Class = dr[8] as string;
 

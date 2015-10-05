@@ -129,7 +129,7 @@ namespace DataCollectors
                 var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
                 item.Description = descriptionNode.InnerText;
 
-                var ratingDiv = row.DescendantFirstOrDefault("div", "ratings");
+                var ratingDiv = row.Descendant("div", "ratings");
                 if (ratingDiv != null)
                 {
                     var spans = ratingDiv.Descendants("span").ToArray();
@@ -172,7 +172,7 @@ namespace DataCollectors
                 var price = int.Parse(priceStr);
                 item.Price = price;
 
-                var dataParamsTd = row.DescendantFirstOrDefault("td", "actions product_data__js");
+                var dataParamsTd = row.Descendant("td", "actions product_data__js");
                 var dataParamsStr = dataParamsTd.Attributes["data-params"].Value;
                 var dataParams = JsonConvert.DeserializeObject<DataParams>(dataParamsStr);
                 item.ExternalId = dataParams.Id;
@@ -205,7 +205,7 @@ namespace DataCollectors
             public string CategoryName { get; set; }
         }
 
-        protected override string GetUrl(string productType)
+        protected override GetUrlResult GetUrl(string productType)
         {
             string url = null;
             switch (productType.ToLower())
@@ -223,7 +223,7 @@ namespace DataCollectors
                     url = "http://www.citilink.ru/catalog/power_tools_and_garden_equipments/screwdrivers/?available=1&status=0&p={0}";
                     break;
             }
-            return url;
+            return new GetUrlResult { Url = url };
         }
     }
 }

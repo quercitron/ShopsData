@@ -32,6 +32,8 @@ namespace DataCollectorCore.DataObjects
 
         public string SourceLink { get; set; }
 
+        public string Image { get; set; }
+
         public override string ToString()
         {
             return string.Format("Name: {0}, Price: {1}, Description: {2}, Rating: {3}", Name, Price, Description, Rating);

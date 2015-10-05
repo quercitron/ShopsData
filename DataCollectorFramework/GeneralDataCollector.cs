@@ -114,6 +114,8 @@ namespace DataCollectorFramework
                         {
                             if (shopDataResult.Products != null && shopDataResult.Products.Count > 0)
                             {
+                                _logger.InfoFormat("{0} records collected.", shopDataResult.Products.Count);
+
                                 var date = DateTime.UtcNow;
                                 foreach (var product in shopDataResult.Products)
                                 {

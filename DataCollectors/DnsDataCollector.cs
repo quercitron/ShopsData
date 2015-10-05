@@ -100,7 +100,7 @@ namespace DataCollectors
             var item = new ProductRecord();
 
             //item.Name = htmlNode.Attributes["data-ec-item-title"].Value;
-            var nameNode = htmlNode.DescendantFirstOrDefault("div", "item-name").Descendants("a").First();
+            var nameNode = htmlNode.Descendant("div", "item-name").Descendants("a").First();
             item.Name = nameNode.InnerText;
             // todo: move to const
             item.SourceLink = "http://www.dns-shop.ru" + nameNode.Attributes["href"].Value;
@@ -108,14 +108,14 @@ namespace DataCollectors
             item.Brand = htmlNode.Attributes["data-ec-item-brand"].Value;
             item.ExternalId = htmlNode.Attributes["data-ec-item-id"].Value;
 
-            var descNode = htmlNode.DescendantFirstOrDefault("div", "item-desc").Child("a", "ec-price-item-link");
+            var descNode = htmlNode.Descendant("div", "item-desc").Child("a", "ec-price-item-link");
             item.Description = descNode.InnerHtml;
 
-            var priceNode = htmlNode.DescendantFirstOrDefault("div", "price_g");
+            var priceNode = htmlNode.Descendant("div", "price_g");
             var priceStr = Regex.Replace(priceNode.InnerText, @"[^\d]", "");
             item.Price = int.Parse(priceStr);
 
-            var ratingNode = htmlNode.DescendantFirstOrDefault("div", "product-item-rating rating");
+            var ratingNode = htmlNode.Descendant("div", "product-item-rating rating");
             if (ratingNode != null)
             {
                 var ratingAttr = ratingNode.Attributes["data-rating"];
@@ -134,7 +134,7 @@ namespace DataCollectors
             return item;
         }
 
-        protected override string GetUrl(string productType)
+        protected override GetUrlResult GetUrl(string productType)
         {
             string url = null;
             switch (productType.ToLower())
@@ -152,7 +152,7 @@ namespace DataCollectors
                     url = "http://www.dns-shop.ru/catalog/5083/shurupovyorty/ajax/?p={0}&offset={1}";
                     break;
             }
-            return url;
+            return new GetUrlResult { Url = url };
         }
     }
 
