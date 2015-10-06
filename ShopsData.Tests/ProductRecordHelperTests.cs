@@ -1,4 +1,5 @@
-﻿using DataCollectorCore.DataObjects;
+﻿using DataCollectorCore;
+using DataCollectorCore.DataObjects;
 
 using DataCollectorFramework;
 
@@ -12,6 +13,8 @@ namespace ShopsData.Tests
         [Test]
         public void PowerSupplyProductRecordHelperTest()
         {
+            var powerSupplyProductType = new ProductType { Name = ProductTypeName.PowerSupply };
+
             var helper = new GeneralPowerSupplyProductRecordHelper();
 
             var result = helper.ProcessName(new ProductRecord { Name = "Блок питания HIPRO HPE400W" });
@@ -36,18 +39,52 @@ namespace ShopsData.Tests
             Assert.That(result.Name, Is.EqualTo("Блок питания Thermaltake Russian Gold Baikal 1500"));
 
             // dns
-            helper = new DnsPowerSupplyHelper();
+            helper = (GeneralPowerSupplyProductRecordHelper)(new DnsSourceManager().GetProductRecordHelper(powerSupplyProductType));
 
             result = helper.ProcessName(new ProductRecord { Name = "Блок питания Chieftec A-135 Series 750W [APS-750CB]", Brand = "Chieftec" });
             Assert.That(result.Name, Is.EqualTo("Блок питания Chieftec APS-750CB"));
 
             result = helper.ProcessName(new ProductRecord { Name = "Блок питания FSP PNR 550W [ATX550-PNR]", Brand = "FSP" });
             Assert.That(result.Name, Is.EqualTo("Блок питания FSP 550PNR"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания Corsair CX 500W [CP-9020047-EU]", Brand = "Corsair" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Corsair CX 500"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания Corsair VS 450W [CP-9020049-NA]", Brand = "Corsair" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Corsair VS 450"));
+
+
+            // key
+            helper = (GeneralPowerSupplyProductRecordHelper)(new KeySourceManager().GetProductRecordHelper(powerSupplyProductType));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания БП Cooler Master V750 Semi-modular 750W ATX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Cooler Master V750"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания БП FSP Group 500W ATX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания FSP 500PNR"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания FSP Group 300W SFX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания FSP 300PNR SFX"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Блок питания БП FSP Group Aurum Pro Gold 80 Plus 1200W ATX" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания FSP Aurum Pro Gold 80 Plus 1200PNR"));
+
+
+            // ulmart
+            helper = (GeneralPowerSupplyProductRecordHelper)(new UlmartSourceManager().GetProductRecordHelper(powerSupplyProductType));
+
+            result = helper.ProcessName(new ProductRecord { Name = "блок питания ATX Corsair CX 500, CP-9020047-EU, 500W" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Corsair CX 500"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "блок питания ATX Corsair AX860, CP-9020044-EU, 860W" });
+            Assert.That(result.Name, Is.EqualTo("Блок питания Corsair AX860"));
         }
 
         [Test]
         public void ScrewdriverProductRecordHelperTest()
         {
+            var screwdriverProductType = new ProductType { Name = ProductTypeName.Screwdriver };
+
             var helper = new GeneralScrewdriverProductRecordHelper();
 
             var result = helper.ProcessName(new ProductRecord { Name = "аккумуляторный шуруповерт Bosch PSR 14,4 Li (0.603.954.322)" });
@@ -69,6 +106,8 @@ namespace ShopsData.Tests
         [Test]
         public void MotherboardProductRecordHelper()
         {
+            var motherboardProductType = new ProductType { Name = ProductTypeName.Motherboard };
+
             var helper = new GeneralMotherboardProductRecordHelper();
 
             var result = helper.ProcessName(new ProductRecord { Name = "серверная материнская плата ASUS Z9PE-D16" });
@@ -78,15 +117,20 @@ namespace ShopsData.Tests
             Assert.That(result.Name, Is.EqualTo("Материнская плата MSI A68HM-E33"));
 
             // key
-            helper = new KeyMotherboardHelper();
+            helper = (GeneralMotherboardProductRecordHelper)(new KeySourceManager().GetProductRecordHelper(motherboardProductType));
 
             result = helper.ProcessName(new ProductRecord { Name = "Материнская плата MB Asus A58M-K" });
             Assert.That(result.Name, Is.EqualTo("Материнская плата Asus A58M-K"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Материнская плата MB MSI A68HM-P33 V2" });
+            Assert.That(result.Name, Is.EqualTo("Материнская плата MSI A68HM-P33 V2"));
         }
 
         [Test]
         public void MonitorProductRecordHelper()
         {
+            var monitorProductType = new ProductType { Name = ProductTypeName.Monitor };
+
             var helper = new GeneralMonitorProductRecordHelper();
 
             var result = helper.ProcessName(new ProductRecord { Name = "Монитор ЖК PHILIPS 224E5QSB (00/01)" });
@@ -98,7 +142,7 @@ namespace ShopsData.Tests
 
 
             // key
-            helper = new KeyMonitorHelper();
+            helper = (GeneralMonitorProductRecordHelper)(new KeySourceManager().GetProductRecordHelper(monitorProductType));
 
             result = helper.ProcessName(new ProductRecord { Name = "Монитор Acer G246HYLbmjj Black" });
             Assert.That(result.Name, Is.EqualTo("Монитор Acer G246HYLbmjj"));
@@ -115,6 +159,10 @@ namespace ShopsData.Tests
             result = helper.ProcessName(new ProductRecord { Name = "Монитор Philips 223V5QHSB6/ Black Hairline" });
             Assert.That(result.Name, Is.EqualTo("Монитор Philips 223V5QHSB6"));
             Assert.That(result.Class, Is.EqualTo("Black Hairline"));
+
+            result = helper.ProcessName(new ProductRecord { Name = "Монитор 23.5\" LG Flatron 24M37A-B Black" });
+            Assert.That(result.Name, Is.EqualTo("Монитор LG 24M37A-B"));
+            Assert.That(result.Class, Is.EqualTo("Black"));
         }
     }
 }

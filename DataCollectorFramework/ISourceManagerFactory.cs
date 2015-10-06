@@ -56,10 +56,8 @@ namespace DataCollectorFramework
         {
             switch (productType.Name)
             {
-                case ProductTypeName.Motherboard:
-                    return new KeyMotherboardHelper();
-                case ProductTypeName.Monitor:
-                    return new KeyMonitorHelper();
+                case ProductTypeName.PowerSupply:
+                    return new UlmartPowerSupplyHelper();
             }
             return base.GetProductRecordHelper(productType);
         }
@@ -75,6 +73,7 @@ namespace DataCollectorFramework
             var productClass = baseResult.Class;
 
             name = Regex.Replace(name, "Материнская плата MB ", "Материнская плата ", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "LG Flatron", "LG", RegexOptions.IgnoreCase);
 
             var newColors = new List<string>();
             foreach (var color in ColorsReplace)
@@ -115,6 +114,20 @@ namespace DataCollectorFramework
         public override IShopDataCollector GetDataCollector()
         {
             return new KeyDataCollector();
+        }
+
+        public override IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        {
+            switch (productType.Name)
+            {
+                case ProductTypeName.Motherboard:
+                    return new KeyMotherboardHelper();
+                case ProductTypeName.Monitor:
+                    return new KeyMonitorHelper();
+                case ProductTypeName.PowerSupply:
+                    return new KeyPowerSupplyHelper();
+            }
+            return base.GetProductRecordHelper(productType);
         }
     }
 
@@ -272,16 +285,71 @@ namespace DataCollectorFramework
 
             var name = baseResult.Name;
 
-            var match = Regex.Match(name, @"\[(.*)\]");
+            var pattern = @"\[(.*)\]";
+            var match = Regex.Match(name, pattern);
             if (match.Success)
             {
-                name = "Блок питания " + string.Format("{0} {1}", productRecord.Brand, match.Groups[1].Value);
-                var index = name.IndexOf("/");
-                if (index >= 0)
+                var model = match.Groups[1].Value;
+
+                if (Regex.IsMatch(model, "CP-.*", RegexOptions.IgnoreCase))
                 {
-                    name = name.Substring(0, index);
+                    name = Regex.Replace(name, pattern, "").Trim();
+                }
+                else
+                {
+                    name = "Блок питания " + string.Format("{0} {1}", productRecord.Brand, model);
+                    var index = name.IndexOf("/");
+                    if (index >= 0)
+                    {
+                        name = name.Substring(0, index);
+                    }
                 }
             }
+
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+            };
+        }
+    }
+
+    public class KeyPowerSupplyHelper : GeneralPowerSupplyProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, "Semi-modular", "", RegexOptions.IgnoreCase);
+            var pattern = "FSP Group";
+            if (Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase))
+            {
+                name = Regex.Replace(name, pattern, "FSP", RegexOptions.IgnoreCase);
+                var regex = new Regex(@"(\d+)\b", RegexOptions.RightToLeft);
+                name = regex.Replace(name, "$1PNR", 1);
+            }
+            name = name.Replace("  ", " ").Trim();
+
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+            };
+        }
+    }
+
+    public class UlmartPowerSupplyHelper : GeneralPowerSupplyProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            // блок питания ATX Corsair CX 500, CP-9020047-EU, 500W
+            var pattern = @"CP-\d+-\w+";
+            name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+            name = name.Trim(' ', ',', '.');
 
             return new ComplexName
             {

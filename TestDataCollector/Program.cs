@@ -20,11 +20,16 @@ namespace TestDataCollector
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
-            //TestGeneralDataCollector();
-            GetData();
+            TestGeneralDataCollector();
+            //GetData();
 
-            //var collector = new GeneralDataCollector();
-            //collector.ReprocessRecords();
+            //ReprocessRecords();
+        }
+
+        private static void ReprocessRecords()
+        {
+            var collector = new GeneralDataCollector();
+            collector.ReprocessRecords();
         }
 
         private static void TestGeneralDataCollector()
