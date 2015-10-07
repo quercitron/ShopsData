@@ -30,6 +30,9 @@
                     //labelsSeparateLines: true,
                     drawPoints: true,
                     //drawAxesAtZero: true,
+                    //includeZero: true,
+                    //yRangePad: 90,
+                    labelsDiv: 'labelsDiv',
                     axes:
                     {
                         x:

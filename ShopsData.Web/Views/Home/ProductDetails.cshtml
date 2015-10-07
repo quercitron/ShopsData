@@ -13,7 +13,7 @@
             <td><a ng-href="{{sourceDetail.LastRecord.SourceLink}}">{{sourceDetail.DataSource.Name}}</a></td>
             <td>
                 <a ng-href="{{sourceDetail.LastRecord.SourceLink}}">
-                    <img ng-src="{{sourceDetail.LastRecord.Image}}">
+                    <img class="product-image" ng-src="{{sourceDetail.LastRecord.Image}}">
                 </a>
             </td>
             <td>{{sourceDetail.LastRecord.Price}}</td>
@@ -22,4 +22,5 @@
     </table>
 
     <div id="graphdiv"></div>
+    <div id="labelsDiv"></div>
 </div>

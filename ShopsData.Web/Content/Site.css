@@ -16,3 +16,16 @@ table, th, td {
     padding: 4px;
     /*pointer-events: none;*/
 }
+
+img.product-image {
+    max-height: 90px;
+    max-width: 90px;
+}
+
+#graphdiv {
+    margin-top: 20px;
+}
+
+#labelsDiv {
+    margin-left: 80px;
+}
