@@ -21,7 +21,8 @@ namespace ShopsData.Web.Repository
         public List<ProductGroup> GetCurrentProductsGrouped(int locationId, int productTypeId)
         {
             var shopsDataStore = new ShopsDataStore();
-            var products = shopsDataStore.GetCurrentData(locationId, productTypeId);
+            // todo: replace with real user id
+            var products = shopsDataStore.GetCurrentData(locationId, productTypeId, 1);
             /*for (int i = 0; i < products.Count; i++)
             {
                 for (int j = 0; j < products.Count; j++)
@@ -40,6 +41,7 @@ namespace ShopsData.Web.Repository
                 var productGroup = new ProductGroup();
                 productGroup.ProductId = g.Key;
                 productGroup.ProductName = g.First().FullName;
+                productGroup.IsMarked = g.First().IsMarked;
                 foreach (var record in g)
                 {
                     productGroup.Records[record.DataSourceId] = record;
@@ -54,7 +56,7 @@ namespace ShopsData.Web.Repository
                     Records = g.ToDictionary(p => p.DataSourceId, p => p),
                 })
                 .ToList();*/
-            return productsGrouped.OrderBy(g => g.ProductName).ToList();
+            return productsGrouped.OrderByDescending(g => g.IsMarked).ThenBy(g => g.ProductName).ToList();
         }
 
         public List<DataSource> GetDataSources()
@@ -143,6 +145,19 @@ namespace ShopsData.Web.Repository
 
             return productDetailsModel;
         }
+
+        public void MarkProduct(int userId, int productId, bool isMarked)
+        {
+            var shopsDataStore = new ShopsDataStore();
+            if (isMarked)
+            {
+                shopsDataStore.MarkProduct(userId, productId);
+            }
+            else
+            {
+                shopsDataStore.UnmarkProduct(userId, productId);
+            }
+        }
     }
 
     public class ProductDetailsModel
@@ -176,6 +191,8 @@ namespace ShopsData.Web.Repository
         public int ProductId { get; set; }
 
         public string ProductName { get; set; }
+
+        public bool IsMarked { get; set; }
 
         public Dictionary<int, ProductData> Records { get; set; }
     }

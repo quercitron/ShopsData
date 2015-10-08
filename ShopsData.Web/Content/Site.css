@@ -29,3 +29,7 @@ img.product-image {
 #labelsDiv {
     margin-left: 80px;
 }
+
+.is-marked {
+    font-weight: bold;
+}

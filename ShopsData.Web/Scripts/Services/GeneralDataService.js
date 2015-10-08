@@ -17,6 +17,13 @@
                 method: 'GET',
                 url: 'api/location'
             });
+        },
+        markProduct: function(productId, isMarked) {
+            $http({
+                method: 'POST',
+                url: 'api/userProduct',
+                data: { productId: productId, isMarked: isMarked }
+            });
         }
     };
 }

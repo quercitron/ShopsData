@@ -8,6 +8,10 @@
         $location.path('CurrentData/' + $scope.locationId + '/' + $scope.productTypeId);
     };
 
+    $scope.mark = function(productGroup) {
+        GeneralDataService.markProduct(productGroup.ProductId, productGroup.IsMarked);
+    };
+
     CurrentDataService
         .getDataSummaryGrouped($routeParams.locationId, $routeParams.productTypeId)
         .success(function (data) {

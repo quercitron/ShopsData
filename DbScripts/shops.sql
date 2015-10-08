@@ -42,7 +42,11 @@ CREATE TABLE productrecord (
     name text,
     locationid integer NOT NULL,
     externalid text,
-    brand text
+    brand text,
+    producttypeid integer NOT NULL,
+    datasourceid integer NOT NULL,
+    sourcelink text,
+    image text
 );
 
 

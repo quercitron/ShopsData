@@ -48,7 +48,11 @@ namespace PostgreDAL
         void AddSourceProduct(SourceProduct sourceProduct);
 
 
-        List<ProductData> GetCurrentData(int locationId, int productTypeId);
+        List<ProductData> GetCurrentData(int locationId, int productTypeId, int? userId = null);
+
+        void MarkProduct(int userId, int productId, string productName = null);
+
+        void UnmarkProduct(int userId, int productId);
     }
 
     public class ProductDetail
@@ -76,6 +80,7 @@ namespace PostgreDAL
         public DateTime Timestamp { get; set; }
         public int LocationId { get; set; }
         public string Class { get; set; }
+        public bool IsMarked { get; set; }
 
         public string FullName
         {

@@ -225,6 +225,66 @@ ALTER SEQUENCE sourceproduct_sourceproductid_seq OWNED BY sourceproduct.sourcepr
 
 
 --
+-- Name: user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "user" (
+    userid integer NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: user_userid_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE user_userid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: user_userid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE user_userid_seq OWNED BY "user".userid;
+
+
+--
+-- Name: userproduct; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE userproduct (
+    userproductid integer NOT NULL,
+    userid integer NOT NULL,
+    productid integer,
+    productname text
+);
+
+
+--
+-- Name: userproduct_userproductid_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE userproduct_userproductid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: userproduct_userproductid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE userproduct_userproductid_seq OWNED BY userproduct.userproductid;
+
+
+--
 -- Name: datasourceid; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -264,6 +324,20 @@ ALTER TABLE ONLY producttype ALTER COLUMN producttypeid SET DEFAULT nextval('"Pr
 --
 
 ALTER TABLE ONLY sourceproduct ALTER COLUMN sourceproductid SET DEFAULT nextval('sourceproduct_sourceproductid_seq'::regclass);
+
+
+--
+-- Name: userid; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "user" ALTER COLUMN userid SET DEFAULT nextval('user_userid_seq'::regclass);
+
+
+--
+-- Name: userproductid; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY userproduct ALTER COLUMN userproductid SET DEFAULT nextval('userproduct_userproductid_seq'::regclass);
 
 
 --
@@ -347,6 +421,38 @@ ALTER TABLE ONLY sourceproduct
 
 
 --
+-- Name: user_pk_userid; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pk_userid PRIMARY KEY (userid);
+
+
+--
+-- Name: user_unique_name; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_unique_name UNIQUE (name);
+
+
+--
+-- Name: userproduct_pk_userproductid; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY userproduct
+    ADD CONSTRAINT userproduct_pk_userproductid PRIMARY KEY (userproductid);
+
+
+--
+-- Name: userproduct_unique_userid_productid_productname; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY userproduct
+    ADD CONSTRAINT userproduct_unique_userid_productid_productname UNIQUE (userid, productid, productname);
+
+
+--
 -- Name: fki_productrecord_fk_locationid; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -365,6 +471,13 @@ CREATE INDEX fki_productrecord_fk_sourceproductid ON productrecord USING btree (
 --
 
 CREATE INDEX fki_sourceproduct_fk_productid ON sourceproduct USING btree (productid);
+
+
+--
+-- Name: fki_userproduct_fk_userid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX fki_userproduct_fk_userid ON userproduct USING btree (userid);
 
 
 --
@@ -419,6 +532,14 @@ ALTER TABLE ONLY sourceproduct
 
 ALTER TABLE ONLY sourceproduct
     ADD CONSTRAINT sourceproduct_fk_productid FOREIGN KEY (productid) REFERENCES product(productid);
+
+
+--
+-- Name: userproduct_fk_userid; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY userproduct
+    ADD CONSTRAINT userproduct_fk_userid FOREIGN KEY (userid) REFERENCES "user"(userid);
 
 
 --

@@ -34,11 +34,18 @@
     </table>*@
     <table>
         <tr>
+            <th></th>
             <th>Product</th>
             <th ng-repeat="dataSource in dataSources">{{dataSource.Name}}</th>
         </tr>
+        @*| orderBy:['-IsMarked','ProductName']*@
         <tr ng-repeat="productGroup in productGroups | filter:searchFilter">
-            <td><a ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">{{productGroup.ProductName}}</a></td>
+            <td><input type="checkbox" ng-model="productGroup.IsMarked" ng-change="mark(productGroup)" /></td>
+            <td>
+                <a ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}" ng-class="{'is-marked' : productGroup.IsMarked}">
+                    {{productGroup.ProductName}}
+                </a>
+            </td>
             <td ng-repeat="dataSource in dataSources">
                 {{productGroup.Records[dataSource.DataSourceId].Price}}
                 @*<br/>

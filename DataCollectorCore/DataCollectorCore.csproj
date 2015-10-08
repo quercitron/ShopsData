@@ -43,6 +43,8 @@
     <Compile Include="DataObjects\Location.cs" />
     <Compile Include="DataObjects\Product.cs" />
     <Compile Include="DataObjects\SourceProduct.cs" />
+    <Compile Include="DataObjects\User.cs" />
+    <Compile Include="DataObjects\UserProduct.cs" />
     <Compile Include="IShopDataCollector.cs" />
     <Compile Include="DataObjects\ProductRecord.cs" />
     <Compile Include="DataObjects\ProductType.cs" />

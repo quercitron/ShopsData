@@ -553,17 +553,18 @@ namespace PostgreDAL
             }
         }
 
-        public List<ProductData> GetCurrentData(int locationId, int productTypeId)
+        public List<ProductData> GetCurrentData(int locationId, int productTypeId, int? userId = null)
         {
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
             var commandText = "with list as ( " +
-                              "select p.productid, p.name, p.class, p.producttypeid, sp.sourceproductid, sp.datasourceid " +
+                              "select p.productid, p.name, p.class, p.producttypeid, sp.sourceproductid, sp.datasourceid, case when up.userproductid is null then FALSE else TRUE end as ismarked " +
                               "from product p " +
+                              "left join userproduct up on p.productid = up.productid and up.userid = :userid " +
                               "join sourceproduct sp on p.productid = sp.productid " +
                               "where p.producttypeid = :producttypeid) " +
-                              "select list.productid, list.name, list.producttypeid, list.datasourceid, pr1.price, pr1.rating, pr1.timestamp, pr1.locationid, list.class " +
+                              "select list.productid, list.name, list.producttypeid, list.datasourceid, pr1.price, pr1.rating, pr1.timestamp, pr1.locationid, list.class, list.ismarked " +
                               "from list " +
                               "join productrecord pr1 on list.sourceproductid = pr1.sourceproductid " +
                               "left join productrecord pr2 on(list.sourceproductid = pr2.sourceproductid and pr1.timestamp < pr2.timestamp) " +
@@ -571,6 +572,7 @@ namespace PostgreDAL
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, locationId);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productTypeId);
+            command.Parameters.AddWithValue("userid", NpgsqlDbType.Integer, userId);
 
             var products = new List<ProductData>();
             try
@@ -589,6 +591,7 @@ namespace PostgreDAL
                     product.Timestamp = DateTime.SpecifyKind(dr.GetTimeStamp(6), DateTimeKind.Utc);
                     product.LocationId = dr.GetInt32(7);
                     product.Class = dr[8] as string;
+                    product.IsMarked = dr.GetBoolean(9);
 
                     products.Add(product);
                 }
@@ -600,6 +603,51 @@ namespace PostgreDAL
             }
 
             return products;
+        }
+
+        public void MarkProduct(int userId, int productId, string productName = null)
+        {
+            // todo: get product name?
+
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "insert into userproduct ( userid,  productid,  productname) " +
+                              "values                  (:userid, :productid, :productname) ";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("userid", NpgsqlDbType.Integer, userId);
+            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productId);
+            command.Parameters.AddWithValue("productname", NpgsqlDbType.Text, productName);
+
+            try
+            {
+                command.ExecuteScalar();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void UnmarkProduct(int userId, int productId)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+            var commandText = "delete from userproduct " +
+                              "where userid = :userid and productid = :productid ";
+            NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
+            command.Parameters.AddWithValue("userid", NpgsqlDbType.Integer, userId);
+            command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productId);
+
+            try
+            {
+                command.ExecuteScalar();
+            }
+            finally
+            {
+                conn.Close();
+            }
         }
 
         private void ExecuteNonQueryCommand(string commandText)
