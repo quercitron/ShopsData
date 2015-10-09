@@ -42,7 +42,8 @@ namespace ShopsData.Web.Repository
 
                 var productGroup = new ProductGroup();
                 productGroup.ProductId = g.Key;
-                productGroup.ProductName = detailedProducts.First().FullName;
+                productGroup.ProductName = detailedProducts.First().Name;
+                productGroup.ProductClass = detailedProducts.First().Class;
                 productGroup.IsMarked = detailedProducts.First().IsMarked;
                 var recordsWithRating = detailedProducts.Where(p => p.Rating > 0.1);
                 productGroup.Rating = recordsWithRating.Any() ? recordsWithRating.Average(p => p.Rating) : 0;
@@ -224,6 +225,8 @@ namespace ShopsData.Web.Repository
         public int ProductId { get; set; }
 
         public string ProductName { get; set; }
+
+        public string ProductClass { get; set; }
 
         public bool IsMarked { get; set; }
 

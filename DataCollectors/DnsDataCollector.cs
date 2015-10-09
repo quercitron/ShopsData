@@ -152,6 +152,9 @@ namespace DataCollectors
                 case ProductTypeName.Screwdriver:
                     url = "http://www.dns-shop.ru/catalog/5083/shurupovyorty/ajax/?p={0}&offset={1}";
                     break;
+                case ProductTypeName.SSD:
+                    url = "http://www.dns-shop.ru/catalog/3750/ssd-sata-25-nakopiteli/ajax/?p={0}&offset={1}";
+                    break;
             }
             return new GetUrlResult { Url = url };
         }

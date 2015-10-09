@@ -20,8 +20,8 @@ namespace TestDataCollector
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
-            TestGeneralDataCollector();
-            //GetData();
+            //TestGeneralDataCollector();
+            GetData();
 
             //ReprocessRecords();
         }
@@ -80,9 +80,9 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new CitilinkDataCollector();
+            var dataCollector = new KeyDataCollector();
 
-            var data = dataCollector.GetShopData("vrn", ProductTypeName.Monitor);
+            var data = dataCollector.GetShopData("vrn", ProductTypeName.SSD);
             //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();
 
             using (var writer = File.CreateText("output.txt"))

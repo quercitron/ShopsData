@@ -153,6 +153,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.Screwdriver:
                     productRecordHelper = new GeneralScrewdriverProductRecordHelper();
                     break;
+                case ProductTypeName.SSD:
+                    productRecordHelper = new GeneralSSDProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -165,6 +168,10 @@ namespace DataCollectorFramework
         {
             return new GeneralProductHelper();
         }
+    }
+
+    public class GeneralSSDProductRecordHelper : GeneralProductRecordHelper
+    {
     }
 
     public class CitilinkSourceManager : ISourceManager

@@ -115,6 +115,7 @@ namespace DataCollectors
         {
             string baseUrl = "http://key.ru/catalog/ajaxLoadingGoods_v2/?p={0}&category_id={categoryId}&params=%3F&is_ajax=1";
             string categoryId = null;
+            string resultUrl = null;
             switch (productType.ToLower())
             {
                 case ProductTypeName.Monitor:
@@ -129,6 +130,14 @@ namespace DataCollectors
                 case ProductTypeName.Screwdriver:
                     // key don't sell screwdrivers
                     return new GetUrlResult { NotSell = true };
+                case ProductTypeName.SSD:
+                    resultUrl = "http://key.ru/catalog/ajaxLoadingGoods_v2/" +
+                                "?p={0}&category_id=93410&params=%3Ff%255Bname%255D%3Dssd%26search_string%3Dssd%26&is_ajax=1";
+                    break;
+            }
+            if (resultUrl != null)
+            {
+                return new GetUrlResult { Url = resultUrl };
             }
             if (categoryId != null)
             {

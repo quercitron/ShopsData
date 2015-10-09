@@ -6,5 +6,6 @@
         public const string PowerSupply = "powersupply";
         public const string Monitor = "monitor";
         public const string Screwdriver = "screwdriver";
+        public const string SSD = "ssd";
     }
 }

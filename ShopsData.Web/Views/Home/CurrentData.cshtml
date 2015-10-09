@@ -55,9 +55,12 @@
         <tr ng-repeat="productGroup in productGroups | filter:searchFilter | filter:priceFilter | orderBy:predicate:reverse">
             <td><input type="checkbox" ng-model="productGroup.IsMarked" ng-change="mark(productGroup)" /></td>
             <td ng-class="{'is-marked' : productGroup.IsMarked}">
-                <a ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">
+                <a class="product-name" ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">
                     {{productGroup.ProductName}}
                 </a>
+                <span class="product-class" ng-show="productGroup.ProductClass">
+                    , {{productGroup.ProductClass}}
+                </span>
             </td>
             <td>{{(productGroup.Rating > 0 ? productGroup.Rating : null) | number:1}}</td>
             <td>{{productGroup.MinPrice}}</td>

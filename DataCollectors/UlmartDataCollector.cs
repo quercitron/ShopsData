@@ -144,6 +144,10 @@ namespace DataCollectors
                 case ProductTypeName.Screwdriver:
                     productTypeName = "sandingscrew";
                     break;
+
+                case ProductTypeName.SSD:
+                    productTypeName = "hdd_ssd";
+                    break;
             }
 
             if (productTypeName != null)

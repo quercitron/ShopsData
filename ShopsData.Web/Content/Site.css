@@ -42,3 +42,11 @@ img.product-image {
 .sortorder.reverse:after {
     content: '\25bc';
 }
+
+/*.product-name {
+    text-decoration: none;
+}*/
+
+.product-class {
+    color: gray;
+}
