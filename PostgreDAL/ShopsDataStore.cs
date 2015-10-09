@@ -558,6 +558,7 @@ namespace PostgreDAL
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
+            // todo: what date filter use?
             var commandText = "with list as ( " +
                               "select p.productid, p.name, p.class, p.producttypeid, sp.sourceproductid, sp.datasourceid, case when up.userproductid is null then FALSE else TRUE end as ismarked " +
                               "from product p " +
@@ -568,7 +569,7 @@ namespace PostgreDAL
                               "from list " +
                               "join productrecord pr1 on list.sourceproductid = pr1.sourceproductid " +
                               "left join productrecord pr2 on(list.sourceproductid = pr2.sourceproductid and pr1.timestamp < pr2.timestamp) " +
-                              "where pr2.productrecordid is null and pr1.locationid = :locationid and pr1.timestamp > current_date - 14";
+                              "where pr2.productrecordid is null and pr1.locationid = :locationid and pr1.timestamp > current_date - 7";
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("locationid", NpgsqlDbType.Integer, locationId);
             command.Parameters.AddWithValue("producttypeid", NpgsqlDbType.Integer, productTypeId);

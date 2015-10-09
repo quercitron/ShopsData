@@ -12,6 +12,30 @@
         GeneralDataService.markProduct(productGroup.ProductId, productGroup.IsMarked);
     };
 
+    $scope.predicate = '';
+    $scope.reverse = false;
+    $scope.order = function (predicate) {
+        if ($scope.predicate === predicate && $scope.reverse) {
+            $scope.predicate = '';
+            $scope.reverse = false;
+            return;
+        }
+        $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+        $scope.predicate = predicate;
+    };
+
+    $scope.minPrice = null;
+    $scope.maxPrice = null;
+    $scope.priceFilter = function (product) {
+        if ($scope.minPrice && product.MinPrice < $scope.minPrice) {
+            return false;
+        }
+        if ($scope.maxPrice && product.MinPrice > $scope.maxPrice) {
+            return false;
+        }
+        return true;
+    };
+
     CurrentDataService
         .getDataSummaryGrouped($routeParams.locationId, $routeParams.productTypeId)
         .success(function (data) {

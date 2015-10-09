@@ -10,6 +10,8 @@
         <option ng-repeat="productType in productTypes" value="{{productType.ProductTypeId}}">{{productType.Name}}</option>
     </select>
     <input type="text" ng-model="searchFilter.ProductName" ng-model-options="{ debounce: 500 }" />
+    <input type="number" ng-model="minPrice" ng-model-options="{ debounce: 1000 }" />
+    <input type="number" ng-model="maxPrice" ng-model-options="{ debounce: 1000 }" />
     @*<table>
         <tr>
             <th>DataSourceId</th>
@@ -35,21 +37,34 @@
     <table>
         <tr>
             <th></th>
-            <th>Product</th>
+            <th ng-click="order('ProductName')">
+                Product
+                <span class="sortorder" ng-show="predicate === 'ProductName'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th ng-click="order('Rating')">
+                Rating
+                <span class="sortorder" ng-show="predicate === 'Rating'" ng-class="{reverse:reverse}"></span>
+            </th>
+            <th ng-click="order('MinPrice')">
+                Min Price
+                <span class="sortorder" ng-show="predicate === 'MinPrice'" ng-class="{reverse:reverse}"></span>
+            </th>
             <th ng-repeat="dataSource in dataSources">{{dataSource.Name}}</th>
         </tr>
         @*| orderBy:['-IsMarked','ProductName']*@
-        <tr ng-repeat="productGroup in productGroups | filter:searchFilter">
+        <tr ng-repeat="productGroup in productGroups | filter:searchFilter | filter:priceFilter | orderBy:predicate:reverse">
             <td><input type="checkbox" ng-model="productGroup.IsMarked" ng-change="mark(productGroup)" /></td>
             <td ng-class="{'is-marked' : productGroup.IsMarked}">
                 <a ng-href="~/ProductDetails/{{locationId}}/{{productGroup.ProductId}}">
                     {{productGroup.ProductName}}
                 </a>
             </td>
-            <td ng-repeat="dataSource in dataSources">
+            <td>{{(productGroup.Rating > 0 ? productGroup.Rating : null) | number:1}}</td>
+            <td>{{productGroup.MinPrice}}</td>
+            <td ng-repeat="dataSource in dataSources" ng-style="{{productGroup.Records[dataSource.DataSourceId].Style}}">
                 {{productGroup.Records[dataSource.DataSourceId].Price}}
                 @*<br/>
-                {{productGroup.Records[dataSource.DataSourceId].Rating}}*@
+                {{productGroup.Records[dataSource.DataSourceId].Rating > 0 ? productGroup.Records[dataSource.DataSourceId].Rating : "&nbsp;"}}*@
             </td>
         </tr>
     </table>

@@ -6,6 +6,7 @@
         <tr>
             <th>Source Name</th>
             <th>Image</th>
+            <th>Rating</th>
             <th>Price</th>
             <th>Description</th>
         </tr>
@@ -16,6 +17,7 @@
                     <img class="product-image" ng-src="{{sourceDetail.LastRecord.Image}}">
                 </a>
             </td>
+            <td>{{sourceDetail.LastRecord.Rating > 0 ? sourceDetail.LastRecord.Rating : ""}}</td>
             <td>{{sourceDetail.LastRecord.Price}}</td>
             <td>{{sourceDetail.LastRecord.Description}}</td>
         </tr>
