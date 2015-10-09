@@ -607,13 +607,20 @@ namespace PostgreDAL
 
         public void MarkProduct(int userId, int productId, string productName = null)
         {
-            // todo: get product name?
-
             NpgsqlConnection conn = new NpgsqlConnection(_connectionString);
             conn.Open();
 
-            var commandText = "insert into userproduct ( userid,  productid,  productname) " +
-                              "values                  (:userid, :productid, :productname) ";
+            string commandText;
+            if (productName != null)
+            {
+                commandText = "insert into userproduct ( userid,  productid,  productname) " +
+                                  "values                  (:userid, :productid, :productname) ";
+            }
+            else
+            {
+                commandText = "insert into userproduct ( userid,  productid,  productname) " +
+                              "values                  (:userid, :productid, (select name from product where productid = :productid))";
+            }
             NpgsqlCommand command = new NpgsqlCommand(commandText, conn);
             command.Parameters.AddWithValue("userid", NpgsqlDbType.Integer, userId);
             command.Parameters.AddWithValue("productid", NpgsqlDbType.Integer, productId);

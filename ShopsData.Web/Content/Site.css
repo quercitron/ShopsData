@@ -31,5 +31,6 @@ img.product-image {
 }
 
 .is-marked {
-    font-weight: bold;
+    /*font-weight: bold;*/
+    background-color: lemonchiffon;
 }
