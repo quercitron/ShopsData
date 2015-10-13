@@ -44,6 +44,7 @@ namespace ShopsData.Web.Repository
                 productGroup.ProductId = g.Key;
                 productGroup.ProductName = detailedProducts.First().Name;
                 productGroup.ProductClass = detailedProducts.First().Class;
+                productGroup.ProductCode = detailedProducts.First().Code;
                 productGroup.IsMarked = detailedProducts.First().IsMarked;
                 var recordsWithRating = detailedProducts.Where(p => p.Rating > 0.1);
                 productGroup.Rating = recordsWithRating.Any() ? recordsWithRating.Average(p => p.Rating) : 0;
@@ -228,6 +229,8 @@ namespace ShopsData.Web.Repository
 
         public string ProductClass { get; set; }
 
+        public string ProductCode { get; set; }
+
         public bool IsMarked { get; set; }
 
         public Dictionary<int, ProductDataDetailed> Records { get; set; }
@@ -251,6 +254,7 @@ namespace ShopsData.Web.Repository
             this.Timestamp = productData.Timestamp;
             this.LocationId = productData.LocationId;
             this.Class = productData.Class;
+            this.Code = productData.Code;
             this.IsMarked = productData.IsMarked;
         }
 

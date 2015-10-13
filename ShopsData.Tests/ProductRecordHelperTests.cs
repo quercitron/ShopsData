@@ -164,5 +164,80 @@ namespace ShopsData.Tests
             Assert.That(result.Name, Is.EqualTo("Монитор LG 24M37A-B"));
             Assert.That(result.Class, Is.EqualTo("Black"));
         }
+
+        [Test]
+        public void SsdProductRecordHelper()
+        {
+            var ssdProductType = new ProductType { Name = ProductTypeName.SSD };
+
+            // dns
+            var helper = (GeneralSSDProductRecordHelper)(new DnsSourceManager().GetProductRecordHelper(ssdProductType));
+
+            var result = helper.ProcessName(new ProductRecord
+            {
+                Name = "SSD накопитель A-Data XPG SX930 [ASX930SS3-120GM-C]",
+                Description = "[2.5\", 120 Гб, SATA III, чтение - 560 Мбайт, с, запись - 460 Мбайт, с, JMicron JMF670H]"
+            });
+            Assert.That(result.Name, Is.EqualTo("SSD накопитель A-Data XPG SX930 120GB"));
+            Assert.That(result.Code, Is.EqualTo("ASX930SS3-120GM-C"));
+
+            // citilink
+            helper = (GeneralSSDProductRecordHelper)(new CitilinkSourceManager().GetProductRecordHelper(ssdProductType));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "Накопитель SSD INTEL 530 Series SSDSC2BW120A4K5 120Гб",
+            });
+            Assert.That(result.Name, Is.EqualTo("Накопитель SSD INTEL 530 120GB"));
+            Assert.That(result.Code, Is.EqualTo("SSDSC2BW120A4K5"));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "Накопитель SSD A-DATA Premier SP600 ASP600S3-64GM-C 64Гб",
+            });
+            Assert.That(result.Name, Is.EqualTo("Накопитель SSD A-DATA Premier SP600 64GB"));
+            Assert.That(result.Code, Is.EqualTo("ASP600S3-64GM-C"));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "Накопитель SSD INTEL 730 Series SSDSC2BP240G410 933255 240Гб",
+            });
+            Assert.That(result.Name, Is.EqualTo("Накопитель SSD INTEL 730 240GB"));
+            Assert.That(result.Code, Is.EqualTo("SSDSC2BP240G410"));
+
+            // ulmart
+            helper = (GeneralSSDProductRecordHelper)(new UlmartSourceManager().GetProductRecordHelper(ssdProductType));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "жесткий диск SSD 120ГБ, Intel 530, SSDSC2BW120A4K5",
+            });
+            Assert.That(result.Name, Is.EqualTo("жесткий диск SSD Intel 530 120GB"));
+            Assert.That(result.Code, Is.EqualTo("SSDSC2BW120A4K5"));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "жесткий диск SSD 120ГБ, SmartBuy Ignition 2, SB120GB-IGNT-25SAT3",
+            });
+            Assert.That(result.Name, Is.EqualTo("жесткий диск SSD SmartBuy Ignition 2 120GB"));
+            Assert.That(result.Code, Is.EqualTo("SB120GB-IGNT-25SAT3"));
+
+            // key
+            helper = (GeneralSSDProductRecordHelper)(new KeySourceManager().GetProductRecordHelper(ssdProductType));
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "Накопитель SSD 2.5\" 512 Гб Corsair Force Series LX",
+            });
+            Assert.That(result.Name, Is.EqualTo("Накопитель SSD Corsair Force LX 512GB"));
+            Assert.That(result.Code, Is.Null);
+
+            result = helper.ProcessName(new ProductRecord
+            {
+                Name = "Накопитель SSD 2.5\" 240 Гб Intel 730 Series",
+            });
+            Assert.That(result.Name, Is.EqualTo("Накопитель SSD Intel 730 240GB"));
+            Assert.That(result.Code, Is.Null);
+        }
     }
 }

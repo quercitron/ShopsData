@@ -242,6 +242,9 @@ namespace DataCollectors
                 case ProductTypeName.SSD:
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/hdd/ssd_in/?available=1&status=0&p={0}";
                     break;
+                case ProductTypeName.Headset:
+                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/pc_headset/?available=1&status=0&p={0}";
+                    break;
             }
             return new GetUrlResult { Url = url };
         }

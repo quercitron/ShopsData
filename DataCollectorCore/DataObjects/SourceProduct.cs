@@ -21,5 +21,7 @@ namespace DataCollectorCore.DataObjects
         public string Brand { get; set; }
 
         public DateTime Timestamp { get; set; }
+
+        public string Code { get; set; }
     }
 }

@@ -20,8 +20,8 @@ namespace TestDataCollector
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
-            //TestGeneralDataCollector();
-            GetData();
+            TestGeneralDataCollector();
+            //GetData();
 
             //ReprocessRecords();
         }
@@ -80,7 +80,7 @@ namespace TestDataCollector
 
         private static void GetData()
         {
-            var dataCollector = new KeyDataCollector();
+            var dataCollector = new UlmartDataCollector();
 
             var data = dataCollector.GetShopData("vrn", ProductTypeName.SSD);
             //var dnsPowerSupplyHelper = new DnsPowerSupplyHelper();

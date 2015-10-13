@@ -30,6 +30,7 @@ namespace DataCollectorFramework
                 Key = GetKey(productRecord),
                 Name = processedName.Name,
                 Class = processedName.Class,
+                Code = processedName.Code,
                 OriginalName = productRecord.Name,
                 Brand = productRecord.Brand,
                 Timestamp = productRecord.Timestamp,
@@ -75,6 +76,8 @@ namespace DataCollectorFramework
         public string Name { get; set; }
 
         public string Class { get; set; }
+
+        public string Code { get; set; }
     }
 
     public class GeneralMotherboardProductRecordHelper : GeneralProductRecordHelper

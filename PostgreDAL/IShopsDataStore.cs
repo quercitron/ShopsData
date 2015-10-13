@@ -50,7 +50,7 @@ namespace PostgreDAL
 
         List<ProductData> GetCurrentData(int locationId, int productTypeId, int? userId = null);
 
-        void MarkProduct(int userId, int productId, string productName = null);
+        void MarkProduct(int userId, int productId);
 
         void UnmarkProduct(int userId, int productId);
     }
@@ -60,6 +60,7 @@ namespace PostgreDAL
         public int ProductId { get; set; }
         public string Name { get; set; }
         public string Class { get; set; }
+        public string Code { get; set; }
         public int DataSourceId { get; set; }
         public int Price { get; set; }
         public float Rating { get; set; }
@@ -80,6 +81,7 @@ namespace PostgreDAL
         public DateTime Timestamp { get; set; }
         public int LocationId { get; set; }
         public string Class { get; set; }
+        public string Code { get; set; }
         public bool IsMarked { get; set; }
 
         public string FullName

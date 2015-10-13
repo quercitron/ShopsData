@@ -58,8 +58,41 @@ namespace DataCollectorFramework
             {
                 case ProductTypeName.PowerSupply:
                     return new UlmartPowerSupplyHelper();
+                case ProductTypeName.SSD:
+                    return new UlmartSsdHelper();
             }
             return base.GetProductRecordHelper(productType);
+        }
+    }
+
+    public class UlmartSsdHelper : GeneralSSDProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            var code = baseResult.Code;
+
+            name = name.Replace(",", "");
+
+            var pattern = @"^(.*\s)(\S+)$";
+            var match = Regex.Match(name, pattern);
+            if (match.Success)
+            {
+                name = match.Groups[1].Value.Trim();
+                code = match.Groups[2].Value.Trim();
+            }
+
+            pattern = @"\s\d+GB\b";
+            match = Regex.Match(name, pattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+                name += match.Groups[0].Value;
+            }
+
+            return new ComplexName { Name = name, Code = code, Class = baseResult.Class };
         }
     }
 
@@ -126,8 +159,30 @@ namespace DataCollectorFramework
                     return new KeyMonitorHelper();
                 case ProductTypeName.PowerSupply:
                     return new KeyPowerSupplyHelper();
+                case ProductTypeName.SSD:
+                    return new KeySsdHelper();
             }
             return base.GetProductRecordHelper(productType);
+        }
+    }
+
+    public class KeySsdHelper : GeneralSSDProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+
+            var pattern = @"\s\d+GB\b";
+            var match = Regex.Match(name, pattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+                name += match.Groups[0].Value;
+            }
+
+            return new ComplexName { Name = name, Class = baseResult.Class, Code = baseResult.Code };
         }
     }
 
@@ -156,6 +211,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.SSD:
                     productRecordHelper = new GeneralSSDProductRecordHelper();
                     break;
+                case ProductTypeName.Headset:
+                    productRecordHelper = new GeneralHeadsetProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -170,46 +228,98 @@ namespace DataCollectorFramework
         }
     }
 
-    public class GeneralSSDProductRecordHelper : GeneralProductRecordHelper
+    public class GeneralHeadsetProductRecordHelper : GeneralProductRecordHelper
     {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            if (!Regex.IsMatch(name, @"A4\s?Tech", RegexOptions.IgnoreCase))
+            {
+                name = Regex.Replace(name, @"\bA4\b", "A4Tech", RegexOptions.IgnoreCase);
+            }
+            name = Regex.Replace(name, @"A4 Tech", "A4Tech", RegexOptions.IgnoreCase);
+            name = name.Trim();
+
+            return new ComplexName { Name = name, Class = baseResult.Class, Code = baseResult.Code };
+        }
     }
 
-    public class CitilinkSourceManager : ISourceManager
+    public class GeneralSSDProductRecordHelper : GeneralProductRecordHelper
     {
-        public IShopDataCollector GetDataCollector()
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            name = Regex.Replace(name, @"Накопитель SSD", "Накопитель SSD", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"жесткий диск SSD", "Накопитель SSD", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"SSD накопитель", "Накопитель SSD", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\s?Гб", "GB", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\s?Тб", "TB", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "2.5\"", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "2,5\"", "", RegexOptions.IgnoreCase);
+            name = name.Replace("  ", " ");
+            name = Regex.Replace(name, "Series", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\s\s", @" ");
+            name = Regex.Replace(name, @"\bmSATA\b", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\bSATA/s\b", "", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\bSATA\b", "", RegexOptions.IgnoreCase);
+            name = name.Trim();
+
+            return new ComplexName { Name = name, Class = baseResult.Class, Code = baseResult.Code };
+        }
+    }
+
+    public class CitilinkSourceManager : GeneralSourceManager
+    {
+        public override IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        {
+            switch (productType.Name)
+            {
+                case ProductTypeName.SSD:
+                    return new CitilinkSSDProductRecordHelper();
+            }
+            return base.GetProductRecordHelper(productType);
+        }
+
+        public override IShopDataCollector GetDataCollector()
         {
             return new CitilinkDataCollector();
         }
+    }
 
-        public IProductRecordHelper GetProductRecordHelper(ProductType productType)
+    public class CitilinkSSDProductRecordHelper : GeneralSSDProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
         {
-            IProductRecordHelper productRecordHelper;
+            var baseResult = base.ProcessName(productRecord);
 
-            switch (productType.Name)
+            var name = baseResult.Name;
+            var code = baseResult.Code;
+
+            var pattern = @"^(.*\s)(\d+\s)(\S+)$";
+            var match = Regex.Match(name, pattern);
+            if (match.Success)
             {
-                case ProductTypeName.Motherboard:
-                    productRecordHelper = new GeneralMotherboardProductRecordHelper();
-                    break;
-                case ProductTypeName.Monitor:
-                    productRecordHelper = new GeneralMonitorProductRecordHelper();
-                    break;
-                case ProductTypeName.PowerSupply:
-                    productRecordHelper = new GeneralPowerSupplyProductRecordHelper();
-                    break;
-                case ProductTypeName.Screwdriver:
-                    productRecordHelper = new GeneralScrewdriverProductRecordHelper();
-                    break;
-                default:
-                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
-                    throw new NotSupportedException(message);
+                name = Regex.Replace(name, pattern, m => m.Groups[1].Value + m.Groups[3].Value).Trim();
             }
 
-            return productRecordHelper;
-        }
+            pattern = @"^(.*\s)(\S+\s)(\S+)$";
+            match = Regex.Match(name, pattern);
+            if (match.Success)
+            {
+                code = match.Groups[2].Value.Trim();
+                name = Regex.Replace(name, pattern, m => m.Groups[1].Value + m.Groups[3].Value).Trim();
+            }
 
-        public IProductHelper GetProductHelper(ProductType productType)
-        {
-            return new GeneralProductHelper();
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+                Code = code,
+            };
         }
     }
 
@@ -245,16 +355,16 @@ namespace DataCollectorFramework
         }
     }
 
-    public class DnsSourceManager : ISourceManager
+    public class DnsSourceManager : GeneralSourceManager
     {
-        public IShopDataCollector GetDataCollector()
+        public override IShopDataCollector GetDataCollector()
         {
             return new DnsDataCollector();
         }
 
-        public IProductRecordHelper GetProductRecordHelper(ProductType productType)
+        public override IProductRecordHelper GetProductRecordHelper(ProductType productType)
         {
-            IProductRecordHelper productRecordHelper;
+            IProductRecordHelper productRecordHelper = null;
 
             switch (productType.Name)
             {
@@ -270,17 +380,53 @@ namespace DataCollectorFramework
                 case ProductTypeName.Screwdriver:
                     productRecordHelper = new GeneralScrewdriverProductRecordHelper();
                     break;
-                default:
-                    var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
-                    throw new NotSupportedException(message);
+                case ProductTypeName.SSD:
+                    productRecordHelper = new DnsSSDProductRecordHelper();
+                    break;
             }
 
-            return productRecordHelper;
+            return productRecordHelper ?? base.GetProductRecordHelper(productType);
         }
 
-        public IProductHelper GetProductHelper(ProductType productType)
+        public override IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
+        }
+    }
+
+    public class DnsSSDProductRecordHelper : GeneralSSDProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            var code = baseResult.Code;
+
+            var pattern = @"\[(.*)\]";
+            var match = Regex.Match(name, pattern);
+            if (match.Success)
+            {
+                code = match.Groups[1].Value;
+                name = Regex.Replace(name, pattern, "").Trim();
+            }
+
+            var descr = productRecord.Description;
+            descr = Regex.Replace(descr, @"Гб\b", "GB", RegexOptions.IgnoreCase);
+            descr = Regex.Replace(descr, @"Тб\b", "TB", RegexOptions.IgnoreCase);
+            pattern = @"\b\d+\s?(GB|TB)\b";
+            match = Regex.Match(descr, pattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                name += " " + match.Groups[0].Value.Replace(" ", "");
+            }
+
+            return new ComplexName
+            {
+                Name = name,
+                Class = baseResult.Class,
+                Code = code,
+            };
         }
     }
 

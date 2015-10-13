@@ -13,5 +13,7 @@ namespace DataCollectorCore.DataObjects
         public int ProductTypeId { get; set; }
 
         public DateTime Created { get; set; }
+
+        public string Code { get; set; }
     }
 }

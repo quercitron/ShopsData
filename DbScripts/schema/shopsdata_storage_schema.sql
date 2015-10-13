@@ -107,7 +107,8 @@ CREATE TABLE product (
     name text NOT NULL,
     producttypeid integer NOT NULL,
     class text,
-    created timestamp without time zone NOT NULL
+    created timestamp without time zone NOT NULL,
+    code text
 );
 
 
@@ -201,7 +202,8 @@ CREATE TABLE sourceproduct (
     productid integer NOT NULL,
     "timestamp" timestamp without time zone NOT NULL,
     brand text,
-    class text
+    class text,
+    code text
 );
 
 
@@ -261,7 +263,9 @@ CREATE TABLE userproduct (
     userproductid integer NOT NULL,
     userid integer NOT NULL,
     productid integer,
-    productname text
+    productname text,
+    productclass text,
+    productcode text
 );
 
 

@@ -21,25 +21,40 @@ namespace DataCollectorFramework
             int bestDistance = int.MaxValue;
             var bestMatchProducts = new List<Product>();
 
-            var targetName = CleanName(sourceProduct.Name);
-            foreach (var product in products)
+            if (sourceProduct.Code != null)
             {
-                var productName = CleanName(product.Name);
-                var distance = WordsHelper.LevenshteinDistance(targetName, productName);
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    bestMatchProducts = new List<Product> { product };
-                }
-                else if (distance == bestDistance)
-                {
-                    bestMatchProducts.Add(product);
-                }
+                var targetCode = CleanName(sourceProduct.Code);
+                bestMatchProducts = products.Where(p => p.Code != null && CleanName(p.Code) == targetCode).ToList();
             }
 
-            if (bestDistance > MatchLimit || bestMatchProducts.Count == 0)
+            if (bestMatchProducts.Count == 0)
             {
-                return new MatchResult { Success = false };
+                var targetName = CleanName(sourceProduct.Name);
+                foreach (var product in products)
+                {
+                    // different codes -> different products
+                    if (sourceProduct.Code != null && product.Code != null)
+                    {
+                        continue;
+                    }
+
+                    var productName = CleanName(product.Name);
+                    var distance = WordsHelper.LevenshteinDistance(targetName, productName);
+                    if (distance < bestDistance)
+                    {
+                        bestDistance = distance;
+                        bestMatchProducts = new List<Product> { product };
+                    }
+                    else if (distance == bestDistance)
+                    {
+                        bestMatchProducts.Add(product);
+                    }
+                }
+
+                if (bestDistance > MatchLimit || bestMatchProducts.Count == 0)
+                {
+                    return new MatchResult { Success = false };
+                }
             }
 
             if (bestMatchProducts.Count > 1)
@@ -54,39 +69,56 @@ namespace DataCollectorFramework
 
             bestMatchProducts = bestMatchProducts.OrderBy(p => p.Created).ToList();
 
+            MatchResult matchResult = null; 
+
             if (!string.IsNullOrWhiteSpace(sourceProduct.Class))
             {
                 var product = bestMatchProducts.FirstOrDefault(p => CleanName(p.Class) == CleanName(sourceProduct.Class));
                 if (product != null)
                 {
-                    return new MatchResult { Success = true, Product = product };
+                    matchResult = new MatchResult { Success = true, Product = product };
                 }
-
-                product = bestMatchProducts.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.Class));
-                if (product != null)
+                else
                 {
-                    product.Class = sourceProduct.Class;
-                    return new MatchResult { Success = true, Product = product, UpdateProduct = true };
+                    product = bestMatchProducts.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.Class));
+                    if (product != null)
+                    {
+                        product.Class = sourceProduct.Class;
+                        matchResult = new MatchResult { Success = true, Product = product, UpdateProduct = true };
+                    }
+                    else
+                    {
+                        matchResult = new MatchResult { Success = false };
+                    }
                 }
-
-                return new MatchResult { Success = false };
             }
             else
             {
                 var product = bestMatchProducts.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.Class));
                 if (product != null)
                 {
-                    return new MatchResult { Success = true, Product = product };
+                    matchResult = new MatchResult { Success = true, Product = product };
                 }
-
-                product = bestMatchProducts.FirstOrDefault();
-                if (product != null)
+                else
                 {
-                    return new MatchResult { Success = true, Product = product };
+                    product = bestMatchProducts.FirstOrDefault();
+                    if (product != null)
+                    {
+                        matchResult = new MatchResult { Success = true, Product = product };
+                    }
+                    else
+                    {
+                        matchResult = new MatchResult { Success = false };
+                    }
                 }
-
-                return new MatchResult { Success = false };
             }
+
+            if (sourceProduct.Code != null && matchResult.Product != null && matchResult.Product.Code == null)
+            {
+                matchResult.Product.Code = sourceProduct.Code;
+                matchResult.UpdateProduct = true;
+            }
+            return matchResult;
         }
 
         private string CleanName(string name)
@@ -101,6 +133,7 @@ namespace DataCollectorFramework
                 ProductTypeId = context.ProductType.ProductTypeId,
                 Name = sourceProduct.Name,
                 Class = sourceProduct.Class,
+                Code = sourceProduct.Code,
                 Created = sourceProduct.Timestamp,
             };
         }

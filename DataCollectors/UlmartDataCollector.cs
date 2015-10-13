@@ -85,15 +85,15 @@ namespace DataCollectors
             var record = new ProductRecord();
 
             var helperNode = htmlNode.Descendant("span", "js_gtm_helper");
-            record.Name = helperNode.Attributes["data-gtm-eventProductName"].Value;
+            //record.Name = helperNode.Attributes["data-gtm-eventProductName"].Value;
             record.ExternalId = helperNode.Attributes["data-gtm-eventProductId"].Value;
             record.Brand = helperNode.Attributes["data-gtm-eventVendorName"].Value;
             record.Price = (int)decimal.Parse(helperNode.Attributes["data-gtm-eventProductPrice"].Value);
 
             var center = htmlNode.Descendant("div", "b-product__center");
-            /*var titleBlock = center.Descendant("div", "b-product__title");
+            var titleBlock = center.Descendant("div", "b-product__title");
             var titleNode = titleBlock.Descendants("a").First();
-            record.Name = titleNode.InnerText;*/
+            record.Name = titleNode.InnerText;
 
             var descriptionNode = center.Descendant("div", "b-product__descr");
             record.Description = descriptionNode.InnerText;
@@ -147,6 +147,10 @@ namespace DataCollectors
 
                 case ProductTypeName.SSD:
                     productTypeName = "hdd_ssd";
+                    break;
+
+                case ProductTypeName.Headset:
+                    productTypeName = "headset";
                     break;
             }
 

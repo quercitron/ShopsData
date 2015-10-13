@@ -134,6 +134,19 @@ namespace DataCollectors
                     resultUrl = "http://key.ru/catalog/ajaxLoadingGoods_v2/" +
                                 "?p={0}&category_id=93410&params=%3Ff%255Bname%255D%3Dssd%26search_string%3Dssd%26&is_ajax=1";
                     break;
+                case ProductTypeName.Headset:
+                    resultUrl = "http://key.ru/catalog/ajaxLoadingGoods_v2/" +
+                                "?p={0}&category_id=15854&params=%3Fcategory_id%3D15854%26collection%3D%26disc%3D%26ncitems" +
+                                "%3D%26f%255Bname%255D%3D%26f%255Bprice%255D%255B0%255D%3D140%26f%255Bprice%255D%255B1%255D" +
+                                "%3D32990%26f%255Bdlina_shnura%255D%255B0%255D%3D0.8%26f%255Bdlina_shnura%255D%255B1%255D" +
+                                "%3D6%26f%255Bradius_dejstviya_besprovodnoj_garnituri%255D%255B0%255D%3D1.2%26f" +
+                                "%255Bradius_dejstviya_besprovodnoj_garnituri%255D%255B1%255D%3D100%26f%255Bmaks_mownost" +
+                                "%255D%255B0%255D%3D10%26f%255Bmaks_mownost%255D%255B1%255D%3D3500%26f%255Btip_mikrofona_garnituri" +
+                                "%255D%255B0%255D%3D3847890%26f%255Btip_mikrofona_garnituri%255D%255B1%255D%3D6190552%26f" +
+                                "%255Bvremya_raboty_v_rezhime_razgovora_garnitury%255D%255B0%255D%3D2%26f" +
+                                "%255Bvremya_raboty_v_rezhime_razgovora_garnitury%255D%255B1%255D%3D250%26category_main_id" +
+                                "%3D0%26maker_id%3D0%26model_id%3D0%26category_acs_id%3D0%26&is_ajax=1";
+                    break;
             }
             if (resultUrl != null)
             {

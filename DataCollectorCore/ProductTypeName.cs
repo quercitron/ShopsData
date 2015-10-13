@@ -7,5 +7,6 @@
         public const string Monitor = "monitor";
         public const string Screwdriver = "screwdriver";
         public const string SSD = "ssd";
+        public const string Headset = "headset";
     }
 }

@@ -155,6 +155,9 @@ namespace DataCollectors
                 case ProductTypeName.SSD:
                     url = "http://www.dns-shop.ru/catalog/3750/ssd-sata-25-nakopiteli/ajax/?p={0}&offset={1}";
                     break;
+                case ProductTypeName.Headset:
+                    url = "http://www.dns-shop.ru/catalog/5277/naushniki-s-mikrofonom/ajax/?p={0}&offset={1}";
+                    break;
             }
             return new GetUrlResult { Url = url };
         }
