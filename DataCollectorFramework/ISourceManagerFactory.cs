@@ -60,8 +60,31 @@ namespace DataCollectorFramework
                     return new UlmartPowerSupplyHelper();
                 case ProductTypeName.SSD:
                     return new UlmartSsdHelper();
+                case ProductTypeName.CPU:
+                    return new UlmartCpuHelper();
             }
             return base.GetProductRecordHelper(productType);
+        }
+    }
+
+    public class UlmartCpuHelper : GeneralCpuProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name;
+            var code = baseResult.Code;
+
+            var pattern = @",\s?(AD\w+),";
+            var match = Regex.Match(name, pattern, RegexOptions.IgnoreCase);
+            if (match.Success)
+            {
+                code = match.Groups[1].Value;
+                name = Regex.Replace(name, pattern, "", RegexOptions.IgnoreCase);
+            }
+
+            return new ComplexName { Name = name, Code = code, Class = baseResult.Class };
         }
     }
 
@@ -214,6 +237,9 @@ namespace DataCollectorFramework
                 case ProductTypeName.Headset:
                     productRecordHelper = new GeneralHeadsetProductRecordHelper();
                     break;
+                case ProductTypeName.CPU:
+                    productRecordHelper = new GeneralCpuProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -225,6 +251,38 @@ namespace DataCollectorFramework
         public virtual IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
+        }
+    }
+
+    public class GeneralCpuProductRecordHelper : GeneralProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name.Trim();
+            name = Regex.Replace(name, "Процессор", "Процессор", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Pentium Dual-Core", "Pentium", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Intel", "Intel", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\(OEM\)", "OEM", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\(BOX\)", "BOX", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @", OEM\b", " OEM", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @", BOX\b", " BOX", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, @"\bAMD\b", "AMD", RegexOptions.IgnoreCase);
+            if (!Regex.IsMatch(name, @"\bOEM\b", RegexOptions.IgnoreCase) &&
+                !Regex.IsMatch(name, @"\bBOX\b", RegexOptions.IgnoreCase))
+            {
+                if (Regex.IsMatch(productRecord.Description, @"\bBOX\b", RegexOptions.IgnoreCase))
+                {
+                    name += " BOX";
+                }
+                else // if (Regex.IsMatch(productRecord.Description, @"\bOEM\b", RegexOptions.IgnoreCase))
+                {
+                    name += " OEM";
+                }
+            }
+
+            return new ComplexName { Name = name, Class = baseResult.Class, Code = baseResult.Code };
         }
     }
 

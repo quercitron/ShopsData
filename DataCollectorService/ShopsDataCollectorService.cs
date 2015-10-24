@@ -71,7 +71,7 @@ namespace DataCollectorService
             var collector = new GeneralDataCollector();
             collector.CollectData();
             stopwatch.Stop();
-            _logger.InfoFormat("Data collecting complete in {0} ms.", stopwatch.ElapsedMilliseconds);
+            _logger.InfoFormat("Data collecting complete in {0} sec.", stopwatch.Elapsed.TotalSeconds);
         }
     }
 }

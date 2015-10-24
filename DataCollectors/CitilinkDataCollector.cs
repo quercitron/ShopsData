@@ -105,100 +105,112 @@ namespace DataCollectors
 
         private List<ProductRecord> GetItems(HtmlDocument document)
         {
-            var items = new List<ProductRecord>();
-
-            var productRows =
+            var productNodes =
                    document.DocumentNode.Descendants("div").First(x => x.Class() == "product_category_list")
-                       .Descendants("tbody").First()
-                       .Descendants("tr")
-                       .Where(x => x.Class() == "")
+                       .Descendants("tbody")
+                       .Where(x => string.IsNullOrEmpty(x.Descendant("tr").Class()))
                        .ToArray();
 
-            for (int i = 0; i < productRows.Length; i++)
+            var items = new List<ProductRecord>();
+            foreach (var productNode in productNodes)
             {
-                var item = new ProductRecord();
-
-                var row = productRows[i];
-
-                var productNameTd = row.Child("td", "product_name");
-
-                var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "product_link__js");
-                item.Name = titleNode.Attributes["title"].Value;
-                item.SourceLink = "http://www.citilink.ru" + titleNode.Attributes["href"].Value;
-
-                var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
-                item.Description = descriptionNode.InnerText;
-
-                var imageTd = row.Descendant("td", "image");
-                if (imageTd != null)
+                var record = GetCitilinkItem(productNode);
+                if (record != null)
                 {
-                    var imageNode = imageTd.Descendant("img");
-                    if (imageNode != null)
-                    {
-                        if (imageNode.Attributes["src"] != null)
-                        {
-                            item.Image = imageNode.Attributes["src"].Value;
-                        }
-                        else if (imageNode.Attributes["data-src"] != null)
-                        {
-                            item.Image = imageNode.Attributes["data-src"].Value;
-                        }
-                    }
+                    items.Add(record);
                 }
-
-                var ratingDiv = row.Descendant("div", "ratings");
-                if (ratingDiv != null)
+                else
                 {
-                    var spans = ratingDiv.Descendants("span").ToArray();
-                    if (spans.Length >= 5)
-                    {
-                        float rating = 0;
-                        for (int j = 0; j < 4; j++)
-                        {
-                            var span = spans[j];
-                            if (span.Class().Contains("half"))
-                            {
-                                rating = 4.5f - j;
-                                break;
-                            }
-                            if (span.Class().Contains("selected"))
-                            {
-                                rating = 5 - j;
-                            }
-                        }
-                        item.Rating = rating;
-                    }
+                    break;
                 }
-
-                i++;
-                row = productRows[i];
-
-                var priceNode = row.Descendants("span").FirstOrDefault(x => x.Class() == "special");
-                if (priceNode == null)
-                {
-                    priceNode = row.Descendants("span").FirstOrDefault(x => x.Class() == "standart");
-                    if (priceNode == null)
-                    {
-                        break;
-                    }
-                }
-
-                var priceNumNode = priceNode.Descendants("ins").First(x => x.Class() == "num");
-
-                var priceStr = Regex.Replace(priceNumNode.InnerText, "[^0-9]", "");
-                var price = int.Parse(priceStr);
-                item.Price = price;
-
-                var dataParamsTd = row.Descendant("td", "actions product_data__js");
-                var dataParamsStr = dataParamsTd.Attributes["data-params"].Value;
-                var dataParams = JsonConvert.DeserializeObject<DataParams>(dataParamsStr);
-                item.ExternalId = dataParams.Id;
-                item.Brand = dataParams.BrandName;
-
-                items.Add(item);
             }
 
             return items;
+        }
+
+        private ProductRecord GetCitilinkItem(HtmlNode htmlNode)
+        {
+            var item = new ProductRecord();
+
+            var rows = htmlNode.Childs("tr").ToArray();
+
+            var infoNode = rows[0];
+
+            var productNameTd = infoNode.Child("td", "product_name");
+
+            var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "product_link__js");
+            item.Name = titleNode.Attributes["title"].Value;
+            item.SourceLink = "http://www.citilink.ru" + titleNode.Attributes["href"].Value;
+
+            var descriptionNode = productNameTd.Descendants("p").First(x => x.Class() == "short_description");
+            item.Description = descriptionNode.InnerText;
+
+            var imageTd = infoNode.Descendant("td", "image");
+            if (imageTd != null)
+            {
+                var imageNode = imageTd.Descendant("img");
+                if (imageNode != null)
+                {
+                    if (imageNode.Attributes["src"] != null)
+                    {
+                        item.Image = imageNode.Attributes["src"].Value;
+                    }
+                    else if (imageNode.Attributes["data-src"] != null)
+                    {
+                        item.Image = imageNode.Attributes["data-src"].Value;
+                    }
+                }
+            }
+
+            var ratingDiv = infoNode.Descendant("div", "ratings");
+            if (ratingDiv != null)
+            {
+                var spans = ratingDiv.Descendants("span").ToArray();
+                if (spans.Length >= 5)
+                {
+                    float rating = 0;
+                    for (int j = 0; j < 4; j++)
+                    {
+                        var span = spans[j];
+                        if (span.Class().Contains("half"))
+                        {
+                            rating = 4.5f - j;
+                            break;
+                        }
+                        if (span.Class().Contains("selected"))
+                        {
+                            rating = 5 - j;
+                        }
+                    }
+                    item.Rating = rating;
+                }
+            }
+
+            var priceRow = rows[1];
+
+            var priceNode = priceRow.Descendants("span").FirstOrDefault(x => x.Class() == "special");
+            if (priceNode == null)
+            {
+                priceNode = priceRow.Descendants("span").FirstOrDefault(x => x.Class() == "standart");
+                if (priceNode == null)
+                {
+                    return null;
+                }
+            }
+
+            var priceNumNode = priceNode.Descendants("ins").First(x => x.Class() == "num");
+
+            var priceStr = Regex.Replace(priceNumNode.InnerText, "[^0-9]", "");
+            var price = int.Parse(priceStr);
+            item.Price = price;
+
+            var dataParamsTd = priceRow.Descendant("td", "actions product_data__gtm-js");
+            var dataParamsStr = dataParamsTd.Attributes["data-params"].Value;
+            var dataParams = JsonConvert.DeserializeObject<DataParams>(dataParamsStr);
+            item.ExternalId = dataParams.Id;
+            item.Brand = dataParams.BrandName;
+
+            return item;
         }
 
         private class DataParams
@@ -244,6 +256,9 @@ namespace DataCollectors
                     break;
                 case ProductTypeName.Headset:
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/pc_headset/?available=1&status=0&p={0}";
+                    break;
+                case ProductTypeName.CPU:
+                    url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/cpu/?available=1&status=0&p={0}";
                     break;
             }
             return new GetUrlResult { Url = url };

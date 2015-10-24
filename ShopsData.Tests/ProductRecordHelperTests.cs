@@ -239,5 +239,21 @@ namespace ShopsData.Tests
             Assert.That(result.Name, Is.EqualTo("Накопитель SSD Intel 730 240GB"));
             Assert.That(result.Code, Is.Null);
         }
+
+        [Test]
+        public void CpuProductRecordHelper()
+        {
+            var cpuProductType = new ProductType { Name = ProductTypeName.CPU };
+
+            // ulmart
+            var helper = (GeneralCpuProductRecordHelper)(new UlmartSourceManager().GetProductRecordHelper(cpuProductType));
+
+            var result = helper.ProcessName(new ProductRecord
+            {
+                Name = "процессор AMD A10-7850K Black Edition, AD785KXBJABOX, BOX",
+            });
+            Assert.That(result.Name, Is.EqualTo("Процессор AMD A10-7850K Black Edition BOX"));
+            Assert.That(result.Code, Is.EqualTo("AD785KXBJABOX"));
+        }
     }
 }

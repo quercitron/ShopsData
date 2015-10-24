@@ -8,5 +8,6 @@
         public const string Screwdriver = "screwdriver";
         public const string SSD = "ssd";
         public const string Headset = "headset";
+        public const string CPU = "cpu";
     }
 }

@@ -152,6 +152,10 @@ namespace DataCollectors
                 case ProductTypeName.Headset:
                     productTypeName = "headset";
                     break;
+
+                case ProductTypeName.CPU:
+                    productTypeName = "cpu_pc";
+                    break;
             }
 
             if (productTypeName != null)

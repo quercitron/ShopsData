@@ -106,7 +106,10 @@ namespace DataCollectors
             record.Description = descriptionNode.InnerText;
 
             var buyNode = htmlNode.Descendant("div", "cell_buy").Descendant("button");
-            record.Price = (int) double.Parse(buyNode.Attributes["data-price"].Value);
+            if (buyNode == null) return null;
+            var priceAttribute = buyNode.Attributes["data-price"];
+            if (priceAttribute == null) return null;
+            record.Price = (int) double.Parse(priceAttribute.Value);
 
             return record;
         }
@@ -146,6 +149,9 @@ namespace DataCollectors
                                 "%255Bvremya_raboty_v_rezhime_razgovora_garnitury%255D%255B0%255D%3D2%26f" +
                                 "%255Bvremya_raboty_v_rezhime_razgovora_garnitury%255D%255B1%255D%3D250%26category_main_id" +
                                 "%3D0%26maker_id%3D0%26model_id%3D0%26category_acs_id%3D0%26&is_ajax=1";
+                    break;
+                case ProductTypeName.CPU:
+                    categoryId = "1117";
                     break;
             }
             if (resultUrl != null)

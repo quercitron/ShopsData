@@ -158,6 +158,9 @@ namespace DataCollectors
                 case ProductTypeName.Headset:
                     url = "http://www.dns-shop.ru/catalog/5277/naushniki-s-mikrofonom/ajax/?p={0}&offset={1}";
                     break;
+                case ProductTypeName.CPU:
+                    url = "http://www.dns-shop.ru/catalog/3659/processory/ajax/?p={0}&offset={1}";
+                    break;
             }
             return new GetUrlResult { Url = url };
         }
