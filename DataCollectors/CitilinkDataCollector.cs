@@ -24,6 +24,7 @@ namespace DataCollectors
         protected override List<ProductRecord> GetProducts(string locationName, string url)
         {
             var result = new List<ProductRecord>();
+            int? itemsOnPageCount = null;
             for (int pageNumber = 1; ; pageNumber++)
             {
                 var pageUrl = string.Format(url, pageNumber);
@@ -32,6 +33,14 @@ namespace DataCollectors
                 if (products != null && products.Count != 0)
                 {
                     result.AddRange(products);
+                    if (itemsOnPageCount == null)
+                    {
+                        itemsOnPageCount = products.Count;
+                    }
+                    else if (products.Count < itemsOnPageCount)
+                    {
+                        break;
+                    }
                 }
                 else
                 {
@@ -96,6 +105,8 @@ namespace DataCollectors
             }
             //var source = Encoding.GetEncoding(1251).GetString(responseBytes, 0, responseBytes.Length - 1); ;
 
+            // todo: workaround, how to improve?
+            source = source.Replace("&quot;", "'");
             source = WebUtility.HtmlDecode(source);
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(source);
@@ -138,7 +149,7 @@ namespace DataCollectors
 
             var productNameTd = infoNode.Child("td", "product_name");
 
-            var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "product_link__js");
+            var titleNode = productNameTd.Descendants("a").First(x => x.Class() == "link_gtm-js");
             item.Name = titleNode.Attributes["title"].Value;
             item.SourceLink = "http://www.citilink.ru" + titleNode.Attributes["href"].Value;
 
@@ -204,8 +215,9 @@ namespace DataCollectors
             var price = int.Parse(priceStr);
             item.Price = price;
 
-            var dataParamsTd = priceRow.Descendant("td", "actions product_data__gtm-js");
-            var dataParamsStr = dataParamsTd.Attributes["data-params"].Value;
+            //var dataNode = priceRow.Descendant("td", "product_data__gtm-js");
+            var dataNode = htmlNode;
+            var dataParamsStr = dataNode.Attributes["data-params"].Value;
             var dataParams = JsonConvert.DeserializeObject<DataParams>(dataParamsStr);
             item.ExternalId = dataParams.Id;
             item.Brand = dataParams.BrandName;
@@ -259,6 +271,12 @@ namespace DataCollectors
                     break;
                 case ProductTypeName.CPU:
                     url = "http://www.citilink.ru/catalog/computers_and_notebooks/parts/cpu/?available=1&status=0&p={0}";
+                    break;
+                case ProductTypeName.Jigsaw:
+                    url = "http://www.citilink.ru/catalog/power_tools_and_garden_equipments/jig_saws/?available=1&status=0&p={0}";
+                    break;
+                case ProductTypeName.Headphones:
+                    url = "http://www.citilink.ru/catalog/mobile/handsfree/?available=1&status=0&p={0}";
                     break;
             }
             return new GetUrlResult { Url = url };
