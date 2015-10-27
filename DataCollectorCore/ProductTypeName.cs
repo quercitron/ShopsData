@@ -9,5 +9,7 @@
         public const string SSD = "ssd";
         public const string Headset = "headset";
         public const string CPU = "cpu";
+        public const string Jigsaw = "jigsaw";
+        public const string Headphones = "headphones";
     }
 }

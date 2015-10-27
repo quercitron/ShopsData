@@ -240,6 +240,12 @@ namespace DataCollectorFramework
                 case ProductTypeName.CPU:
                     productRecordHelper = new GeneralCpuProductRecordHelper();
                     break;
+                case ProductTypeName.Jigsaw:
+                    productRecordHelper = new GeneralJigsawProductRecordHelper();
+                    break;
+                case ProductTypeName.Headphones:
+                    productRecordHelper = new GeneralHeadphonesProductRecordHelper();
+                    break;
                 default:
                     var message = string.Format("No ProductRecordHelper for product type {0}.", productType.Name);
                     throw new NotSupportedException(message);
@@ -251,6 +257,27 @@ namespace DataCollectorFramework
         public virtual IProductHelper GetProductHelper(ProductType productType)
         {
             return new GeneralProductHelper();
+        }
+    }
+
+    public class GeneralHeadphonesProductRecordHelper : GeneralHeadsetProductRecordHelper
+    {
+    }
+
+    public class GeneralJigsawProductRecordHelper : GeneralProductRecordHelper
+    {
+        public override ComplexName ProcessName(ProductRecord productRecord)
+        {
+            var baseResult = base.ProcessName(productRecord);
+
+            var name = baseResult.Name.Trim();
+            name = Regex.Replace(name, "Лобзик", "Лобзик", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Makita", "Makita", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Bosch", "Bosch", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "SKIL", "SKIL", RegexOptions.IgnoreCase);
+            name = Regex.Replace(name, "Black & Decker", "Black & Decker", RegexOptions.IgnoreCase);
+
+            return new ComplexName { Name = name, Class = baseResult.Class, Code = baseResult.Code };
         }
     }
 
@@ -293,6 +320,7 @@ namespace DataCollectorFramework
             var baseResult = base.ProcessName(productRecord);
 
             var name = baseResult.Name;
+            name = Regex.Replace(name, @"Наушники", "Наушники", RegexOptions.IgnoreCase);
             if (!Regex.IsMatch(name, @"A4\s?Tech", RegexOptions.IgnoreCase))
             {
                 name = Regex.Replace(name, @"\bA4\b", "A4Tech", RegexOptions.IgnoreCase);

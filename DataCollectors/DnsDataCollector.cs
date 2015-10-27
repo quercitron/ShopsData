@@ -161,6 +161,12 @@ namespace DataCollectors
                 case ProductTypeName.CPU:
                     url = "http://www.dns-shop.ru/catalog/3659/processory/ajax/?p={0}&offset={1}";
                     break;
+                case ProductTypeName.Jigsaw:
+                    url = "http://www.dns-shop.ru/catalog/5080/lobziki/ajax/?p={0}&offset={1}";
+                    break;
+                case ProductTypeName.Headphones:
+                    url = "http://www.dns-shop.ru/catalog/3708/naushniki-bez-mikrofona/ajax/?p={0}&offset={1}";
+                    break;
             }
             return new GetUrlResult { Url = url };
         }

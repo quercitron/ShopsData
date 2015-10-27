@@ -153,6 +153,15 @@ namespace DataCollectors
                 case ProductTypeName.CPU:
                     categoryId = "1117";
                     break;
+                case ProductTypeName.Jigsaw:
+                    // key don't sell jigsaws
+                    return new GetUrlResult { NotSell = true };
+                case ProductTypeName.Headphones:
+                    resultUrl = "http://key.ru/catalog/ajaxLoadingGoods_v2/" +
+                                "?p={0}&category_id=15854&params=%3Ff%255Bname%255D%3D%25D0%25BD%25D0%25B0%25D1%2583" +
+                                "%25D1%2588%25D0%25BD%25D0%25B8%25D0%25BA%25D0%25B8%26search_string%3D%25D0%25BD" +
+                                "%25D0%25B0%25D1%2583%25D1%2588%25D0%25BD%25D0%25B8%25D0%25BA%25D0%25B8%26&is_ajax=1";
+                    break;
             }
             if (resultUrl != null)
             {

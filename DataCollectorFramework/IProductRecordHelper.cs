@@ -41,12 +41,27 @@ namespace DataCollectorFramework
         public static readonly List<Tuple<string, string>> ColorsReplace = new List<Tuple<string, string>>
         {
             new Tuple<string, string>("белый", "White"),
+            new Tuple<string, string>("белые", "White"),
+            new Tuple<string, string>("голубой", "???"),
+            new Tuple<string, string>("желтый", "Yellow"),
+            new Tuple<string, string>("зеленый", "Green"),
+            new Tuple<string, string>("коралловый", "Coral"),
             new Tuple<string, string>("бирюзовый", "Turquoise"),
             new Tuple<string, string>("красный", "Red"),
+            new Tuple<string, string>("красные", "Red"),
+            new Tuple<string, string>("оранжевый", "Orange"),
+            new Tuple<string, string>("пурпурный", "Purple"),
+            new Tuple<string, string>("розовый", "Pink"),
             new Tuple<string, string>("серебристый", "Silver"),
             new Tuple<string, string>("серый", "Gray"),
+            new Tuple<string, string>("синий", "Blue"),
+            new Tuple<string, string>("синие", "Blue"),
+            new Tuple<string, string>("титановый", "Titian"),
+            new Tuple<string, string>("фиолетовый", "Violet"),
             new Tuple<string, string>("черный", "Black"),
+            new Tuple<string, string>("черные", "Black"),
             new Tuple<string, string>("чёрный", "Black"),
+            new Tuple<string, string>("чёрные", "Black"),
             new Tuple<string, string>("волосной", "Hairline"),
         };
 
