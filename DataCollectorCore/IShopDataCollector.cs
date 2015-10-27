@@ -19,5 +19,7 @@ namespace DataCollectorCore
         public Exception Exception { get; set; }
 
         public IList<ProductRecord> Products { get; set; }
+
+        public bool NotSell { get; set; }
     }
 }

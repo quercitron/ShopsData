@@ -18,7 +18,7 @@ namespace DataCollectors
                 if (urlResult != null && urlResult.NotSell)
                 {
                     // todo: add logging?
-                    return new ShopDataResult { Success = true };
+                    return new ShopDataResult { Success = true, NotSell = true };
                 }
                 if (urlResult == null || urlResult.Url == null)
                 {
